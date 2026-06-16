@@ -5,8 +5,6 @@ import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence }
 
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
-  
-  // We use this state to strictly track which text should exist in the HTML
   const [activeIndex, setActiveIndex] = useState(0);
   
   const { scrollYProgress } = useScroll({
@@ -14,12 +12,11 @@ export default function About() {
     offset: ["start start", "end end"]
   });
 
-  // This acts as our precise scroll engine. 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.4) {
       setActiveIndex(0); // Show ROBOVITICS
     } else if (latest >= 0.4 && latest < 0.6) {
-      setActiveIndex(-1); // Show NOTHING (The dead zone gap)
+      setActiveIndex(-1); // Show NOTHING (Dead Zone)
     } else {
       setActiveIndex(1); // Show VIT
     }
@@ -32,15 +29,12 @@ export default function About() {
       
       <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-auto">
         
-        {/* Section Header */}
         <div className="absolute top-24 left-6 md:left-12 lg:left-24 font-mono text-gray-500 text-sm tracking-widest uppercase">
           <span className="text-white font-bold mr-2">01.</span> System.Logs // About
         </div>
 
-        {/* Content Container */}
         <div className="relative w-full h-[400px] flex items-center mt-12">
           
-          {/* Vertical Scroll Indicator */}
           <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gray-900 rounded-full hidden md:block">
             <motion.div 
               style={{ height: progressHeight }} 
@@ -48,13 +42,9 @@ export default function About() {
             />
           </div>
 
-          {/* Text Area */}
           <div className="relative w-full h-full ml-0 md:ml-12 lg:ml-20">
-            
-            {/* AnimatePresence guarantees only ONE of these blocks can exist at a time */}
             <AnimatePresence mode="wait">
               
-              {/* PART 1: ROBOVITICS TEXT */}
               {activeIndex === 0 && (
                 <motion.div 
                   key="robo"
@@ -73,7 +63,6 @@ export default function About() {
                 </motion.div>
               )}
 
-              {/* PART 2: VIT TEXT */}
               {activeIndex === 1 && (
                 <motion.div 
                   key="vit"
@@ -93,7 +82,6 @@ export default function About() {
               )}
               
             </AnimatePresence>
-
           </div>
         </div>
 
