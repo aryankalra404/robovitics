@@ -1,0 +1,103 @@
+'use client';
+
+import { useRef, useState } from 'react';
+import { motion, useScroll, useTransform, useMotionValueEvent, AnimatePresence } from 'framer-motion';
+
+export default function About() {
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  // We use this state to strictly track which text should exist in the HTML
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"]
+  });
+
+  // This acts as our precise scroll engine. 
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest < 0.4) {
+      setActiveIndex(0); // Show ROBOVITICS
+    } else if (latest >= 0.4 && latest < 0.6) {
+      setActiveIndex(-1); // Show NOTHING (The dead zone gap)
+    } else {
+      setActiveIndex(1); // Show VIT
+    }
+  });
+
+  const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  return (
+    <section id="about" ref={sectionRef} className="relative z-40 h-[300vh] w-full text-white pointer-events-none">
+      
+      <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-6 md:px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-auto">
+        
+        {/* Section Header */}
+        <div className="absolute top-24 left-6 md:left-12 lg:left-24 font-mono text-gray-500 text-sm tracking-widest uppercase">
+          <span className="text-white font-bold mr-2">01.</span> System.Logs // About
+        </div>
+
+        {/* Content Container */}
+        <div className="relative w-full h-[400px] flex items-center mt-12">
+          
+          {/* Vertical Scroll Indicator */}
+          <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-gray-900 rounded-full hidden md:block">
+            <motion.div 
+              style={{ height: progressHeight }} 
+              className="w-full bg-gray-300 rounded-full shadow-[0_0_10px_#D1D5DB]"
+            />
+          </div>
+
+          {/* Text Area */}
+          <div className="relative w-full h-full ml-0 md:ml-12 lg:ml-20">
+            
+            {/* AnimatePresence guarantees only ONE of these blocks can exist at a time */}
+            <AnimatePresence mode="wait">
+              
+              {/* PART 1: ROBOVITICS TEXT */}
+              {activeIndex === 0 && (
+                <motion.div 
+                  key="robo"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -50 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="absolute inset-0 flex flex-col justify-center"
+                >
+                  <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
+                    WE ARE <br/> <span className="text-gray-300">ROBOVITICS.</span>
+                  </h2>
+                  <p className="text-gray-400 font-mono text-base md:text-lg max-w-2xl leading-relaxed drop-shadow-md">
+                    The official robotics club of VIT Vellore. We are a collective of engineers, designers, and innovators dedicated to pushing the boundaries of autonomous systems. We don't just study robotics; we solder the circuits, write the algorithms, and machine the parts that bring machines to life.
+                  </p>
+                </motion.div>
+              )}
+
+              {/* PART 2: VIT TEXT */}
+              {activeIndex === 1 && (
+                <motion.div 
+                  key="vit"
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -50 }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                  className="absolute inset-0 flex flex-col justify-center"
+                >
+                  <h2 className="text-5xl md:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
+                    POWERED BY <br/> <span className="text-gray-300">VIT VELLORE.</span>
+                  </h2>
+                  <p className="text-gray-400 font-mono text-base md:text-lg max-w-2xl leading-relaxed drop-shadow-md">
+                    Vellore Institute of Technology provides the launchpad for our ambitions. Backed by world-class infrastructure and a culture that champions disruptive tech, we leverage the university's cutting-edge manufacturing labs and research facilities to turn theoretical blueprints into heavy-duty reality.
+                  </p>
+                </motion.div>
+              )}
+              
+            </AnimatePresence>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}
