@@ -1,40 +1,55 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
+import TextBridge from '@/components/TextBridge';
 
 export default function Page() {
   const domainsRef = useRef<HTMLDivElement>(null);
 
-  // 1. Tracks overall page scroll (for the progress line and normal gear rotation)
+  // 1. Tracks overall page scroll
   const { scrollYProgress: overallScroll } = useScroll();
   
   // 2. Tracks specifically when the Domains section enters the screen
   const { scrollYProgress: domainsEnterProgress } = useScroll({
     target: domainsRef,
-    // Triggers from the moment the TOP of Domains hits the BOTTOM of the screen,
-    // until the TOP of Domains hits the TOP of the screen.
     offset: ["start end", "start start"] 
   });
 
   // --- THE ORCHESTRATOR ANIMATIONS ---
   
-  // Background fades from 87% opacity to 0% as Domains scrolls up
-const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 0]);
+  const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 0]);
   
-  // Gear translates to the left (-100%) to roll off-screen as Domains comes up
-  const gearX = useTransform(domainsEnterProgress, [0, 1], ["0%", "-100%"]);
+  // 1. Calculate RAW numeric values first so we can apply physics to them
+  const rawGearX = useTransform(domainsEnterProgress, [0, 1], [0, -100]);
+  const rawGearY = useTransform(overallScroll, [0, 1], [0, 50]);
   
-  // Normal gear rotation tied to global scroll
-  const gearRotation = useTransform(overallScroll, [0, 1], [0, 720]);
-  const gearY = useTransform(overallScroll, [0, 1], ["0%", "50%"]);
+  // COMBINED ROTATION:
+  // overallScroll * 720 = Normal slow rotation down the page
+  // domains * 150 = Much slower extra spin when rolling left (was 360)
+  const rawGearRotation = useTransform(
+    [overallScroll, domainsEnterProgress],
+    ([overall, domains]) => {
+      return (overall * 720) + (domains * 150); 
+    }
+  );
+
+  // 2. Apply Spring Physics for buttery smooth momentum
+  // Lowered stiffness and increased damping to make it feel heavier and smoother
+  const springConfig = { stiffness: 40, damping: 30, restDelta: 0.001 };
+  const smoothGearX = useSpring(rawGearX, springConfig);
+  const smoothGearY = useSpring(rawGearY, springConfig);
+  const gearRotation = useSpring(rawGearRotation, springConfig);
+
+  // 3. Map the smoothed numbers back to CSS percentages
+  const gearX = useTransform(smoothGearX, x => `${x}%`);
+  const gearY = useTransform(smoothGearY, y => `${y}%`);
 
   return (
-    // FIX: Removed 'overflow-hidden' from the end of this class list so Sticky scroll works again!
     <main className="relative bg-black text-white flex flex-col font-sans selection:bg-gray-300 selection:text-black">
       
       {/* GLOBAL BACKGROUND GRID */}
@@ -61,7 +76,6 @@ const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 
       </motion.div>
 
       {/* --- CONTENT DOM TREE --- */}
-      
       <div className="relative z-20 flex min-h-svh flex-col justify-between overflow-x-clip lg:h-screen">
         <Navbar />
         <Hero />
@@ -79,7 +93,6 @@ const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 
 
       <About />
 
-      {/* We wrap Domains in the Ref so Framer Motion knows exactly where it is! */}
       <div ref={domainsRef}>
         <Domains />
       </div>

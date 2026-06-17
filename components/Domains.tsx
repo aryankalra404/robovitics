@@ -350,6 +350,47 @@ function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
   );
 }
 
+// --- HUD TEXT BRIDGE SUBCOMPONENT ---
+const BRIDGE_TEXT = "WE DON'T JUST STUDY THESE DOMAINS. WE SOLDER THE CIRCUITS, WRITE THE ALGORITHMS, AND MACHINE THE PARTS. AWAITING EVENT DEPLOYMENT...";
+
+function HUDTextBridge() {
+  const words = BRIDGE_TEXT.split(' ');
+  return (
+    <div className="absolute inset-0 z-30 pointer-events-none flex flex-col items-center justify-center p-6 md:p-12 hidden md:flex" style={{ perspective: '1200px' }}>
+      <div className="max-w-4xl mx-auto text-center">
+        
+        {/* Terminal Header */}
+        <span className="bridge-terminal-header block mb-6 font-mono text-[10px] tracking-[0.35em] text-[rgba(255,255,255,0.3)] uppercase opacity-0">
+          &gt; SYSTEM_LOGS // PROTOCOL_OVERRIDE
+        </span>
+
+        {/* The 3D Assembling Text */}
+        <p style={{ transformStyle: 'preserve-3d' }} className="flex flex-wrap justify-center gap-x-3 gap-y-2 md:gap-x-4 md:gap-y-3">
+          {words.map((word, i) => (
+            <span
+              key={i}
+              className="bridge-word inline-block"
+              style={{
+                fontFamily: '"Inter", "Arial Black", sans-serif',
+                fontWeight: 900,
+                fontSize: 'clamp(20px, 4vw, 42px)',
+                textTransform: 'uppercase',
+                color: '#ffffff',
+                textShadow: '0 0 15px rgba(255,255,255,0.2)',
+                willChange: 'transform, opacity',
+                opacity: 0 // Start hidden
+              }}
+            >
+              {word}
+            </span>
+          ))}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// --- MAIN DOMAINS COMPONENT ---
 export default function Domains() {
   const sectionRef = useRef<HTMLElement>(null);
   const cardsRef = useRef<HTMLDivElement[]>([]);
@@ -373,6 +414,18 @@ export default function Domains() {
         const lineX = lineXValues.map(v => `${v}vw`);
         const lineScale = 0.82;
 
+        // 1. Initial GSAP state for the 3D Text Bridge elements
+        const wordElements = gsap.utils.toArray('.bridge-word');
+        gsap.set(wordElements, {
+          opacity: 0,
+          z: () => gsap.utils.random(-800, 1000), 
+          x: () => gsap.utils.random(-400, 400),
+          y: () => gsap.utils.random(-400, 400),
+          rotationX: () => gsap.utils.random(-90, 90),
+          rotationY: () => gsap.utils.random(-90, 90),
+          rotationZ: () => gsap.utils.random(-45, 45),
+        });
+
         gsap.set(cardsRef.current, {
           x: 0, y: '7vh', scale: 0.58,
           opacity: 0, rotation: 0,
@@ -383,7 +436,7 @@ export default function Domains() {
           scrollTrigger: {
             trigger: sectionRef.current,
             start: 'top top',
-            end: '+=3600',
+            end: '+=5000', // <-- INCREASED distance to fit the text animation
             scrub: 1.5,
             pin: true,
             anticipatePin: 1,
@@ -411,7 +464,7 @@ export default function Domains() {
           ease: 'power2.inOut', force3D: true,
         });
 
-        // 1. Reduced peakScale so it doesn't pop forward too aggressively before leaving
+        // 1. Cards pop to peak scale (The initial zoom)
         const peakScale = 1.2; 
         const peakX = lineXValues.map(v => `${v * (peakScale / lineScale)}vw`);
 
@@ -422,23 +475,40 @@ export default function Domains() {
           ease: 'power2.out', force3D: true,
         });
 
+        // 2. Text fades out NOW, starting exactly when the zoom begins
         tl.to(
           [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
-          { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' },
-          '<-0.7',
+          { opacity: 0, y: -30, duration: 0.6, ease: 'power2.inOut' },
+          '<' 
         );
 
-        // 2. Reduced final scale and calculated dynamic X positions to prevent overlap!
+        // 3. Exit animation for the cards sliding out
         tl.to(cardsRef.current, {
           x: (i) => {
             if (i < 3) return `${-120 - ((2 - i) * 60)}vw`; 
             else return `${120 + ((i - 3) * 60)}vw`;
           },
-          scale: 3, 
+          scale: 5, 
           duration: 1.8,
           ease: 'power2.inOut',
           force3D: true,
         });
+
+        // 4. THE HUD TEXT BRIDGE SNAPS IN
+        // Starts fading in the little terminal text slightly before the cards are totally gone
+        tl.to('.bridge-terminal-header', { opacity: 1, duration: 0.5, ease: 'power2.out' }, '-=1.2');
+        
+        // Snaps the chaotic scattered 3D words into place perfectly
+        tl.to(wordElements, {
+          opacity: 1, z: 0, x: 0, y: 0, rotationX: 0, rotationY: 0, rotationZ: 0,
+          duration: 2.0,
+          stagger: { each: 0.04, from: 'random' }, 
+          ease: 'power3.out', force3D: true
+        }, '<'); // Triggers at the same time as the terminal header
+
+        // 5. Final pause so the user can read the assembled paragraph before unpinning and scrolling down to Events
+        tl.to({}, { duration: 1.0 });
+
       });
     }, sectionRef);
 
@@ -500,8 +570,10 @@ export default function Domains() {
         ref={sectionRef}
         className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-transparent"
       >
-        {/* ADDED: Morphic Background Component */}
         <MorphicBackground />
+
+        {/* --- ADDED: HUD TEXT BRIDGE LAYER --- */}
+        <HUDTextBridge />
 
         <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span style={{
