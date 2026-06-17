@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import DomainsBackground from './DomainsBackground'; // adjust path as needed
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -266,7 +265,7 @@ export default function Domains() {
     if (el) cardsRef.current[index] = el;
   };
 
-  useEffect(() => {
+useEffect(() => {
   const ctx = gsap.context(() => {
     const patternX = ['-30vw', '-18vw', '-6vw', '6vw', '18vw', '30vw'];
     const patternY = ['18vh', '-9vh', '18vh', '-9vh', '18vh', '-9vh'];
@@ -284,16 +283,18 @@ export default function Domains() {
       scrollTrigger: {
         trigger: sectionRef.current,
         start: 'top top',
-        end: '+=6000',
-        scrub: 0.8, pin: true,
-        anticipatePin: 1, fastScrollEnd: true,
+        end: '+=3600',
+        scrub: 1.5,
+        pin: true,
+        anticipatePin: 1,
+        fastScrollEnd: true,
       },
     });
 
     // Phase 1 — fade in, cluster
     tl.to(cardsRef.current, {
       opacity: 1, scale: 0.78, y: '6vh',
-      duration: 0.65, stagger: 0.03,
+      duration: 0.4, stagger: 0.02,
       ease: 'power2.out', force3D: true,
     });
 
@@ -301,7 +302,7 @@ export default function Domains() {
     tl.to(cardsRef.current, {
       x: (i) => patternX[i],
       y: (i) => patternY[i],
-      scale: 0.95, duration: 1.35,
+      scale: 0.95, duration: 0.9,
       ease: 'power2.inOut', force3D: true,
     });
 
@@ -309,7 +310,8 @@ export default function Domains() {
     tl.to(cardsRef.current, {
       x: (i) => lineX[i],
       y: '12vh', scale: lineScale,
-      duration: 1.35, ease: 'power2.inOut', force3D: true,
+      duration: 0.9,
+      ease: 'power2.inOut', force3D: true,
     });
 
     // Phase 4a — zoom to peak together
@@ -319,40 +321,45 @@ export default function Domains() {
     tl.to(cardsRef.current, {
       scale: peakScale,
       x: (i) => peakX[i],
-      y: '12vh', duration: 1.0,
+      y: '12vh', duration: 0.7,
       ease: 'power2.out', force3D: true,
     });
 
-    // Title fades at the start of 4a
+    // Title fades at start of 4a
     tl.to(
       [headingRef.current, eyebrowRef.current, sectionLabelRef.current],
-      { opacity: 0, y: -20, duration: 0.45, ease: 'power2.in' },
-      '<-1.0',
+      { opacity: 0, y: -20, duration: 0.3, ease: 'power2.in' },
+      '<-0.7',
     );
 
-    // Phase 4b — split exit: left 3 go left, right 3 go right
+    // Phase 4b — zoom + split exit (same as original, just slower so it can't be skipped)
     tl.to(cardsRef.current, {
-  x: (i) => (i < 3 ? '-160vw' : '160vw'),
-  scale: 8,
-  duration: 1.0, ease: 'power3.in', force3D: true,
-});
+      x: (i) => (i < 3 ? '-160vw' : '160vw'),
+      scale: 8,
+      duration: 1.8,
+      ease: 'power2.inOut',
+      force3D: true,
+    });
 
   }, sectionRef);
 
   return () => ctx.revert();
 }, []);
   return (
-    <section
-      id="domains"
-      ref={sectionRef}
-      className="relative w-full h-screen overflow-hidden flex items-center justify-center"
-      style={{ background: '#050505' }}
-    >
-      {/* Background grid */}
-      <div className="absolute inset-0 z-0 pointer-events-none" style={{
-        backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-        backgroundSize: '60px 60px',
-      }} />
+   <section
+  id="domains"
+  ref={sectionRef}
+  className="relative w-full h-screen overflow-hidden flex items-center justify-center"
+  style={{
+    background: '#050505',
+    backgroundImage: 'url(/hero-bg.png)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  }}
+>
+  
+      
 
       {/* Section label */}
       <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>

@@ -13,15 +13,14 @@ export default function About() {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest < 0.4) {
-      setActiveIndex(0); // Show ROBOVITICS
-    } else if (latest >= 0.4 && latest < 0.6) {
-      setActiveIndex(-1); // Show NOTHING (Dead Zone)
-    } else {
-      setActiveIndex(1); // Show VIT
-    }
-  });
-
+  if (latest < 0.45) {
+    setActiveIndex(0);   // ROBOVITICS: 0 → 0.45 (45%)
+  } else if (latest >= 0.45 && latest < 0.55) {
+    setActiveIndex(-1);  // Dead zone: 0.45 → 0.55 (10%)
+  } else {
+    setActiveIndex(1);   // VIT: 0.55 → 1.0 (45%)
+  }
+});
   const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
