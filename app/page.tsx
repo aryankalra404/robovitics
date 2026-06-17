@@ -24,7 +24,7 @@ export default function Page() {
   // --- THE ORCHESTRATOR ANIMATIONS ---
   
   // Background fades from 87% opacity to 0% as Domains scrolls up
-  const bgOpacity = useTransform(domainsEnterProgress, [0, 1], [0.87, 0]);
+const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 0]);
   
   // Gear translates to the left (-100%) to roll off-screen as Domains comes up
   const gearX = useTransform(domainsEnterProgress, [0, 1], ["0%", "-100%"]);

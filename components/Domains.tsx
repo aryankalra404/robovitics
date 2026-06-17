@@ -1,12 +1,98 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
+
+// --- MORPHIC DOT GRID BACKGROUND ---
+const ICONS = [
+  // Chunky Plus
+  <svg key="plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
+  // Chunky Cross
+  <svg key="cross" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
+  // Cartoony Microchip Box
+  <svg key="chip" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="4" ry="4"></rect></svg>,
+  // Chunky Bracket
+  <svg key="bracket" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>,
+  // Node Circle
+  <svg key="node" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle></svg>
+];
+
+function MorphicBackground() {
+  const [nodes, setNodes] = useState<Array<{ id: number; x: number; y: number; icon: React.ReactNode; delay: number; duration: number }>>([]);
+
+  useEffect(() => {
+    // Generate random nodes only on the client to avoid hydration mismatches
+    const generatedNodes = Array.from({ length: 35 }).map((_, i) => {
+      // Snap to a 40px grid (matching the background-size below)
+      const x = Math.floor(Math.random() * 100) * 40;
+      const y = Math.floor(Math.random() * 100) * 40;
+      return {
+        id: i,
+        x,
+        y,
+        icon: ICONS[Math.floor(Math.random() * ICONS.length)],
+        delay: Math.random() * 5,
+        duration: 3 + Math.random() * 4, // 3 to 7 seconds per cycle
+      };
+    });
+    setNodes(generatedNodes);
+  }, []);
+
+  return (
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+      {/* 1. Static Dot Grid Base */}
+      <div 
+        className="absolute inset-0 opacity-[0.15]"
+        style={{
+          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 1) 1.5px, transparent 1.5px)',
+          backgroundSize: '40px 40px',
+          backgroundPosition: '0 0'
+        }}
+      />
+      
+      {/* 2. Dynamic Morphing Symbols */}
+      <div className="absolute inset-0 text-[rgba(255,255,255,0.25)]">
+        {nodes.map((node) => (
+          <div
+            key={node.id}
+            className="absolute flex items-center justify-center will-change-transform"
+            style={{
+              left: `${node.x}px`,
+              top: `${node.y}px`,
+              width: '40px',
+              height: '40px',
+              transform: 'translate(-50%, -50%)', // Centered exactly on the dot intersection
+              animation: `morphicPulse ${node.duration}s ease-in-out ${node.delay}s infinite`,
+              opacity: 0,
+            }}
+          >
+            {node.icon}
+          </div>
+        ))}
+      </div>
+
+      {/* 3. Subtle Vignette so the edges fade to black naturally without hard-blocking transparency */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,5,5,0.8)_100%)]" />
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes morphicPulse {
+          0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+          20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+          30% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+          90% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+          100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+        }
+      `}} />
+    </div>
+  );
+}
+// ---------------------------------------------
 
 const DOMAINS = [
   {
@@ -325,7 +411,8 @@ export default function Domains() {
           ease: 'power2.inOut', force3D: true,
         });
 
-        const peakScale = 2;
+        // 1. Reduced peakScale so it doesn't pop forward too aggressively before leaving
+        const peakScale = 1.2; 
         const peakX = lineXValues.map(v => `${v * (peakScale / lineScale)}vw`);
 
         tl.to(cardsRef.current, {
@@ -341,9 +428,13 @@ export default function Domains() {
           '<-0.7',
         );
 
+        // 2. Reduced final scale and calculated dynamic X positions to prevent overlap!
         tl.to(cardsRef.current, {
-          x: (i) => (i < 3 ? '-160vw' : '160vw'),
-          scale: 8,
+          x: (i) => {
+            if (i < 3) return `${-120 - ((2 - i) * 60)}vw`; 
+            else return `${120 + ((i - 3) * 60)}vw`;
+          },
+          scale: 3, 
           duration: 1.8,
           ease: 'power2.inOut',
           force3D: true,
@@ -356,17 +447,14 @@ export default function Domains() {
 
   return (
     <>
-      {/* MOBILE LAYOUT: Standard vertical flow (hidden on md and above) */}
+      {/* MOBILE LAYOUT */}
       <section
         id="domains-mobile"
-        className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-[#050505]"
-        style={{
-          backgroundImage: 'url(/hero-bg.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
+        className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-transparent" 
       >
+        {/* ADDED: Morphic Background Component */}
+        <MorphicBackground />
+
         <div className="absolute top-6 left-6 z-20 pointer-events-none">
           <span style={{
             fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
@@ -406,19 +494,15 @@ export default function Domains() {
         </div>
       </section>
 
-
-      {/* DESKTOP LAYOUT: Original GSAP timeline (hidden on mobile) */}
+      {/* DESKTOP LAYOUT */}
       <section
         id="domains"
         ref={sectionRef}
-        className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-[#050505]"
-        style={{
-          backgroundImage: 'url(/hero-bg.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-        }}
+        className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-transparent"
       >
+        {/* ADDED: Morphic Background Component */}
+        <MorphicBackground />
+
         <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span style={{
             fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
