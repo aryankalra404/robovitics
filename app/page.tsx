@@ -7,7 +7,7 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
 import Events from "@/components/Events";
-import EventsTerminal from "@/components/EventsTerminal"; // concept 02 — tape
+import EventsTerminal from "@/components/EventsTerminal";
 
 
 export default function Page() {
@@ -27,28 +27,30 @@ export default function Page() {
   const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 0]);
   
   // 1. Calculate RAW numeric values first so we can apply physics to them
-  const rawGearX = useTransform(domainsEnterProgress, [0, 1], [0, -100]);
+  // We go from 0 to 120 so it completely clears the right side of the screen
+  const rawGearX = useTransform(domainsEnterProgress, [0, 1], [0, 120]);
   const rawGearY = useTransform(overallScroll, [0, 1], [0, 50]);
   
   // COMBINED ROTATION:
   // overallScroll * 720 = Normal slow rotation down the page
-  // domains * 150 = Much slower extra spin when rolling left (was 360)
+  // domains * 420 = We increased this from 150 because it has to travel a longer 
+  // distance across the whole screen. A higher number ensures it "rolls" instead of "slides".
   const rawGearRotation = useTransform(
     [overallScroll, domainsEnterProgress],
     ([overall, domains]) => {
-      return (overall * 720) + (domains * 150); 
+      return (overall * 720) + (domains * 420); 
     }
   );
 
   // 2. Apply Spring Physics for buttery smooth momentum
-  // Lowered stiffness and increased damping to make it feel heavier and smoother
   const springConfig = { stiffness: 40, damping: 30, restDelta: 0.001 };
   const smoothGearX = useSpring(rawGearX, springConfig);
   const smoothGearY = useSpring(rawGearY, springConfig);
   const gearRotation = useSpring(rawGearRotation, springConfig);
 
-  // 3. Map the smoothed numbers back to CSS percentages
-  const gearX = useTransform(smoothGearX, x => `${x}%`);
+  // 3. Map the smoothed numbers back to CSS units
+  // Notice we use `vw` (viewport width) instead of `%` for the X axis now!
+  const gearX = useTransform(smoothGearX, x => `${x}vw`);
   const gearY = useTransform(smoothGearY, y => `${y}%`);
 
   return (
@@ -99,9 +101,7 @@ export default function Page() {
         <Domains />
       </div>
       <Events />
-      <EventsTerminal />  {/* or <Events /> */}
-
-
+      <EventsTerminal />
 
     </main>
   );
