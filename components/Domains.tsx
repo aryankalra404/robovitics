@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -8,74 +8,42 @@ if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-// --- MORPHIC DOT GRID BACKGROUND ---
-const ICONS = [
-  <svg key="plus" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>,
-  <svg key="cross" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>,
-  <svg key="chip" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="16" height="16" rx="4" ry="4"></rect></svg>,
-  <svg key="bracket" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>,
-  <svg key="node" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"></circle></svg>
-];
-
-function MorphicBackground() {
-  const [nodes, setNodes] = useState<Array<{ id: number; x: number; y: number; icon: React.ReactNode; delay: number; duration: number }>>([]);
-
-  useEffect(() => {
-    const generatedNodes = Array.from({ length: 35 }).map((_, i) => {
-      const x = Math.floor(Math.random() * 100) * 40;
-      const y = Math.floor(Math.random() * 100) * 40;
-      return {
-        id: i,
-        x,
-        y,
-        icon: ICONS[Math.floor(Math.random() * ICONS.length)],
-        delay: Math.random() * 5,
-        duration: 3 + Math.random() * 4,
-      };
-    });
-    setNodes(generatedNodes);
-  }, []);
-
+// --- EVENTS CONSTELLATION BACKGROUND ---
+function EventsBackground() {
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <div 
-        className="absolute inset-0 opacity-[0.15]"
+    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none bg-[#0d0d0d]">
+      {/* Grid */}
+      <div
+        className="absolute inset-0"
         style={{
-          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 1) 1.5px, transparent 1.5px)',
-          backgroundSize: '40px 40px',
-          backgroundPosition: '0 0'
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+            linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
+          `,
+          backgroundSize: "40px 40px",
         }}
       />
-      <div className="absolute inset-0 text-[rgba(255,255,255,0.25)]">
-        {nodes.map((node) => (
-          <div
-            key={node.id}
-            className="absolute flex items-center justify-center will-change-transform"
-            style={{
-              left: `${node.x}px`,
-              top: `${node.y}px`,
-              width: '40px',
-              height: '40px',
-              transform: 'translate(-50%, -50%)',
-              animation: `morphicPulse ${node.duration}s ease-in-out ${node.delay}s infinite`,
-              opacity: 0,
-            }}
-          >
-            {node.icon}
-          </div>
-        ))}
-      </div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(5,5,5,0.8)_100%)]" />
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes morphicPulse {
-          0% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-          20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-          30% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-          70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-          90% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-          100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-        }
-      `}} />
+
+      {/* Constellation dots */}
+      {([
+        [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
+      ] as [number, number][]).map(([lp, tp], i) => (
+        <div
+          key={i}
+          className="absolute rounded-full bg-white/25"
+          style={{ left: `${lp}%`, top: `${tp}%`, width: 5, height: 5 }}
+        />
+      ))}
+
+      {/* Constellation lines */}
+      <svg
+        className="absolute inset-0 h-full w-full"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <line x1="8%" y1="9%"  x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+        <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+        <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+      </svg>
     </div>
   );
 }
@@ -427,7 +395,7 @@ export default function Domains() {
 
         tl.to(cardsRef.current, {
           opacity: 1, scale: 0.78, y: '6vh',
-          duration: 0.4, stagger: 0.02,
+          duration: 0.4,
           ease: 'power2.out', force3D: true,
         });
 
@@ -495,7 +463,7 @@ export default function Domains() {
         id="domains-mobile"
         className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-transparent"
       >
-        <MorphicBackground />
+        <EventsBackground />
         <div className="absolute top-6 left-6 z-20 pointer-events-none">
           <span style={{
             fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
@@ -539,7 +507,7 @@ export default function Domains() {
         ref={sectionRef}
         className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-transparent"
       >
-        <MorphicBackground />
+        <EventsBackground />
         <HUDTextBridge />
         <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span style={{
