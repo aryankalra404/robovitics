@@ -445,8 +445,8 @@ export default function Domains() {
           x: (i) => circleX[i],
           y: (i) => circleY[i],
           scale: 0.84,
-          duration: 1.45,
-          ease: 'sine.inOut',
+          duration: 1.9,
+          ease: 'none',
           force3D: true,
         });
 

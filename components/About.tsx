@@ -29,13 +29,13 @@ export default function About() {
       {/* MOBILE LAYOUT */}
       <section id="about-mobile" className="relative z-40 w-full text-white px-6 py-24 block md:hidden">
         <div className="font-mono text-gray-500 text-sm tracking-widest uppercase mb-12">
-          <span className="font-bold mr-2" style={{ color: '#22D3EE' }}>01.</span> System.Logs // About
+          <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
         </div>
 
         <div className="flex flex-col gap-16">
           <div className="flex flex-col justify-center">
             <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-              WE ARE <br/> <span style={{ color: 'rgba(34,211,238,0.45)' }}>ROBOVITICS.</span>
+              WE ARE <br/> <span style={{ color: 'rgba(255,255,255,0.4)' }}>ROBOVITICS.</span>
             </h2>
             <p className="text-gray-400 font-mono text-base leading-relaxed drop-shadow-md">
               The official robotics club of VIT Vellore. We are a collective of engineers, designers, and innovators dedicated to pushing the boundaries of autonomous systems. We don&apos;t just study robotics; we solder the circuits, write the algorithms, and machine the parts that bring machines to life.
@@ -44,7 +44,7 @@ export default function About() {
 
           <div className="flex flex-col justify-center">
             <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-              POWERED BY <br/> <span style={{ color: 'rgba(34,211,238,0.45)' }}>VIT VELLORE.</span>
+              POWERED BY <br/> <span style={{ color: 'rgba(255,255,255,0.4)' }}>VIT VELLORE.</span>
             </h2>
             <p className="text-gray-400 font-mono text-base leading-relaxed drop-shadow-md">
               Vellore Institute of Technology provides the launchpad for our ambitions. Backed by world-class infrastructure and a culture that champions disruptive tech, we leverage the university&apos;s cutting-edge manufacturing labs and research facilities to turn theoretical blueprints into heavy-duty reality.
@@ -59,20 +59,23 @@ export default function About() {
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-auto">
           
           <div className="absolute top-24 left-12 lg:left-24 font-mono text-gray-500 text-sm tracking-widest uppercase">
-            <span className="font-bold mr-2" style={{ color: '#22D3EE' }}>01.</span> System.Logs // About
+            <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
           </div>
 
           <div className="relative w-full h-[400px] flex items-center mt-12">
             
-            {/* Scroll Progress Bar */}
+            {/* Scroll Progress Bar - FIXED */}
             <div
               className="absolute left-0 top-0 bottom-0 w-[2px] rounded-full"
-              style={{ background: 'rgba(34,211,238,0.08)' }}
+              style={{ background: 'rgba(255,255,255,0.1)' }}
             >
               <motion.div
-                style={{ height: progressHeight }}
                 className="w-full rounded-full"
-                css={{ background: '#22D3EE', boxShadow: '0 0 10px rgba(34,211,238,0.6)' }}
+                style={{ 
+                  height: progressHeight,
+                  background: 'rgba(255,255,255,0.85)', 
+                  boxShadow: '0 0 12px rgba(255,255,255,0.6)' 
+                }}
               />
             </div>
 
