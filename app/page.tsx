@@ -37,7 +37,8 @@ export default function Page() {
   // distance across the whole screen. A higher number ensures it "rolls" instead of "slides".
   const rawGearRotation = useTransform(
     [overallScroll, domainsEnterProgress],
-    ([overall, domains]: [number, number]) => {
+    (values: number[]) => {
+      const [overall, domains] = values;
       return (overall * 720) + (domains * 420);
     }
   );
