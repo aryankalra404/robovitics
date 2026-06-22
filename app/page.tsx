@@ -7,7 +7,6 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Domains from '@/components/Domains';
 import Events from "@/components/Events";
-import EventsTerminal from "@/components/horizontalScroll";
 
 
 export default function Page() {

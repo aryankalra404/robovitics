@@ -120,7 +120,7 @@ export default function Hero() {
           className="relative w-full h-full scale-110 lg:scale-[1.3] xl:scale-[1.45] origin-center"
         >
           <Image
-            src="/bot4.png"
+            src="/bot.png"
             alt="roboVITics Bot Mascot"
             fill
             className="object-contain object-center lg:object-right drop-shadow-[0_0_30px_rgba(209,213,219,0.15)] opacity-80"
