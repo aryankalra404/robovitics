@@ -508,7 +508,7 @@ export default function MemoryWarpTunnel() {
       <style jsx>{`
         .mwt-wrap { position: relative; z-index: 30; height: 1700vh; background: #000; }
         .mwt-sticky {
-          position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #000;
+          position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #121212;
           perspective: 1300px;
           perspective-origin: center center;
         }
