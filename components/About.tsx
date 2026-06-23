@@ -27,7 +27,7 @@ export default function About() {
   return (
     <>
       {/* MOBILE LAYOUT */}
-      <section id="about-mobile" className="relative z-40 w-full text-white px-6 py-24 block md:hidden">
+      <section id="about-mobile" className="relative z-10 w-full text-white px-6 py-24 block md:hidden">
         <div className="font-mono text-gray-500 text-sm tracking-widest uppercase mb-12">
           <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
         </div>
@@ -78,9 +78,9 @@ export default function About() {
       </section>
 
       {/* DESKTOP LAYOUT */}
-      <section id="about" ref={sectionRef} className="hidden md:block relative z-40 h-[300vh] w-full text-white pointer-events-none">
+      <section id="about" ref={sectionRef} className="hidden md:block relative z-10 h-[300vh] w-full text-white pointer-events-none">
         
-        <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-auto">
+        <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-none">
           
           <div className="absolute top-24 left-12 lg:left-24 font-mono text-gray-500 text-sm tracking-widest uppercase">
             <span className="font-bold mr-2 text-white">01.</span> System.Logs // About

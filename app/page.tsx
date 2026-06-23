@@ -47,6 +47,7 @@ export default function Page() {
 
   return (
     <main className="relative bg-black text-white flex flex-col font-sans selection:bg-gray-300 selection:text-black">
+      <Navbar />
 
       {/* GLOBAL BACKGROUND GRID */}
       <motion.div
@@ -73,7 +74,6 @@ export default function Page() {
 
       {/* --- CONTENT DOM TREE --- */}
       <div className="relative z-20 flex min-h-svh flex-col justify-between overflow-x-clip lg:h-screen">
-        <Navbar />
         <Hero />
         <footer className="relative z-10 flex w-full flex-col items-start justify-between gap-3 px-4 py-4 font-mono text-[11px] text-gray-500 sm:px-6 sm:text-xs md:flex-row md:items-end md:px-12 md:py-8 md:text-sm lg:py-10">
           <div>

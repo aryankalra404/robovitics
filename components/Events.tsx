@@ -70,8 +70,8 @@ export default function Events() {
   const getGridPositions = useCallback((count: number) => {
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const offsetX = Math.min(vw * 0.32, Math.max(vw / 2 - 160, 200));
-    const offsetY = Math.min(vh * 0.30, Math.max(vh / 2 - 140, 150));
+    const offsetX = Math.min(vw * 0.26, Math.max(vw / 2 - 175, 170));
+    const offsetY = Math.min(vh * 0.24, Math.max(vh / 2 - 155, 125));
 
     if (count === 3) {
       return [
@@ -208,7 +208,18 @@ export default function Events() {
     prepStack(cards);
 
     gsap.set(title, { zIndex: 10, opacity: 1, y: 0 });
-    if (toggleRef.current) gsap.set(toggleRef.current, { opacity: 0, y: 12, pointerEvents: "none" });
+    if (toggleRef.current) gsap.set(toggleRef.current, { opacity: 0, y: 12 });
+
+    const syncToggleInteractivity = () => {
+      if (!toggleRef.current) return;
+      const opacity = gsap.getProperty(toggleRef.current, "opacity") as number;
+      const ready = opacity > 0.15;
+      toggleRef.current.style.pointerEvents = ready ? "auto" : "none";
+      if (ready && !introDoneRef.current) {
+        introDoneRef.current = true;
+        setIntroDone(true);
+      }
+    };
 
     const tl = gsap.timeline({ paused: true });
     tl.to(title, { opacity: 0, y: -28, duration: 0.08, ease: "power2.in" }, 0.12);
@@ -246,7 +257,7 @@ export default function Events() {
     });
 
     if (toggleRef.current) {
-      tl.to(toggleRef.current, { opacity: 1, y: 0, pointerEvents: "auto", duration: 0.12, ease: "power2.out" }, 0.96);
+      tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.12, ease: "power2.out" }, 0.96);
     }
 
     stRef.current = ScrollTrigger.create({
@@ -258,10 +269,7 @@ export default function Events() {
       anticipatePin: 1,
       animation: tl,
       onUpdate: (self) => {
-        if (self.progress > 0.94 && !introDoneRef.current) {
-          introDoneRef.current = true;
-          setIntroDone(true);
-        }
+        syncToggleInteractivity();
 
         // ── Reverse: Fade outreach and let events scrub naturally ──────
         if (self.direction < 0 && introDoneRef.current && modeRef.current !== "events" && !isSwappingRef.current) {
@@ -309,6 +317,7 @@ export default function Events() {
           flippedRef.current = cards.map(() => false);
           setIntroDone(false);
           setSelectedEvent(null);
+          if (toggleRef.current) toggleRef.current.style.pointerEvents = "none";
         }
 
         if (!self.isActive || self.direction < 0) return;
@@ -329,6 +338,7 @@ export default function Events() {
         });
       },
       onRefresh: () => {
+        syncToggleInteractivity();
         if (!introDoneRef.current) return;
         // Check whichever deck is currently active
         const activeNodes = modeRef.current === "events" ? eventsCardsRef.current : outreachCardsRef.current;
@@ -435,7 +445,7 @@ export default function Events() {
   );
 
   return (
-    <section ref={sectionRef} className="bg-[#0d0d0d]">
+    <section id="events" ref={sectionRef} className="bg-[#0d0d0d]">
       <div ref={pinRef} className="relative flex h-screen w-full items-center justify-center overflow-hidden">
         <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
         {([[8, 9], [66, 14], [15, 58], [80, 47], [44, 78]] as [number, number][]).map(([lp, tp], i) => (
@@ -497,13 +507,13 @@ export default function Events() {
 
           <div
             ref={toggleRef}
-            className="absolute left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-[4px] border border-white/15 bg-black/55 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md"
+            className="absolute left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[4px] border border-white/15 bg-black/55 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md pointer-events-none"
             style={{ bottom: "8%", boxShadow: "0 0 24px rgba(79,174,243,0.12)" }}
           >
             <button
               type="button"
               onClick={() => handleToggle("events")}
-              className="rounded-[3px] px-4 py-2 transition-colors"
+              className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
               style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
             >
               EVENTS
@@ -511,7 +521,7 @@ export default function Events() {
             <button
               type="button"
               onClick={() => handleToggle("outreach")}
-              className="rounded-[3px] px-4 py-2 transition-colors"
+              className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
               style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
             >
               OUTREACH

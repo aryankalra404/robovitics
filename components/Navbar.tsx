@@ -11,7 +11,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [heroChromeOpacity, setHeroChromeOpacity] = useState(1);
   
-  const [activeSection, setActiveSection] = useState('About');
+  const [activeSection, setActiveSection] = useState('');
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
   const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
 
@@ -24,6 +24,10 @@ export default function Navbar() {
         const fadeDistance = Math.min(window.innerHeight * 0.55, 460);
         const opacity = Math.max(0, Math.min(1, 1 - window.scrollY / fadeDistance));
         setHeroChromeOpacity(opacity);
+
+        if (window.scrollY < window.innerHeight * 0.85) {
+          setActiveSection('');
+        }
       });
     };
 
@@ -68,6 +72,11 @@ export default function Navbar() {
   // Update slider position AND strictly match height/top so it doesn't stretch the navbar
   useEffect(() => {
     const updateIndicator = () => {
+      if (!activeSection) {
+        setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+
       const activeIndex = navItems.indexOf(activeSection);
       const activeElement = navRefs.current[activeIndex];
 
