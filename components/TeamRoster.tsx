@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 // ----------------------------------------------------------------------
 // SHARED BACKGROUND
@@ -47,63 +47,333 @@ const FACULTY = Array.from({ length: 4 }).map((_, i) => ({
   id: `fac-${i + 1}`,
   name: `FACULTY ${i + 1}`,
   role: 'ADVISOR',
-  imgUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`, 
+  // Replace photoUrl with real member photo. Robot shown on hover.
+  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=fac${i}&backgroundColor=b6e3f4`,
+  robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
 
 const BOARD = Array.from({ length: 24 }).map((_, i) => ({
   id: `board-${i + 1}`,
   name: `BOARD MEMBER ${i + 1}`,
   role: i === 0 ? 'PRESIDENT' : i === 1 ? 'VICE PRESIDENT' : 'CORE BOARD',
-  imgUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`, 
+  // Replace photoUrl with real member photo. Robot shown on hover.
+  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
+  robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
 
 // ----------------------------------------------------------------------
-// PROFILE CARD COMPONENT
+// SCAN LINE — runs once on reveal, loops on hover
 // ----------------------------------------------------------------------
-function ProfileCard({ person }: { person: { id: string; name: string; role: string; imgUrl: string } }) {
+function ScanLine({ active }: { active: boolean }) {
   return (
-    <div className="group relative w-full h-full transition-transform duration-500 ease-out hover:-translate-y-2">
+    <div
+      className="absolute inset-0 pointer-events-none overflow-hidden z-20"
+      style={{ opacity: active ? 1 : 0, transition: 'opacity 0.2s' }}
+    >
       <div
-        className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(79,174,243,0.18)] flex flex-col"
-        style={{ padding: 'clamp(12px, 1.2vw, 16px)', background: '#0a0a0a', border: '1px solid rgba(255,255,255,0.08)' }}
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          height: '2px',
+          background: 'rgba(79,174,243,0.55)',
+          animation: active ? 'scanMove 1.6s linear infinite' : 'none',
+        }}
+      />
+      <style>{`
+        @keyframes scanMove {
+          0%   { top: -2px; }
+          100% { top: 100%; }
+        }
+        @keyframes bootFadeUp {
+          0%   { opacity: 0; transform: translateY(12px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes glitch {
+          0%,100% { clip-path: inset(0 0 100% 0); opacity: 0; }
+          10%     { clip-path: inset(20% 0 60% 0); opacity: 0.7; }
+          20%     { clip-path: inset(50% 0 30% 0); opacity: 0.5; }
+          30%     { clip-path: inset(80% 0 5% 0);  opacity: 0.8; }
+          40%     { clip-path: inset(0 0 0 0);      opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// PROFILE CARD
+// ----------------------------------------------------------------------
+interface PersonData {
+  id: string;
+  name: string;
+  role: string;
+  photoUrl: string;
+  robotUrl: string;
+}
+
+function ProfileCard({
+  person,
+  revealed,
+  index,
+}: {
+  person: PersonData;
+  revealed: boolean;
+  index: number;
+}) {
+  const [hovered, setHovered] = useState(false);
+  const [bootDone, setBootDone] = useState(false);
+  const [scanning, setScanning] = useState(false);
+
+  // On reveal: play scan once, then settle
+  useEffect(() => {
+    if (!revealed) return;
+    setScanning(true);
+    const t = setTimeout(() => {
+      setScanning(false);
+      setBootDone(true);
+    }, 900);
+    return () => clearTimeout(t);
+  }, [revealed]);
+
+  return (
+    <div
+      className="group relative w-full h-full"
+      style={{
+        opacity: revealed ? 1 : 0,
+        transform: revealed ? 'translateY(0)' : 'translateY(16px)',
+        transition: `opacity 0.5s ease ${index * 60}ms, transform 0.5s ease ${index * 60}ms`,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      <div
+        className="relative h-full overflow-hidden rounded-[4px] flex flex-col"
+        style={{
+          padding: 'clamp(12px, 1.2vw, 16px)',
+          background: '#0a0a0a',
+          border: hovered ? '1px solid rgba(79,174,243,0.45)' : '1px solid rgba(255,255,255,0.08)',
+          boxShadow: hovered ? '0 0 25px rgba(79,174,243,0.15)' : 'none',
+          transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+          transition: 'all 0.4s ease',
+        }}
       >
-        {/* Styled background layer */}
+        {/* Grid texture background */}
         <div
-          className="absolute pointer-events-none transition-opacity duration-500"
+          className="absolute pointer-events-none"
           style={{
             top: -1, right: -1, bottom: -1, left: -1, borderRadius: '4px',
             background: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(165deg, rgba(255,255,255,0.11), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)), rgba(28,30,34,0.95)`,
-            backgroundSize: '18px 18px, 18px 18px, auto, auto', border: '1px solid rgba(235,238,242,0.28)',
+            backgroundSize: '18px 18px, 18px 18px, auto, auto',
+            border: '1px solid rgba(235,238,242,0.28)',
           }}
         />
 
-        {/* Cyan corner brackets */}
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, left: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ top: 6, right: 6, width: 14, height: 14, borderTop: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, left: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderLeft: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        <span className="absolute z-10 pointer-events-none transition-all duration-500" style={{ bottom: 6, right: 6, width: 14, height: 14, borderBottom: '1.5px solid rgba(79,174,243,0.85)', borderRight: '1.5px solid rgba(79,174,243,0.85)', filter: 'drop-shadow(0 0 4px rgba(79,174,243,0.5))' }} />
-        
-        {/* Cyan top/bottom highlight lines */}
+        {/* Corner brackets */}
+        {[
+          { top: 6, left: 6, borderTop: true, borderLeft: true },
+          { top: 6, right: 6, borderTop: true, borderRight: true },
+          { bottom: 6, left: 6, borderBottom: true, borderLeft: true },
+          { bottom: 6, right: 6, borderBottom: true, borderRight: true },
+        ].map((c, ci) => (
+          <span
+            key={ci}
+            className="absolute z-10 pointer-events-none"
+            style={{
+              ...(c.top    !== undefined ? { top:    c.top }    : {}),
+              ...(c.bottom !== undefined ? { bottom: c.bottom } : {}),
+              ...(c.left   !== undefined ? { left:   c.left }   : {}),
+              ...(c.right  !== undefined ? { right:  c.right }  : {}),
+              width: 14, height: 14,
+              borderTop:    c.borderTop    ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderBottom: c.borderBottom ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderLeft:   c.borderLeft   ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderRight:  c.borderRight  ? `1.5px solid ${hovered ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              filter: hovered ? 'drop-shadow(0 0 6px rgba(79,174,243,0.9))' : 'drop-shadow(0 0 4px rgba(79,174,243,0.5))',
+              transition: 'all 0.3s ease',
+            }}
+          />
+        ))}
+
+        {/* Cyan accent lines */}
         <div className="absolute inset-0 pointer-events-none z-10">
           <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
           <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
         </div>
 
-        <div className="relative z-30 flex flex-col items-center flex-grow">
-          <div className="w-full aspect-[4/5] mb-4 overflow-hidden rounded-[2px] border border-white/10 transition-all duration-500 group-hover:border-[#4FAEF3]/50 group-hover:shadow-[0_0_15px_rgba(79,174,243,0.2)] bg-[#111]">
-            <img src={person.imgUrl} alt={person.name} className="w-full h-full object-cover transition-all duration-700 grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105" />
+        {/* Image area */}
+        <div
+          className="relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
+          style={{
+            aspectRatio: '4/5',
+            border: hovered ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
+            boxShadow: hovered ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
+            transition: 'all 0.4s ease',
+          }}
+        >
+          {/* PHOTO — default, fades out on hover */}
+          <div
+            style={{
+              position: 'absolute', inset: 0,
+              opacity: hovered ? 0 : 1,
+              transition: 'opacity 0.4s ease',
+            }}
+          >
+            <img
+              src={person.photoUrl}
+              alt={person.name}
+              style={{
+                width: '100%', height: '100%', objectFit: 'cover',
+                filter: 'grayscale(1)',
+                opacity: bootDone ? 0.85 : 0,
+                transition: 'opacity 0.6s ease',
+              }}
+            />
           </div>
-          <div className="mt-auto flex flex-col items-center w-full">
-            <h3 className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]" style={{ margin: '0 0 4px', fontSize: 'clamp(12px, 1.1vw, 15px)', lineHeight: 1.15 }}>
-              {person.name}
-            </h3>
-            <p className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500" style={{ margin: '0 0 8px', fontSize: 'clamp(8px, 0.65vw, 10px)', color: 'rgba(79,174,243,0.85)' }}>
-              {person.role}
-            </p>
-            <div style={{ height: '1px', margin: '0 6px', width: 'calc(100% - 12px)', background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)', boxShadow: '0 0 10px rgba(79,174,243,0.2)' }} />
+
+          {/* ROBOT — shown on hover: large, greyscale, fills card */}
+          <div
+            style={{
+              position: 'absolute', inset: 0,
+              opacity: hovered ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: '#0d0d0d',
+            }}
+          >
+            <img
+              src={person.robotUrl}
+              alt={`${person.name} robot`}
+              style={{
+                width: '100%', height: '100%', objectFit: 'cover',
+                filter: 'grayscale(1) brightness(0.9)',
+                transform: hovered ? 'scale(1.0)' : 'scale(1.08)',
+                transition: 'transform 0.5s ease',
+              }}
+            />
           </div>
+
+          {/* Scan line — plays on boot reveal OR on hover */}
+          <ScanLine active={scanning || hovered} />
+
+          {/* HUD label — visible on hover */}
+          <div
+            style={{
+              position: 'absolute', bottom: 6, left: 8,
+              fontSize: '8px', letterSpacing: '0.12em',
+              color: 'rgba(79,174,243,0.9)', fontFamily: 'monospace',
+              textTransform: 'uppercase',
+              opacity: hovered ? 1 : 0,
+              transition: 'opacity 0.3s ease',
+              zIndex: 30,
+            }}
+          >
+            IDENTIFYING...
+          </div>
+
+          {/* Boot glitch overlay — plays once on reveal */}
+          {!bootDone && revealed && (
+            <div
+              style={{
+                position: 'absolute', inset: 0, zIndex: 25,
+                background: 'rgba(79,174,243,0.04)',
+                animation: 'glitch 0.9s steps(1) forwards',
+                pointerEvents: 'none',
+              }}
+            />
+          )}
+        </div>
+
+        {/* Name & role */}
+        <div className="relative z-30 mt-auto flex flex-col items-center w-full">
+          <h3
+            className="text-center font-sans font-black uppercase"
+            style={{
+              margin: '0 0 4px',
+              fontSize: 'clamp(12px, 1.1vw, 15px)',
+              letterSpacing: '0.06em',
+              lineHeight: 1.15,
+              color: hovered ? '#4FAEF3' : '#ffffff',
+              textShadow: hovered ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
+              transition: 'all 0.4s ease',
+            }}
+          >
+            {person.name}
+          </h3>
+          <p
+            className="text-center font-mono uppercase"
+            style={{
+              margin: '0 0 8px',
+              fontSize: 'clamp(8px, 0.65vw, 10px)',
+              letterSpacing: '0.1em',
+              color: 'rgba(79,174,243,0.85)',
+              transition: 'all 0.4s ease',
+            }}
+          >
+            {person.role}
+          </p>
+          <div
+            style={{
+              height: '1px', margin: '0 6px',
+              width: 'calc(100% - 12px)',
+              background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)',
+              boxShadow: '0 0 10px rgba(79,174,243,0.2)',
+            }}
+          />
         </div>
       </div>
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------
+// GRID WITH SCROLL-TRIGGERED SEQUENTIAL REVEAL
+// ----------------------------------------------------------------------
+function RevealGrid({
+  people,
+  columns,
+}: {
+  people: PersonData[];
+  columns: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [revealedCount, setRevealedCount] = useState(0);
+  const [triggered, setTriggered] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !triggered) {
+          setTriggered(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.12 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [triggered]);
+
+  useEffect(() => {
+    if (!triggered) return;
+    if (revealedCount >= people.length) return;
+    // Stagger: reveal 1 card every 120ms
+    const t = setTimeout(() => setRevealedCount((n) => n + 1), 120);
+    return () => clearTimeout(t);
+  }, [triggered, revealedCount, people.length]);
+
+  return (
+    <div ref={ref} className={`w-full grid ${columns} gap-4 md:gap-6`}>
+      {people.map((person, i) => (
+        <ProfileCard
+          key={person.id}
+          person={person}
+          revealed={i < revealedCount}
+          index={i}
+        />
+      ))}
     </div>
   );
 }
@@ -115,7 +385,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
   return (
     <section id={id} className="relative w-full min-h-screen py-24 md:py-32 bg-[#0d0d0d] overflow-hidden">
       <EventsBackground />
-      
+
       {/* Top Left Label */}
       <div className="absolute top-6 left-6 md:top-10 md:left-10 z-20 pointer-events-none">
         <span style={{
@@ -128,7 +398,8 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
       </div>
 
       <div className="relative z-10 container mx-auto px-6 flex flex-col items-center">
-        {/* FACULTY SECTION */}
+
+        {/* ── FACULTY SECTION ── */}
         <div className="w-full max-w-6xl flex flex-col items-center mb-24 md:mb-32">
           <div className="flex flex-col items-center text-center mb-12">
             <span style={{ fontSize: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
@@ -140,14 +411,13 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
             <div style={{ marginTop: '16px', width: '120px', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)' }} />
           </div>
 
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {FACULTY.map((person) => (
-              <ProfileCard key={person.id} person={person} />
-            ))}
-          </div>
+          <RevealGrid
+            people={FACULTY}
+            columns="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+          />
         </div>
 
-        {/* BOARD SECTION */}
+        {/* ── BOARD SECTION ── */}
         <div className="w-full max-w-7xl flex flex-col items-center">
           <div className="flex flex-col items-center text-center mb-12">
             <span style={{ fontSize: '10px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
@@ -159,12 +429,12 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
             <div style={{ marginTop: '16px', width: '120px', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent)' }} />
           </div>
 
-          <div className="w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
-            {BOARD.map((person) => (
-              <ProfileCard key={person.id} person={person} />
-            ))}
-          </div>
+          <RevealGrid
+            people={BOARD}
+            columns="grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6"
+          />
         </div>
+
       </div>
     </section>
   );

@@ -391,8 +391,6 @@ export default function Domains() {
             start: 'top top',
             end: '+=5000',
             scrub: 1.5,
-            pin: true,
-            anticipatePin: 1,
             fastScrollEnd: true,
             onUpdate: (self) => {
               const p = self.progress;
@@ -534,64 +532,66 @@ export default function Domains() {
       <section
         id="domains"
         ref={sectionRef}
-        className="relative w-full h-screen overflow-hidden hidden md:flex items-center justify-center bg-transparent"
+        className="relative hidden h-[calc(100vh+5000px)] w-full bg-transparent md:block"
       >
-        <EventsBackground />
-        <HUDTextBridge />
+        <div className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+          <EventsBackground />
+          <HUDTextBridge />
 
-        {/* Top Left Label */}
-        <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
-          <span style={{
-            fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
-            color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
-          }}>
-            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
-            SYSTEM.LOGS // DOMAINS
-          </span>
-        </div>
+          {/* Top Left Label */}
+          <div ref={sectionLabelRef} className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
+            <span style={{
+              fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
+              color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
+            }}>
+              <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+              SYSTEM.LOGS // DOMAINS
+            </span>
+          </div>
 
-        {/* Grouped Title Container for Animation */}
-        <div
-          ref={titleGroupRef}
-          className="absolute z-20 flex flex-col items-center pointer-events-none w-full"
-          style={{ top: '18%', left: 0, whiteSpace: 'nowrap' }}
-        >
-          <span style={{
-            fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
-            fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
-          }}>
-            ▶ SECTOR_MAP // DOMAINS
-          </span>
-          <h2 style={{
-            margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
-            color: '#ffffff', letterSpacing: '-0.01em',
-            fontFamily: '"Inter", "Arial Black", sans-serif',
-            textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
-          }}>
-            DOMAINS AT{' '}
-            <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
-          </h2>
-          <div style={{
-            marginTop: '14px', width: '30%', height: '1px',
-            background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
-          }} />
-        </div>
+          {/* Grouped Title Container for Animation */}
+          <div
+            ref={titleGroupRef}
+            className="absolute z-20 flex flex-col items-center pointer-events-none w-full"
+            style={{ top: '18%', left: 0, whiteSpace: 'nowrap' }}
+          >
+            <span style={{
+              fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
+              fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
+            }}>
+              ▶ SECTOR_MAP // DOMAINS
+            </span>
+            <h2 style={{
+              margin: 0, fontSize: 'clamp(32px,4.5vw,72px)', fontWeight: '900',
+              color: '#ffffff', letterSpacing: '-0.01em',
+              fontFamily: '"Inter", "Arial Black", sans-serif',
+              textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
+            }}>
+              DOMAINS AT{' '}
+              <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+            </h2>
+            <div style={{
+              marginTop: '14px', width: '30%', height: '1px',
+              background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
+            }} />
+          </div>
 
-        {/* Cards */}
-        <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
-          {DOMAINS.map((domain, index) => (
-            <DomainCardDesktop key={`desktop-${domain.id}`} domain={domain} index={index} addToRefs={addToRefs} />
-          ))}
-        </div>
+          {/* Cards */}
+          <div className="relative z-10 w-full h-full flex items-center justify-center pointer-events-none">
+            {DOMAINS.map((domain, index) => (
+              <DomainCardDesktop key={`desktop-${domain.id}`} domain={domain} index={index} addToRefs={addToRefs} />
+            ))}
+          </div>
 
-        {/* Scroll Hint */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
-          <span style={{
-            fontSize: '8px', letterSpacing: '0.25em',
-            color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', textTransform: 'uppercase',
-          }}>
-            SCROLL TO DEPLOY ↓
-          </span>
+          {/* Scroll Hint */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 pointer-events-none z-20">
+            <span style={{
+              fontSize: '8px', letterSpacing: '0.25em',
+              color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', textTransform: 'uppercase',
+            }}>
+              SCROLL TO DEPLOY ↓
+            </span>
+          </div>
         </div>
       </section>
     </>

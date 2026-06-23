@@ -263,10 +263,8 @@ export default function Events() {
     stRef.current = ScrollTrigger.create({
       trigger: section,
       start: "top top",
-      end: `+=${window.innerHeight * 5}`,
+      end: () => `+=${window.innerHeight * 5}`,
       scrub: 1.2,
-      pin: pin,
-      anticipatePin: 1,
       animation: tl,
       onUpdate: (self) => {
         syncToggleInteractivity();
@@ -445,8 +443,8 @@ export default function Events() {
   );
 
   return (
-    <section id="events" ref={sectionRef} className="bg-[#0d0d0d]">
-      <div ref={pinRef} className="relative flex h-screen w-full items-center justify-center overflow-hidden">
+    <section id="events" ref={sectionRef} className="h-[600vh] bg-[#0d0d0d]">
+      <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
         <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
         {([[8, 9], [66, 14], [15, 58], [80, 47], [44, 78]] as [number, number][]).map(([lp, tp], i) => (
           <div key={i} className="pointer-events-none absolute rounded-full bg-white/25" style={{ left: `${lp}%`, top: `${tp}%`, width: 5, height: 5, boxShadow: '0 0 6px rgba(255,255,255,0.15)' }} />

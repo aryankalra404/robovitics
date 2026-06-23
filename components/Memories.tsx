@@ -164,8 +164,6 @@ export default function MemoryWarpTunnel() {
     renderer.autoClearColor = false;
 
     const scene  = new THREE.Scene();
-    
-    // Pure black fog for the void effect
     scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
@@ -173,21 +171,18 @@ export default function MemoryWarpTunnel() {
 
     const fadeScene = new THREE.Scene();
     const fadeCam   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    
-    // Pure black persistence trail
     const fadeMat   = new THREE.MeshBasicMaterial({
       color: 0x000000, transparent: true, opacity: 0.35,
       depthTest: false, depthWrite: false,
     });
     fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fadeMat));
 
-    // ── GALAXY STARFIELD (Multi-Layered) ──────────────────────
+    // ── Starfield ─────────────────────────────────────────────
     function createStarLayer(count: number, size: number, opacity: number, spread: number) {
       const geo = new THREE.BufferGeometry();
       const pos = new Float32Array(count * 3);
       for (let i = 0; i < count; i++) {
-        // Exponent spreads stars sparsely at edges, densely at core
-        const r = Math.pow(Math.random(), 2) * spread; 
+        const r = Math.pow(Math.random(), 2) * spread;
         const theta = Math.random() * Math.PI * 2;
         pos[i * 3]     = Math.cos(theta) * r;
         pos[i * 3 + 1] = Math.sin(theta) * r;
@@ -195,23 +190,18 @@ export default function MemoryWarpTunnel() {
       }
       geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
       const mat = new THREE.PointsMaterial({
-        color: 0xffffff,
-        size: size,
-        transparent: true,
-        opacity: opacity,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
+        color: 0xffffff, size, transparent: true, opacity,
+        blending: THREE.AdditiveBlending, depthWrite: false,
       });
       const points = new THREE.Points(geo, mat);
       points.renderOrder = -2;
       return points;
     }
 
-    // Three distinct layers for depth
     const starLayers = [
-      createStarLayer(8000, 0.015, 0.3, 120), // Ambient stardust
-      createStarLayer(3000, 0.03, 0.6, 70),   // Mid-ground stars
-      createStarLayer(1000, 0.05, 0.9, 30)    // Galactic core hero stars
+      createStarLayer(8000, 0.015, 0.3, 120),
+      createStarLayer(3000, 0.03,  0.6, 70),
+      createStarLayer(1000, 0.05,  0.9, 30),
     ];
     starLayers.forEach(layer => scene.add(layer));
 
@@ -229,15 +219,8 @@ export default function MemoryWarpTunnel() {
     const GEO_TYPES  = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
     const SLOT_COUNT = Math.ceil(DEBRIS_COUNT / GEO_TYPES.length);
 
-    // Pure white, high-opacity wireframe for mechanical parts
-    const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff, wireframe: true, transparent: true, opacity: 0.9,
-    });
-    
-    // Pure black solid core to maintain geometry readability
-    const coreMat = new THREE.MeshBasicMaterial({
-      color: 0x000000, transparent: false, depthWrite: true,
-    });
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.9 });
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: false, depthWrite: true });
 
     const instancedMeshes: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
       const mesh = new THREE.InstancedMesh(geo, wireMat, SLOT_COUNT);
@@ -245,7 +228,6 @@ export default function MemoryWarpTunnel() {
       scene.add(mesh);
       return mesh;
     });
-    
     const instancedCores: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
       const mesh = new THREE.InstancedMesh(geo, coreMat, SLOT_COUNT);
       mesh.frustumCulled = false;
@@ -293,12 +275,9 @@ export default function MemoryWarpTunnel() {
     _dummy.scale.setScalar(0.001);
     _dummy.updateMatrix();
     for (const mesh of instancedMeshes)
-      for (let s = 0; s < SLOT_COUNT; s++)
-        mesh.setMatrixAt(s, _dummy.matrix);
-        
+      for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, _dummy.matrix);
     for (const mesh of instancedCores)
-      for (let s = 0; s < SLOT_COUNT; s++)
-        mesh.setMatrixAt(s, _dummy.matrix);
+      for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, _dummy.matrix);
 
     for (let i = 0; i < DEBRIS_COUNT; i++) seedDebris(i);
     for (let i = 0; i < DEBRIS_COUNT; i++) debrisZ[i] = Math.random() * Math.abs(FAR_Z) * -1;
@@ -332,9 +311,10 @@ export default function MemoryWarpTunnel() {
     let rafId = 0, lastTime = performance.now();
     let zoomProgress = 0, displayT = 0, rosterProgress = 0;
 
+    // ── CHANGED: total scroll height 1500vh, divisor 14 ──────
     function getProgress() {
       const rect = wrapEl.getBoundingClientRect();
-      return clamp(-rect.top, 0, VH * 16) / (VH * 16);
+      return clamp(-rect.top, 0, VH * 14) / (VH * 14);
     }
 
     function loop(time: number) {
@@ -348,15 +328,18 @@ export default function MemoryWarpTunnel() {
       const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
       zoomProgress += (targetZoom - zoomProgress) * (dt * 0.006);
 
+      // ── CHANGED: cards start at 0.32 instead of 0.345 ─────
       let targetT = 0;
-      if (p > 0.345) {
-        const seqP = clamp((p - 0.345) / 0.42, 0, 1);
+      if (p > 0.32) {
+        const seqP = clamp((p - 0.32) / 0.42, 0, 1);
         targetT = seqP * (MEMORIES.length + 4.2);
       }
       displayT += (targetT - displayT) * (dt * 0.004);
 
-      const targetRosterProgress = clamp((p - 0.81) / 0.19, 0, 1);
+      // ── CHANGED: roster starts at 0.74 instead of 0.81 ────
+      const targetRosterProgress = clamp((p - 0.74) / 0.19, 0, 1);
       rosterProgress += (targetRosterProgress - rosterProgress) * (dt * 0.0024);
+
       const rosterT = easeBox(rosterProgress);
       const floatAmp = lerp(3.8, 0, rosterT);
       const rosterScale = lerp(0.075, 1.012, rosterT);
@@ -411,7 +394,7 @@ export default function MemoryWarpTunnel() {
       _dummy.scale.setScalar(0.001);
       _dummy.updateMatrix();
       const hiddenMat = _dummy.matrix.clone();
-      
+
       for (const mesh of instancedMeshes)
         for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
       for (const mesh of instancedCores)
@@ -428,11 +411,9 @@ export default function MemoryWarpTunnel() {
         _axis.set(debrisAxisX[i], debrisAxisY[i], debrisAxisZ[i]);
         _quat.setFromAxisAngle(_axis, debrisAngle[i]);
         _dummy.quaternion.copy(_quat);
-        
         _dummy.scale.setScalar(0.98);
         _dummy.updateMatrix();
         instancedCores[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
-
         _dummy.scale.setScalar(1);
         _dummy.updateMatrix();
         instancedMeshes[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
@@ -445,8 +426,7 @@ export default function MemoryWarpTunnel() {
         const diff  = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
         const x     = -diff * 5.2;
-        // Vertically stagger cards cleanly based purely on their index, removing scroll-bounce
-        const y     = Math.sin(i * 1.7) * 0.6; 
+        const y     = Math.sin(i * 1.7) * 0.6;
         const worldZ = 2 - depth * 1.25;
         const rotY  = clamp(diff * -18, -38, 38);
         const rotX  = clamp(-y * 8, -7, 7);
@@ -472,7 +452,6 @@ export default function MemoryWarpTunnel() {
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
-      // Camera is completely locked to 0,0 center ensuring stars NEVER jitter
       camera.position.x = 0;
       camera.position.y = 0;
       camera.lookAt(0, 0, FAR_Z);
@@ -506,7 +485,7 @@ export default function MemoryWarpTunnel() {
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
 
       <style jsx>{`
-        .mwt-wrap { position: relative; z-index: 30; height: 1700vh; background: #000; }
+        .mwt-wrap { position: relative; z-index: 30; height: 1500vh; background: #000; }
         .mwt-sticky {
           position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #121212;
           perspective: 1300px;
