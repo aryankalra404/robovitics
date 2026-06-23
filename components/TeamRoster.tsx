@@ -111,9 +111,9 @@ function ProfileCard({ person }: { person: { id: string; name: string; role: str
 // ----------------------------------------------------------------------
 // MAIN EXPORT
 // ----------------------------------------------------------------------
-export default function TeamRoster() {
+export default function TeamRoster({ id = 'command-structure' }: { id?: string }) {
   return (
-    <section id="command-structure" className="relative w-full min-h-screen py-24 md:py-32 bg-[#0d0d0d] overflow-hidden">
+    <section id={id} className="relative w-full min-h-screen py-24 md:py-32 bg-[#0d0d0d] overflow-hidden">
       <EventsBackground />
       
       {/* Top Left Label */}

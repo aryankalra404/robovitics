@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import TeamRoster from './TeamRoster';
 
 interface Memory {
   year: string;
@@ -21,7 +22,7 @@ const MEMORIES: Memory[] = [
   { year: '2024', title: 'New Heights', desc: 'Record turnout at flagship events, and a new arena for combat robotics.', img: 'https://images.unsplash.com/photo-1563207153-f403bf289096?q=80&w=600&auto=format&fit=crop' },
 ];
 
-const DEBRIS_COUNT = 16;
+const DEBRIS_COUNT = 8;
 const FAR_Z = -35;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
@@ -135,6 +136,7 @@ export default function MemoryWarpTunnel() {
   const cardLayerRef = useRef<HTMLDivElement>(null);
   const rtextRef     = useRef<HTMLDivElement>(null);
   const hintRef      = useRef<HTMLDivElement>(null);
+  const rosterRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const wrap      = wrapRef.current;
@@ -144,12 +146,14 @@ export default function MemoryWarpTunnel() {
     const cardLayer = cardLayerRef.current;
     const rtext     = rtextRef.current;
     const hint      = hintRef.current;
-    if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint) return;
+    const roster    = rosterRef.current;
+    if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint || !roster) return;
     const wrapEl   = wrap;
     const sceneEl  = sceneWrap;
     const boxEl    = box;
     const rtextEl  = rtext;
     const hintEl   = hint;
+    const rosterEl = roster;
 
     let VW = window.innerWidth;
     let VH = window.innerHeight;
@@ -274,14 +278,14 @@ export default function MemoryWarpTunnel() {
       debrisX[i]     = Math.cos(angle) * r;
       debrisY[i]     = Math.sin(angle) * r * 0.55;
       debrisZ[i]     = FAR_Z + (Math.random() * 5);
-      debrisSpeed[i] = 0.3 + Math.random() * 0.5;
+      debrisSpeed[i] = 0.12 + Math.random() * 0.2;
       debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
       debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
       slotCounter[debrisType[i]]++;
       const ax = Math.random() * 2 - 1, ay = Math.random() * 2 - 1, az = Math.random() * 2 - 1;
       const len = Math.sqrt(ax * ax + ay * ay + az * az) || 1;
       debrisAxisX[i] = ax / len; debrisAxisY[i] = ay / len; debrisAxisZ[i] = az / len;
-      debrisAngV[i]  = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
+      debrisAngV[i]  = (0.008 + Math.random() * 0.035) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
       debrisAngle[i] = Math.random() * Math.PI * 2;
     }
 
@@ -326,11 +330,11 @@ export default function MemoryWarpTunnel() {
     }
 
     let rafId = 0, lastTime = performance.now();
-    let zoomProgress = 0, displayT = 0;
+    let zoomProgress = 0, displayT = 0, rosterProgress = 0;
 
     function getProgress() {
       const rect = wrapEl.getBoundingClientRect();
-      return clamp(-rect.top, 0, VH * 6.5) / (VH * 6.5);
+      return clamp(-rect.top, 0, VH * 16) / (VH * 16);
     }
 
     function loop(time: number) {
@@ -346,10 +350,25 @@ export default function MemoryWarpTunnel() {
 
       let targetT = 0;
       if (p > 0.345) {
-        const seqP = clamp((p - 0.345) / 0.60, 0, 1);
-        targetT = seqP * (MEMORIES.length + 2.85);
+        const seqP = clamp((p - 0.345) / 0.42, 0, 1);
+        targetT = seqP * (MEMORIES.length + 4.2);
       }
       displayT += (targetT - displayT) * (dt * 0.004);
+
+      const targetRosterProgress = clamp((p - 0.81) / 0.19, 0, 1);
+      rosterProgress += (targetRosterProgress - rosterProgress) * (dt * 0.0024);
+      const rosterT = easeBox(rosterProgress);
+      const floatAmp = lerp(3.8, 0, rosterT);
+      const rosterScale = lerp(0.075, 1.012, rosterT);
+      const rosterZ = lerp(-1900, 0, rosterT);
+      const rosterX = Math.sin(time * 0.00055) * floatAmp + lerp(-6, 0, rosterT);
+      const rosterY = lerp(14, 0, rosterT) + Math.sin(time * 0.00072 + 1.4) * floatAmp;
+      const rosterRotX = lerp(9, 0, rosterT) + Math.sin(time * 0.0005) * lerp(2.4, 0, rosterT);
+      const rosterRotY = lerp(-13, 0, rosterT) + Math.sin(time * 0.00043 + 0.8) * lerp(3.2, 0, rosterT);
+      const rosterRotZ = Math.sin(time * 0.00048 + 2.1) * lerp(2.2, 0, rosterT);
+      const rosterBrightness = lerp(0.34, 1, rosterT);
+      const rosterGlow = lerp(0.22, 0, rosterT);
+      const rosterOpacity = clamp((rosterProgress - 0.01) / 0.18, 0, 1);
 
       const ep1 = easeBox(zoomProgress);
       const r   = getBoxRect();
@@ -373,8 +392,11 @@ export default function MemoryWarpTunnel() {
       boxEl.style.transform    = 'translateZ(0)';
       boxEl.style.boxShadow    = `0 0 50px rgba(79,174,243,${lerp(0.2, 0, ep1)})`;
       boxEl.style.borderColor  = `rgba(79,174,243,${lerp(0.2, 0, ep1)})`;
-      rtextEl.style.opacity    = '1';
+      rtextEl.style.opacity    = `${Math.max(0, 1 - rosterT * 1.4)}`;
       hintEl.style.opacity     = `${Math.max(0, 1 - p * 7)}`;
+      rosterEl.style.opacity   = `${rosterOpacity}`;
+      rosterEl.style.transform = `translate3d(${rosterX}vw, ${rosterY}vh, ${rosterZ}px) rotateX(${rosterRotX}deg) rotateY(${rosterRotY}deg) rotateZ(${rosterRotZ}deg) scale(${rosterScale})`;
+      rosterEl.style.filter    = `brightness(${rosterBrightness}) drop-shadow(0 0 42px rgba(79,174,243,${rosterGlow}))`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
       if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, 2))) {
@@ -383,7 +405,7 @@ export default function MemoryWarpTunnel() {
         camera.updateProjectionMatrix();
       }
 
-      const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
+      const tunnelSpeed = clamp(dt * 0.004 + Math.abs(targetT - displayT) * 0.16, 0.045, 1.25);
 
       _dummy.position.set(0, 0, -9999);
       _dummy.scale.setScalar(0.001);
@@ -484,8 +506,12 @@ export default function MemoryWarpTunnel() {
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
 
       <style jsx>{`
-        .mwt-wrap { position: relative; height: 950vh; background: #000; }
-        .mwt-sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #000; }
+        .mwt-wrap { position: relative; z-index: 30; height: 1700vh; background: #000; }
+        .mwt-sticky {
+          position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #000;
+          perspective: 1300px;
+          perspective-origin: center center;
+        }
         .mwt-scene {
           position: absolute; inset: 0;
           transform-origin: 0 0;
@@ -545,6 +571,18 @@ export default function MemoryWarpTunnel() {
           background: rgba(255,255,255,0.3);
           box-shadow: 0 0 8px rgba(255,255,255,0.2);
         }
+        .mwt-roster-portal {
+          position: absolute;
+          inset: 0;
+          z-index: 18;
+          opacity: 0;
+          transform-origin: center center;
+          will-change: transform, opacity, filter;
+          pointer-events: none;
+          overflow: hidden;
+          transform-style: preserve-3d;
+          backface-visibility: hidden;
+        }
       `}</style>
 
       <div className="mwt-wrap" ref={wrapRef}>
@@ -574,6 +612,10 @@ export default function MemoryWarpTunnel() {
               <h2>YEARS OF<br /><span>DATA.</span></h2>
               <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
             </div>
+          </div>
+
+          <div className="mwt-roster-portal" ref={rosterRef} aria-hidden="true">
+            <TeamRoster id="command-structure-preview" />
           </div>
 
           <div className="mwt-hint" ref={hintRef}>SCROLL TO DEPLOY ↓</div>
