@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import CommandGateway from './CommandGateway'; // <-- Imported here
+import CommandGateway from './CommandGateway';
 
 interface Memory {
   year: string;
@@ -348,17 +348,18 @@ export default function MemoryWarpTunnel() {
       const portalW = Math.min(VW * 0.78, 1080);
       const portalH = Math.min(VH * 0.58, 620);
       const portalScale = Math.min(portalW / r.w, portalH / r.h);
-      const portalFloatX = Math.sin(time * 0.00042) * 11 * portalT;
-      const portalFloatY = Math.sin(time * 0.00058 + 1.1) * 8 * portalT;
-      const portalX = VW / 2 + portalFloatX - boxCenterX * portalScale;
-      const portalY = VH * 0.42 + portalFloatY - boxCenterY * portalScale;
+      
+      const portalX = VW / 2 - boxCenterX * portalScale;
+      const portalY = VH * 0.5 - boxCenterY * portalScale;
+      
       const sceneScale = lerp(lerp(1, fillScale, ep1), portalScale, portalT);
       const sceneX = lerp(lerp(0, fillX, ep1), portalX, portalT);
       const sceneY = lerp(lerp(0, fillY, ep1), portalY, portalT);
       const tilt   = Math.sin(ep1 * Math.PI);
-      const tiltX  = lerp(lerp(0, 2.5, tilt), -4, portalT);
+      
+      const tiltX  = lerp(lerp(0, 2.5, tilt), 0, portalT);
       const tiltY  = lerp(lerp(0, -7, tilt), 0, portalT);
-      const tiltZ  = lerp(lerp(0, -2.5, tilt), Math.sin(time * 0.00034) * 1.4, portalT);
+      const tiltZ  = lerp(lerp(0, -2.5, tilt), 0, portalT);
 
       sceneEl.style.transform = `perspective(1400px) translate3d(${sceneX}px,${sceneY}px,0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) rotateZ(${tiltZ}deg) scale(${sceneScale})`;
       boxEl.style.width        = `${r.w}px`;
@@ -369,6 +370,7 @@ export default function MemoryWarpTunnel() {
       boxEl.style.transform    = 'translateZ(0)';
       boxEl.style.boxShadow    = `0 0 ${lerp(50, 95, portalT)}px rgba(79,174,243,${lerp(0.2, 0.42, portalT)})`;
       boxEl.style.borderColor  = `rgba(79,174,243,${lerp(0.2, 0.78, portalT)})`;
+      
       rtextEl.style.opacity    = `${Math.max(0, 1 - portalT * 1.8)}`;
       hintEl.style.opacity     = `${Math.max(0, 1 - p * 7)}`;
       hintEl.style.visibility  = p > 0.2 ? 'hidden' : 'visible';
