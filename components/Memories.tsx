@@ -21,8 +21,9 @@ const MEMORIES: Memory[] = [
   { year: '2024', title: 'New Heights', desc: 'Record turnout at flagship events, and a new arena for combat robotics.', img: 'https://images.unsplash.com/photo-1563207153-f403bf289096?q=80&w=600&auto=format&fit=crop' },
 ];
 
-const DEBRIS_COUNT = 12;
-const FAR_Z = -20;
+const DEBRIS_COUNT = 16;
+// Pushed spawn point way back to prevent popping
+const FAR_Z = -35;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -154,22 +155,58 @@ export default function MemoryWarpTunnel() {
     let VW = window.innerWidth;
     let VH = window.innerHeight;
 
+    // ── Mouse Tracking (Parallax) ─────────────────────────────
+    const mouse = { x: 0, y: 0 };
+    const targetMouse = { x: 0, y: 0 };
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      targetMouse.x = (e.clientX / VW) * 2 - 1;
+      targetMouse.y = -(e.clientY / VH) * 2 + 1;
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+
     // ── Renderer ──────────────────────────────────────────────
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.autoClearColor = false;
 
     const scene  = new THREE.Scene();
+    
+    // Deep space fog to prevent elements from abruptly "popping" in
+    scene.fog = new THREE.FogExp2(0x05080f, 0.05);
+
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
     camera.position.set(0, 0, 8);
 
     const fadeScene = new THREE.Scene();
     const fadeCam   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const fadeMat   = new THREE.MeshBasicMaterial({
-      color: 0x05080c, transparent: true, opacity: 0.20,
+      color: 0x05080f, transparent: true, opacity: 0.35,
       depthTest: false, depthWrite: false,
     });
     fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fadeMat));
+
+    // ── Starfield Background ──────────────────────────────────
+    const starsGeometry = new THREE.BufferGeometry();
+    const starsMaterial = new THREE.PointsMaterial({
+      color: 0x4FAEF3,
+      size: 0.03,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending
+    });
+
+    const starsCount = 4000;
+    const starsPositions = new Float32Array(starsCount * 3);
+    for (let i = 0; i < starsCount; i++) {
+      starsPositions[i * 3] = (Math.random() - 0.5) * 80;
+      starsPositions[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      starsPositions[i * 3 + 2] = -Math.random() * Math.abs(FAR_Z * 4);
+    }
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(starsPositions, 3));
+    const starfield = new THREE.Points(starsGeometry, starsMaterial);
+    starfield.renderOrder = -1;
+    scene.add(starfield);
 
     // ── Geometries ────────────────────────────────────────────
     const boltGeo   = new THREE.CylinderGeometry(1.1, 1.1, 0.45, 6);
@@ -185,13 +222,28 @@ export default function MemoryWarpTunnel() {
     const GEO_TYPES  = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
     const SLOT_COUNT = Math.ceil(DEBRIS_COUNT / GEO_TYPES.length);
 
+    // Glowing wireframe - INCREASED OPACITY
     const wireMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff, wireframe: true, transparent: true, opacity: 0.25,
+      color: 0x4FAEF3, wireframe: true, transparent: true, opacity: 0.95,
+    });
+    
+    // Solid dark core to prevent overlapping wireframes from looking messy
+    const coreMat = new THREE.MeshBasicMaterial({
+      color: 0x05080f, transparent: false, depthWrite: true,
     });
 
     const instancedMeshes: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
       const mesh = new THREE.InstancedMesh(geo, wireMat, SLOT_COUNT);
       mesh.frustumCulled = false;
+      scene.add(mesh);
+      return mesh;
+    });
+    
+    const instancedCores: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
+      const mesh = new THREE.InstancedMesh(geo, coreMat, SLOT_COUNT);
+      mesh.frustumCulled = false;
+      // Offset so the wireframe renders perfectly on top of the solid core
+      mesh.renderOrder = -1;
       scene.add(mesh);
       return mesh;
     });
@@ -219,8 +271,8 @@ export default function MemoryWarpTunnel() {
       const r        = 3.5 + Math.random() * 5;
       debrisX[i]     = Math.cos(angle) * r;
       debrisY[i]     = Math.sin(angle) * r * 0.55;
-      debrisZ[i]     = -Math.random() * Math.abs(FAR_Z);
-      debrisSpeed[i] = 0.2 + Math.random() * 0.4;
+      debrisZ[i]     = FAR_Z + (Math.random() * 5); // Spawn deep in the fog
+      debrisSpeed[i] = 0.3 + Math.random() * 0.5;
       debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
       debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
       slotCounter[debrisType[i]]++;
@@ -237,8 +289,14 @@ export default function MemoryWarpTunnel() {
     for (const mesh of instancedMeshes)
       for (let s = 0; s < SLOT_COUNT; s++)
         mesh.setMatrixAt(s, _dummy.matrix);
+        
+    for (const mesh of instancedCores)
+      for (let s = 0; s < SLOT_COUNT; s++)
+        mesh.setMatrixAt(s, _dummy.matrix);
 
     for (let i = 0; i < DEBRIS_COUNT; i++) seedDebris(i);
+    // Randomize initial Z positions so they aren't clumped together at start
+    for (let i = 0; i < DEBRIS_COUNT; i++) debrisZ[i] = Math.random() * Math.abs(FAR_Z) * -1;
 
     const nodes: MemoryNode[] = MEMORIES.map((m) => {
       const el = document.createElement('div');
@@ -282,11 +340,14 @@ export default function MemoryWarpTunnel() {
 
       const p = getProgress();
 
+      // Smoothly update mouse values for parallax
+      mouse.x += (targetMouse.x - mouse.x) * (dt * 0.005);
+      mouse.y += (targetMouse.y - mouse.y) * (dt * 0.005);
+
       // --- TIMELINE ---
       const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
       zoomProgress += (targetZoom - zoomProgress) * (dt * 0.006);
 
-      // Cards start immediately when zoom finishes, no trailing empty scroll
       let targetT = 0;
       if (p > 0.345) {
         const seqP = clamp((p - 0.345) / 0.60, 0, 1);
@@ -333,15 +394,18 @@ export default function MemoryWarpTunnel() {
       _dummy.scale.setScalar(0.001);
       _dummy.updateMatrix();
       const hiddenMat = _dummy.matrix.clone();
+      
       for (const mesh of instancedMeshes)
-        for (let s = 0; s < SLOT_COUNT; s++)
-          mesh.setMatrixAt(s, hiddenMat);
+        for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
+      for (const mesh of instancedCores)
+        for (let s = 0; s < SLOT_COUNT; s++) mesh.setMatrixAt(s, hiddenMat);
+
+      starfield.rotation.z = displayT * -0.05;
 
       for (let i = 0; i < DEBRIS_COUNT; i++) {
         debrisZ[i] += tunnelSpeed * debrisSpeed[i];
         if (debrisZ[i] > camera.position.z - 0.5 || debrisZ[i] < FAR_Z) {
           seedDebris(i);
-          debrisZ[i] = FAR_Z;
           continue;
         }
         debrisAngle[i] += debrisAngV[i] * (dt / 1000);
@@ -349,13 +413,20 @@ export default function MemoryWarpTunnel() {
         _axis.set(debrisAxisX[i], debrisAxisY[i], debrisAxisZ[i]);
         _quat.setFromAxisAngle(_axis, debrisAngle[i]);
         _dummy.quaternion.copy(_quat);
+        
+        // Update Core Mesh (scaled slightly down so wireframe stays crisp)
+        _dummy.scale.setScalar(0.98);
+        _dummy.updateMatrix();
+        instancedCores[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
+
+        // Update Wireframe Mesh
         _dummy.scale.setScalar(1);
         _dummy.updateMatrix();
         instancedMeshes[debrisType[i]].setMatrixAt(debrisSlot[i], _dummy.matrix);
       }
 
-      for (const mesh of instancedMeshes)
-        mesh.instanceMatrix.needsUpdate = true;
+      for (const mesh of instancedMeshes) mesh.instanceMatrix.needsUpdate = true;
+      for (const mesh of instancedCores) mesh.instanceMatrix.needsUpdate = true;
 
       // --- HORIZONTAL CAROUSEL MATH ---
       nodes.forEach((n, i) => {
@@ -379,8 +450,9 @@ export default function MemoryWarpTunnel() {
         v.project(camera);
         if (v.z < -1 || v.z > 1) { n.el.style.opacity = '0'; return; }
 
-        const sx    = (v.x * 0.5 + 0.5) * CW;
-        const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
+        // REDUCED mouse parallax on HTML cards
+        const sx    = (v.x * 0.5 + 0.5) * CW - (mouse.x * CW * 0.008);
+        const sy    = (1 - (v.y * 0.5 + 0.5)) * CH + (mouse.y * CH * 0.008);
         const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity);
 
         n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
@@ -388,9 +460,12 @@ export default function MemoryWarpTunnel() {
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
-      camera.position.x = Math.sin(displayT * 2.0) * 0.3;
-      camera.position.y = Math.cos(displayT * 2.5) * 0.15;
-      camera.lookAt(0, 0, FAR_Z);
+      // REDUCED camera position update with Mouse Parallax
+      camera.position.x = Math.sin(displayT * 2.0) * 0.3 + (mouse.x * 0.4);
+      camera.position.y = Math.cos(displayT * 2.5) * 0.15 + (mouse.y * 0.4);
+      
+      // Look slightly ahead of center to exaggerate parallax depth (REDUCED)
+      camera.lookAt(mouse.x * 0.15, mouse.y * 0.15, FAR_Z);
 
       renderer.render(fadeScene, fadeCam);
       renderer.render(scene, camera);
@@ -402,18 +477,21 @@ export default function MemoryWarpTunnel() {
 
     return () => {
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(rafId);
       nodes.forEach((n) => n.el.remove());
       GEO_TYPES.forEach((g) => g.dispose());
       wireMat.dispose();
+      coreMat.dispose();
       fadeMat.dispose();
+      starsGeometry.dispose();
+      starsMaterial.dispose();
       renderer.dispose();
     };
   }, []);
 
   return (
     <>
-      {/* Global card styles injected as a plain <style> tag to avoid JSX parser issues */}
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
 
       <style jsx>{`
