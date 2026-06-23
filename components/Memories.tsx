@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import TeamRoster from './TeamRoster';
+import CommandGateway from './CommandGateway'; // <-- Imported here
 
 interface Memory {
   year: string;
@@ -136,7 +136,7 @@ export default function MemoryWarpTunnel() {
   const cardLayerRef = useRef<HTMLDivElement>(null);
   const rtextRef     = useRef<HTMLDivElement>(null);
   const hintRef      = useRef<HTMLDivElement>(null);
-  const rosterRef    = useRef<HTMLDivElement>(null);
+  const portalRef    = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const wrap      = wrapRef.current;
@@ -146,14 +146,14 @@ export default function MemoryWarpTunnel() {
     const cardLayer = cardLayerRef.current;
     const rtext     = rtextRef.current;
     const hint      = hintRef.current;
-    const roster    = rosterRef.current;
-    if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint || !roster) return;
+    const portal    = portalRef.current;
+    if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint || !portal) return;
     const wrapEl   = wrap;
     const sceneEl  = sceneWrap;
     const boxEl    = box;
     const rtextEl  = rtext;
     const hintEl   = hint;
-    const rosterEl = roster;
+    const portalEl = portal;
 
     let VW = window.innerWidth;
     let VH = window.innerHeight;
@@ -309,9 +309,8 @@ export default function MemoryWarpTunnel() {
     }
 
     let rafId = 0, lastTime = performance.now();
-    let zoomProgress = 0, displayT = 0, rosterProgress = 0;
+    let zoomProgress = 0, displayT = 0, portalProgress = 0;
 
-    // ── CHANGED: total scroll height 1500vh, divisor 14 ──────
     function getProgress() {
       const rect = wrapEl.getBoundingClientRect();
       return clamp(-rect.top, 0, VH * 14) / (VH * 14);
@@ -328,58 +327,53 @@ export default function MemoryWarpTunnel() {
       const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
       zoomProgress += (targetZoom - zoomProgress) * (dt * 0.006);
 
-      // ── CHANGED: cards start at 0.32 instead of 0.345 ─────
       let targetT = 0;
       if (p > 0.32) {
-        const seqP = clamp((p - 0.32) / 0.42, 0, 1);
-        targetT = seqP * (MEMORIES.length + 4.2);
+        const seqP = clamp((p - 0.32) / 0.38, 0, 1);
+        targetT = seqP * (MEMORIES.length + 5.8);
       }
       displayT += (targetT - displayT) * (dt * 0.004);
 
-      // ── CHANGED: roster starts at 0.74 instead of 0.81 ────
-      const targetRosterProgress = clamp((p - 0.74) / 0.19, 0, 1);
-      rosterProgress += (targetRosterProgress - rosterProgress) * (dt * 0.0024);
-
-      const rosterT = easeBox(rosterProgress);
-      const floatAmp = lerp(3.8, 0, rosterT);
-      const rosterScale = lerp(0.075, 1.012, rosterT);
-      const rosterZ = lerp(-1900, 0, rosterT);
-      const rosterX = Math.sin(time * 0.00055) * floatAmp + lerp(-6, 0, rosterT);
-      const rosterY = lerp(14, 0, rosterT) + Math.sin(time * 0.00072 + 1.4) * floatAmp;
-      const rosterRotX = lerp(9, 0, rosterT) + Math.sin(time * 0.0005) * lerp(2.4, 0, rosterT);
-      const rosterRotY = lerp(-13, 0, rosterT) + Math.sin(time * 0.00043 + 0.8) * lerp(3.2, 0, rosterT);
-      const rosterRotZ = Math.sin(time * 0.00048 + 2.1) * lerp(2.2, 0, rosterT);
-      const rosterBrightness = lerp(0.34, 1, rosterT);
-      const rosterGlow = lerp(0.22, 0, rosterT);
-      const rosterOpacity = clamp((rosterProgress - 0.01) / 0.18, 0, 1);
+      const targetPortalProgress = clamp((p - 0.72) / 0.22, 0, 1);
+      portalProgress += (targetPortalProgress - portalProgress) * (dt * 0.003);
+      const portalT = easeBox(portalProgress);
 
       const ep1 = easeBox(zoomProgress);
       const r   = getBoxRect();
       const fillScale  = Math.max(VW / r.w, VH / r.h);
-      const sceneScale = lerp(1, fillScale, ep1);
       const boxCenterX = r.l + r.w / 2;
       const boxCenterY = r.t + r.h / 2;
-      const sceneX = lerp(0, VW / 2 - boxCenterX * fillScale, ep1);
-      const sceneY = lerp(0, VH / 2 - boxCenterY * fillScale, ep1);
+      const fillX = VW / 2 - boxCenterX * fillScale;
+      const fillY = VH / 2 - boxCenterY * fillScale;
+      const portalW = Math.min(VW * 0.78, 1080);
+      const portalH = Math.min(VH * 0.58, 620);
+      const portalScale = Math.min(portalW / r.w, portalH / r.h);
+      const portalFloatX = Math.sin(time * 0.00042) * 11 * portalT;
+      const portalFloatY = Math.sin(time * 0.00058 + 1.1) * 8 * portalT;
+      const portalX = VW / 2 + portalFloatX - boxCenterX * portalScale;
+      const portalY = VH * 0.42 + portalFloatY - boxCenterY * portalScale;
+      const sceneScale = lerp(lerp(1, fillScale, ep1), portalScale, portalT);
+      const sceneX = lerp(lerp(0, fillX, ep1), portalX, portalT);
+      const sceneY = lerp(lerp(0, fillY, ep1), portalY, portalT);
       const tilt   = Math.sin(ep1 * Math.PI);
-      const tiltX  = lerp(0, 2.5, tilt);
-      const tiltY  = lerp(0, -7, tilt);
-      const tiltZ  = lerp(0, -2.5, tilt);
+      const tiltX  = lerp(lerp(0, 2.5, tilt), -4, portalT);
+      const tiltY  = lerp(lerp(0, -7, tilt), 0, portalT);
+      const tiltZ  = lerp(lerp(0, -2.5, tilt), Math.sin(time * 0.00034) * 1.4, portalT);
 
       sceneEl.style.transform = `perspective(1400px) translate3d(${sceneX}px,${sceneY}px,0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) rotateZ(${tiltZ}deg) scale(${sceneScale})`;
       boxEl.style.width        = `${r.w}px`;
       boxEl.style.height       = `${r.h}px`;
       boxEl.style.left         = `${r.l}px`;
       boxEl.style.top          = `${r.t}px`;
-      boxEl.style.borderRadius = `${r.r}px`;
+      boxEl.style.borderRadius = `${lerp(r.r, 22, portalT)}px`;
       boxEl.style.transform    = 'translateZ(0)';
-      boxEl.style.boxShadow    = `0 0 50px rgba(79,174,243,${lerp(0.2, 0, ep1)})`;
-      boxEl.style.borderColor  = `rgba(79,174,243,${lerp(0.2, 0, ep1)})`;
-      rtextEl.style.opacity    = `${Math.max(0, 1 - rosterT * 1.4)}`;
+      boxEl.style.boxShadow    = `0 0 ${lerp(50, 95, portalT)}px rgba(79,174,243,${lerp(0.2, 0.42, portalT)})`;
+      boxEl.style.borderColor  = `rgba(79,174,243,${lerp(0.2, 0.78, portalT)})`;
+      rtextEl.style.opacity    = `${Math.max(0, 1 - portalT * 1.8)}`;
       hintEl.style.opacity     = `${Math.max(0, 1 - p * 7)}`;
-      rosterEl.style.opacity   = `${rosterOpacity}`;
-      rosterEl.style.transform = `translate3d(${rosterX}vw, ${rosterY}vh, ${rosterZ}px) rotateX(${rosterRotX}deg) rotateY(${rosterRotY}deg) rotateZ(${rosterRotZ}deg) scale(${rosterScale})`;
-      rosterEl.style.filter    = `brightness(${rosterBrightness}) drop-shadow(0 0 42px rgba(79,174,243,${rosterGlow}))`;
+      hintEl.style.visibility  = p > 0.2 ? 'hidden' : 'visible';
+      portalEl.style.opacity   = `${clamp((portalProgress - 0.12) / 0.42, 0, 1)}`;
+      portalEl.style.transform = `translate3d(-50%, -50%, 0) scale(${lerp(0.9, 1, portalT)})`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
       if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, 2))) {
@@ -445,10 +439,10 @@ export default function MemoryWarpTunnel() {
 
         const sx    = (v.x * 0.5 + 0.5) * CW;
         const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
-        const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity);
+        const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity) * lerp(1, 0.55, portalT);
 
         n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
-        n.el.style.opacity   = `${opacity}`;
+        n.el.style.opacity   = `${opacity * (1 - portalT)}`;
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
@@ -550,17 +544,10 @@ export default function MemoryWarpTunnel() {
           background: rgba(255,255,255,0.3);
           box-shadow: 0 0 8px rgba(255,255,255,0.2);
         }
-        .mwt-roster-portal {
-          position: absolute;
-          inset: 0;
-          z-index: 18;
-          opacity: 0;
-          transform-origin: center center;
-          will-change: transform, opacity, filter;
-          pointer-events: none;
-          overflow: hidden;
-          transform-style: preserve-3d;
-          backface-visibility: hidden;
+        @media (max-width: 700px) {
+          .mwt-label { left: 20px; top: 22px; font-size: 9px; }
+          .mwt-rtext { width: 100%; padding: 0 24px; justify-content: flex-end; padding-bottom: 92px; }
+          .mwt-rtext .sub { max-width: 300px; }
         }
       `}</style>
 
@@ -593,9 +580,7 @@ export default function MemoryWarpTunnel() {
             </div>
           </div>
 
-          <div className="mwt-roster-portal" ref={rosterRef} aria-hidden="true">
-            <TeamRoster id="command-structure-preview" />
-          </div>
+          <CommandGateway ref={portalRef} />
 
           <div className="mwt-hint" ref={hintRef}>SCROLL TO DEPLOY ↓</div>
         </div>

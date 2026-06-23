@@ -128,12 +128,15 @@ function ProfileCard({
   // On reveal: play scan once, then settle
   useEffect(() => {
     if (!revealed) return;
-    setScanning(true);
+    const start = setTimeout(() => setScanning(true), 0);
     const t = setTimeout(() => {
       setScanning(false);
       setBootDone(true);
     }, 900);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(start);
+      clearTimeout(t);
+    };
   }, [revealed]);
 
   return (

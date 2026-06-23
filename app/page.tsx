@@ -96,7 +96,7 @@ export default function Page() {
 
       <Memories />
 
-      <div className="relative z-10 -mt-[100vh]">
+      <div className="relative z-20">
         <TeamRoster />
       </div>
 
