@@ -22,29 +22,29 @@ const MEMORIES: Memory[] = [
 ];
 
 const DEBRIS_COUNT = 12;
-const FAR_Z  = -20;
+const FAR_Z = -20;
 const FOCUS_Z = -4;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
-const lerp   = (a: number, b: number, t: number) => a + (b - a) * t;
-const ease   = (t: number) => (t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2);
-const easeBox= (t: number) => (t < 0.5 ? 16*t*t*t*t*t : 1 - Math.pow(-2*t+2,5)/2);
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeBox = (t: number) => (t < 0.5 ? 16 * t * t * t * t * t : 1 - Math.pow(-2 * t + 2, 5) / 2);
 
 interface MemoryNode { data: Memory; el: HTMLDivElement; }
 
 function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Shape {
   const shape = new THREE.Shape();
-  const step  = (Math.PI * 2) / teeth;
+  const step = (Math.PI * 2) / teeth;
   for (let i = 0; i < teeth; i++) {
     const a0 = i * step - step * 0.42;
     const a1 = a0 + step * 0.28;
     const a2 = a1 + step * 0.28;
     const a3 = a2 + step * 0.28;
-    if (i === 0) shape.moveTo(Math.cos(a0)*innerR, Math.sin(a0)*innerR);
-    else         shape.lineTo(Math.cos(a0)*innerR, Math.sin(a0)*innerR);
-    shape.lineTo(Math.cos(a1)*outerR, Math.sin(a1)*outerR);
-    shape.lineTo(Math.cos(a2)*outerR, Math.sin(a2)*outerR);
-    shape.lineTo(Math.cos(a3)*innerR, Math.sin(a3)*innerR);
+    if (i === 0) shape.moveTo(Math.cos(a0) * innerR, Math.sin(a0) * innerR);
+    else shape.lineTo(Math.cos(a0) * innerR, Math.sin(a0) * innerR);
+    shape.lineTo(Math.cos(a1) * outerR, Math.sin(a1) * outerR);
+    shape.lineTo(Math.cos(a2) * outerR, Math.sin(a2) * outerR);
+    shape.lineTo(Math.cos(a3) * innerR, Math.sin(a3) * innerR);
   }
   shape.closePath();
   const hole = new THREE.Path();
@@ -54,20 +54,20 @@ function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Sh
 }
 
 export default function MemoryWarpTunnel() {
-  const wrapRef      = useRef<HTMLDivElement>(null);
-  const boxRef       = useRef<HTMLDivElement>(null);
-  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardLayerRef = useRef<HTMLDivElement>(null);
-  const rtextRef     = useRef<HTMLDivElement>(null);
-  const hintRef      = useRef<HTMLDivElement>(null);
+  const rtextRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const wrap      = wrapRef.current;
-    const box       = boxRef.current;
-    const canvas    = canvasRef.current;
+    const wrap = wrapRef.current;
+    const box = boxRef.current;
+    const canvas = canvasRef.current;
     const cardLayer = cardLayerRef.current;
-    const rtext     = rtextRef.current;
-    const hint      = hintRef.current;
+    const rtext = rtextRef.current;
+    const hint = hintRef.current;
     if (!wrap || !box || !canvas || !cardLayer || !rtext || !hint) return;
 
     let VW = window.innerWidth;
@@ -78,29 +78,29 @@ export default function MemoryWarpTunnel() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.autoClearColor = false;
 
-    const scene  = new THREE.Scene();
+    const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
     camera.position.set(0, 0, 8);
 
     // Fade quad — motion trail 
     const fadeScene = new THREE.Scene();
-    const fadeCam   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const fadeMat   = new THREE.MeshBasicMaterial({
+    const fadeCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const fadeMat = new THREE.MeshBasicMaterial({
       color: 0x05080c, transparent: true, opacity: 0.20,
       depthTest: false, depthWrite: false,
     });
     fadeScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), fadeMat));
 
     // ── Geometries ────────────────────────────────────────────
-    const boltGeo   = new THREE.CylinderGeometry(1.1, 1.1, 0.45, 6);
+    const boltGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.45, 6);
     const washerGeo = new THREE.TorusGeometry(1.0, 0.32, 8, 20);
-    const gearGeo   = (() => {
+    const gearGeo = (() => {
       const g = new THREE.ExtrudeGeometry(buildGearShape(1.35, 0.88, 6), { depth: 0.44, bevelEnabled: false });
       g.translate(0, 0, -0.22);
       return g;
     })();
     const chipGeo = new THREE.BoxGeometry(1.45, 1.45, 0.32);
-    const nutGeo  = new THREE.CylinderGeometry(0.95, 0.95, 0.54, 6);
+    const nutGeo = new THREE.CylinderGeometry(0.95, 0.95, 0.54, 6);
 
     const GEO_TYPES = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
     const SLOT_COUNT = Math.ceil(DEBRIS_COUNT / GEO_TYPES.length);
@@ -109,7 +109,7 @@ export default function MemoryWarpTunnel() {
       color: 0xffffff,
       wireframe: true,
       transparent: true,
-      opacity: 0.25, 
+      opacity: 0.25,
     });
 
     const instancedMeshes: THREE.InstancedMesh[] = GEO_TYPES.map((geo) => {
@@ -120,42 +120,42 @@ export default function MemoryWarpTunnel() {
     });
 
     // ── Per-debris state ─────────────────────────────────────
-    const debrisX      = new Float32Array(DEBRIS_COUNT);
-    const debrisY      = new Float32Array(DEBRIS_COUNT);
-    const debrisZ      = new Float32Array(DEBRIS_COUNT);
-    const debrisSpeed  = new Float32Array(DEBRIS_COUNT);
-    const debrisType   = new Uint8Array(DEBRIS_COUNT);
-    const debrisAxisX  = new Float32Array(DEBRIS_COUNT);
-    const debrisAxisY  = new Float32Array(DEBRIS_COUNT);
-    const debrisAxisZ  = new Float32Array(DEBRIS_COUNT);
-    const debrisAngV   = new Float32Array(DEBRIS_COUNT);
-    const debrisAngle  = new Float32Array(DEBRIS_COUNT);
-    const debrisSlot   = new Uint8Array(DEBRIS_COUNT);
-    const slotCounter  = new Uint8Array(GEO_TYPES.length);
+    const debrisX = new Float32Array(DEBRIS_COUNT);
+    const debrisY = new Float32Array(DEBRIS_COUNT);
+    const debrisZ = new Float32Array(DEBRIS_COUNT);
+    const debrisSpeed = new Float32Array(DEBRIS_COUNT);
+    const debrisType = new Uint8Array(DEBRIS_COUNT);
+    const debrisAxisX = new Float32Array(DEBRIS_COUNT);
+    const debrisAxisY = new Float32Array(DEBRIS_COUNT);
+    const debrisAxisZ = new Float32Array(DEBRIS_COUNT);
+    const debrisAngV = new Float32Array(DEBRIS_COUNT);
+    const debrisAngle = new Float32Array(DEBRIS_COUNT);
+    const debrisSlot = new Uint8Array(DEBRIS_COUNT);
+    const slotCounter = new Uint8Array(GEO_TYPES.length);
 
     const _dummy = new THREE.Object3D();
-    const _axis  = new THREE.Vector3();
-    const _quat  = new THREE.Quaternion();
+    const _axis = new THREE.Vector3();
+    const _quat = new THREE.Quaternion();
 
     function seedDebris(i: number) {
-      const angle    = Math.random() * Math.PI * 2;
-      const r        = 3.5 + Math.random() * 5; 
-      
-      debrisX[i]     = Math.cos(angle) * r;
-      debrisY[i]     = Math.sin(angle) * r * 0.55;
-      debrisZ[i]     = -Math.random() * Math.abs(FAR_Z);
-      
+      const angle = Math.random() * Math.PI * 2;
+      const r = 3.5 + Math.random() * 5;
+
+      debrisX[i] = Math.cos(angle) * r;
+      debrisY[i] = Math.sin(angle) * r * 0.55;
+      debrisZ[i] = -Math.random() * Math.abs(FAR_Z);
+
       debrisSpeed[i] = 0.2 + Math.random() * 0.4;
-      
-      debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
-      debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
+
+      debrisType[i] = Math.floor(Math.random() * GEO_TYPES.length);
+      debrisSlot[i] = slotCounter[debrisType[i]] % SLOT_COUNT;
       slotCounter[debrisType[i]]++;
 
-      const ax = Math.random()*2-1, ay = Math.random()*2-1, az = Math.random()*2-1;
-      const len = Math.sqrt(ax*ax+ay*ay+az*az) || 1;
-      debrisAxisX[i] = ax/len; debrisAxisY[i] = ay/len; debrisAxisZ[i] = az/len;
+      const ax = Math.random() * 2 - 1, ay = Math.random() * 2 - 1, az = Math.random() * 2 - 1;
+      const len = Math.sqrt(ax * ax + ay * ay + az * az) || 1;
+      debrisAxisX[i] = ax / len; debrisAxisY[i] = ay / len; debrisAxisZ[i] = az / len;
 
-      debrisAngV[i]  = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
+      debrisAngV[i] = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
       debrisAngle[i] = Math.random() * Math.PI * 2;
     }
 
@@ -193,11 +193,11 @@ export default function MemoryWarpTunnel() {
     });
 
     function getBoxRect(ep1: number) {
-      const sw = VW*0.41, sh = VH*0.54, sl = VW*0.04, st = (VH-sh)/2;
+      const sw = VW * 0.41, sh = VH * 0.54, sl = VW * 0.04, st = (VH - sh) / 2;
       return {
-        w: lerp(sw,VW,ep1), h: lerp(sh,VH,ep1),
-        l: lerp(sl,0,ep1),  t: lerp(st,0,ep1),
-        r: lerp(8,0,ep1),
+        w: lerp(sw, VW, ep1), h: lerp(sh, VH, ep1),
+        l: lerp(sl, 0, ep1), t: lerp(st, 0, ep1),
+        r: lerp(8, 0, ep1),
       };
     }
 
@@ -206,14 +206,14 @@ export default function MemoryWarpTunnel() {
 
     function getProgress() {
       const rect = wrap!.getBoundingClientRect();
-      return clamp(-rect.top, 0, VH*6.5) / (VH*6.5);
+      return clamp(-rect.top, 0, VH * 6.5) / (VH * 6.5);
     }
 
     function loop(time: number) {
       rafId = requestAnimationFrame(loop);
       const now = time || performance.now();
-      const dt  = Math.min(now - lastTime, 50);
-      lastTime  = now;
+      const dt = Math.min(now - lastTime, 50);
+      lastTime = now;
 
       const p = getProgress();
 
@@ -223,39 +223,39 @@ export default function MemoryWarpTunnel() {
 
       let targetT = 0;
       if (p > 0.1) {
-        const seqP = clamp((p-0.1)/0.85, 0, 1);
+        const seqP = clamp((p - 0.1) / 0.85, 0, 1);
         targetT = seqP * (MEMORIES.length + 0.5);
       }
       displayT += (targetT - displayT) * (dt * 0.004);
 
       // --- box ---
       const ep1 = easeBox(expandProgress);
-      const r   = getBoxRect(ep1);
-      box.style.width        = `${r.w}px`;
-      box.style.height       = `${r.h}px`;
-      box.style.left         = `${r.l}px`;
-      box.style.top          = `${r.t}px`;
-      box.style.borderRadius = `${r.r}px`;
-      box.style.transform    = `perspective(1200px) rotateX(${lerp(6,0,ep1)}deg) rotateY(${lerp(12,0,ep1)}deg) scale(${lerp(0.85,1,ep1)})`;
-      
+      const r = getBoxRect(ep1);
+      box!.style.width = `${r.w}px`;
+      box!.style.height = `${r.h}px`;
+      box!.style.left = `${r.l}px`;
+      box!.style.top = `${r.t}px`;
+      box!.style.borderRadius = `${r.r}px`;
+      box!.style.transform = `perspective(1200px) rotateX(${lerp(6, 0, ep1)}deg) rotateY(${lerp(12, 0, ep1)}deg) scale(${lerp(0.85, 1, ep1)})`;
+
       // ONLY the subtle blue glow that fades out
-      box.style.boxShadow    = `0 0 50px rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
-      
+      box!.style.boxShadow = `0 0 50px rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
+
       // Dynamic border opacity to blend smoothly when full screen
-      box.style.borderColor  = `rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
-      
+      box!.style.borderColor = `rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
+
       // Control content opacity
-      rtext.style.opacity    = `${Math.max(0, 1 - ep1*2.8)}`;
-      hint.style.opacity     = `${Math.max(0, 1 - p*7)}`;
+      rtext!.style.opacity = `${Math.max(0, 1 - ep1 * 2.8)}`;
+      hint!.style.opacity = `${Math.max(0, 1 - p * 7)}`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
-      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio,2))) {
+      if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio, 2))) {
         renderer.setSize(CW, CH, true);
         camera.aspect = CW / CH;
         camera.updateProjectionMatrix();
       }
 
-      const tunnelSpeed = clamp(dt*0.01 + Math.abs(targetT-displayT)*0.5, 0.12, 4.0);
+      const tunnelSpeed = clamp(dt * 0.01 + Math.abs(targetT - displayT) * 0.5, 0.12, 4.0);
 
       _dummy.position.set(0, 0, -9999);
       _dummy.scale.setScalar(0.001);
@@ -295,33 +295,33 @@ export default function MemoryWarpTunnel() {
 
         if (diff > ES && diff < EE) {
           if (diff < HS) {
-            const pp = ease((diff-ES)/(HS-ES));
-            if (i===0) { z = lerp(FAR_Z,FOCUS_Z,pp); rotY = lerp(10,0,pp); }
-            else        { x = lerp(35,0,pp); z = lerp(-20,FOCUS_Z,pp); rotY = lerp(-25,0,pp); }
+            const pp = ease((diff - ES) / (HS - ES));
+            if (i === 0) { z = lerp(FAR_Z, FOCUS_Z, pp); rotY = lerp(10, 0, pp); }
+            else { x = lerp(35, 0, pp); z = lerp(-20, FOCUS_Z, pp); rotY = lerp(-25, 0, pp); }
             opacity = pp;
           } else if (diff <= HE) {
             z = FOCUS_Z; opacity = 1;
           } else {
-            const pp = ease((diff-HE)/(EE-HE));
-            z = i===0 ? FOCUS_Z : lerp(FOCUS_Z,-20,pp);
-            x = lerp(0,-35,pp); rotY = lerp(0,i===0?15:25,pp); opacity = 1-pp;
+            const pp = ease((diff - HE) / (EE - HE));
+            z = i === 0 ? FOCUS_Z : lerp(FOCUS_Z, -20, pp);
+            x = lerp(0, -35, pp); rotY = lerp(0, i === 0 ? 15 : 25, pp); opacity = 1 - pp;
           }
         }
 
         const camRelZ = camera.position.z + z;
-        if (camRelZ > camera.position.z-0.1 || opacity <= 0.01) { n.el.style.opacity='0'; return; }
+        if (camRelZ > camera.position.z - 0.1 || opacity <= 0.01) { n.el.style.opacity = '0'; return; }
         const v = new THREE.Vector3(x, 0, camRelZ);
         v.project(camera);
-        if (v.z < -1 || v.z > 1) { n.el.style.opacity='0'; return; }
-        const sx    = (v.x*0.5+0.5)*CW;
-        const sy    = (1-(v.y*0.5+0.5))*CH;
-        const scale = clamp(8/(camera.position.z-camRelZ), 0.05, 3.0);
+        if (v.z < -1 || v.z > 1) { n.el.style.opacity = '0'; return; }
+        const sx = (v.x * 0.5 + 0.5) * CW;
+        const sy = (1 - (v.y * 0.5 + 0.5)) * CH;
+        const scale = clamp(8 / (camera.position.z - camRelZ), 0.05, 3.0);
         n.el.style.transform = `translate(${sx}px,${sy}px) translate(-50%,-50%) perspective(1000px) scale(${scale}) rotateY(${rotY}deg)`;
-        n.el.style.opacity   = `${opacity}`;
+        n.el.style.opacity = `${opacity}`;
       });
 
-      camera.position.x = Math.sin(displayT*2.0)*0.3;
-      camera.position.y = Math.cos(displayT*2.5)*0.15;
+      camera.position.x = Math.sin(displayT * 2.0) * 0.3;
+      camera.position.y = Math.cos(displayT * 2.5) * 0.15;
       camera.lookAt(0, 0, FAR_Z);
 
       renderer.render(fadeScene, fadeCam);
@@ -485,7 +485,7 @@ export default function MemoryWarpTunnel() {
 
       <div className="mwt-wrap" ref={wrapRef}>
         <div className="mwt-sticky">
-          
+
           {/* Blueprint Background Elements */}
           <div className="mwt-grid" />
           <svg className="mwt-svg-overlay" xmlns="http://www.w3.org/2000/svg">
@@ -500,18 +500,18 @@ export default function MemoryWarpTunnel() {
           ))}
 
           <div className="mwt-label"><b>06.</b>SYSTEM.LOGS // MEMORY_BANK</div>
-          
+
           <div className="mwt-box" ref={boxRef}>
             <canvas ref={canvasRef} />
             <div ref={cardLayerRef} />
           </div>
-          
+
           <div className="mwt-rtext" ref={rtextRef}>
             <span className="eyebrow">▶ BOOT_SEQUENCE.LOAD()</span>
             <h2>YEARS OF<br /><span>DATA.</span></h2>
             <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
           </div>
-          
+
           <div className="mwt-hint" ref={hintRef}>SCROLL TO DEPLOY ↓</div>
         </div>
       </div>
