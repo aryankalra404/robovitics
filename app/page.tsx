@@ -10,13 +10,13 @@ import Events from "@/components/Events";
 import TimelineDive from '@/components/TimelineDive';
 import GalaxyDive from '@/components/GalaxyDive';
 import Memories from '@/components/Memories';
-
-// 1. Import the new section here! (Adjust the path if you named the file differently)
-import NextSection from '@/components/NextSection'; 
-
+import NextSection from '@/components/NextSection';
 
 export default function Page() {
   const domainsRef = useRef<HTMLDivElement>(null);
+
+  // Ref for the global gear — shared with NextSection
+  const gearRef = useRef<HTMLDivElement>(null);
 
   // 1. Tracks overall page scroll
   const { scrollYProgress: overallScroll } = useScroll();
@@ -31,15 +31,9 @@ export default function Page() {
 
   const bgOpacity = useTransform(domainsEnterProgress, [0, 0.94, 1], [0.87, 0.87, 0]);
 
-  // 1. Calculate RAW numeric values first so we can apply physics to them
-  // We go from 0 to 120 so it completely clears the right side of the screen
   const rawGearX = useTransform(domainsEnterProgress, [0, 1], [0, 120]);
   const rawGearY = useTransform(overallScroll, [0, 1], [0, 50]);
 
-  // COMBINED ROTATION:
-  // overallScroll * 720 = Normal slow rotation down the page
-  // domains * 420 = We increased this from 150 because it has to travel a longer 
-  // distance across the whole screen. A higher number ensures it "rolls" instead of "slides".
   const rawGearRotation = useTransform(
     [overallScroll, domainsEnterProgress],
     (values: number[]) => {
@@ -48,14 +42,11 @@ export default function Page() {
     }
   );
 
-  // 2. Apply Spring Physics for buttery smooth momentum
   const springConfig = { stiffness: 40, damping: 30, restDelta: 0.001 };
   const smoothGearX = useSpring(rawGearX, springConfig);
   const smoothGearY = useSpring(rawGearY, springConfig);
   const gearRotation = useSpring(rawGearRotation, springConfig);
 
-  // 3. Map the smoothed numbers back to CSS units
-  // Notice we use `vw` (viewport width) instead of `%` for the X axis now!
   const gearX = useTransform(smoothGearX, x => `${x}vw`);
   const gearY = useTransform(smoothGearY, y => `${y}%`);
 
@@ -74,8 +65,9 @@ export default function Page() {
         className="fixed top-0 right-0 w-1 bg-gray-300 origin-top z-50 shadow-[0_0_15px_#D1D5DB]"
       />
 
-      {/* GLOBAL MASSIVE GEAR */}
+      {/* GLOBAL MASSIVE GEAR — ref passed to NextSection for takeover */}
       <motion.div
+        ref={gearRef}
         style={{ rotate: gearRotation, y: gearY, x: gearX }}
         className="fixed -left-16 -bottom-20 z-10 opacity-[0.14] pointer-events-none sm:-left-28 sm:-bottom-28 sm:opacity-[0.16] lg:-left-40 lg:-bottom-40 lg:opacity-20"
       >
@@ -107,12 +99,11 @@ export default function Page() {
         <Domains />
       </div>
       <Events />
-      
-      {/* 2. The 3D Memory Tunnel plays out here */}
+
       <Memories />
 
-      {/* 3. Once Memories is done, this catches the scroll and slides in from the right */}
-      <NextSection />
+      {/* Global gear ref passed in — NextSection takes over its transform during its scroll window */}
+      <NextSection gearRef={gearRef} />
 
     </main>
   );

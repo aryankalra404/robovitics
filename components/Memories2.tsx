@@ -23,9 +23,11 @@ const MEMORIES: Memory[] = [
 
 const DEBRIS_COUNT = 12;
 const FAR_Z  = -20;
+const FOCUS_Z = -4;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const lerp   = (a: number, b: number, t: number) => a + (b - a) * t;
+const ease   = (t: number) => (t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2);
 const easeBox= (t: number) => (t < 0.5 ? 16*t*t*t*t*t : 1 - Math.pow(-2*t+2,5)/2);
 
 interface MemoryNode { data: Memory; el: HTMLDivElement; }
@@ -53,7 +55,6 @@ function buildGearShape(outerR: number, innerR: number, teeth: number): THREE.Sh
 
 export default function MemoryWarpTunnel() {
   const wrapRef      = useRef<HTMLDivElement>(null);
-  const sceneRef     = useRef<HTMLDivElement>(null);
   const boxRef       = useRef<HTMLDivElement>(null);
   const canvasRef    = useRef<HTMLCanvasElement>(null);
   const cardLayerRef = useRef<HTMLDivElement>(null);
@@ -62,18 +63,12 @@ export default function MemoryWarpTunnel() {
 
   useEffect(() => {
     const wrap      = wrapRef.current;
-    const sceneWrap = sceneRef.current;
     const box       = boxRef.current;
     const canvas    = canvasRef.current;
     const cardLayer = cardLayerRef.current;
     const rtext     = rtextRef.current;
     const hint      = hintRef.current;
-    if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint) return;
-    const wrapEl = wrap;
-    const sceneEl = sceneWrap;
-    const boxEl = box;
-    const rtextEl = rtext;
-    const hintEl = hint;
+    if (!wrap || !box || !canvas || !cardLayer || !rtext || !hint) return;
 
     let VW = window.innerWidth;
     let VH = window.innerHeight;
@@ -87,6 +82,7 @@ export default function MemoryWarpTunnel() {
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
     camera.position.set(0, 0, 8);
 
+    // Fade quad — motion trail 
     const fadeScene = new THREE.Scene();
     const fadeCam   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
     const fadeMat   = new THREE.MeshBasicMaterial({
@@ -196,20 +192,20 @@ export default function MemoryWarpTunnel() {
       return { data: m, el };
     });
 
-    function getBoxRect() {
+    function getBoxRect(ep1: number) {
       const sw = VW*0.41, sh = VH*0.54, sl = VW*0.04, st = (VH-sh)/2;
       return {
-        w: sw, h: sh,
-        l: sl, t: st,
-        r: 8,
+        w: lerp(sw,VW,ep1), h: lerp(sh,VH,ep1),
+        l: lerp(sl,0,ep1),  t: lerp(st,0,ep1),
+        r: lerp(8,0,ep1),
       };
     }
 
     let rafId = 0, lastTime = performance.now();
-    let zoomProgress = 0, displayT = 0;
+    let expandProgress = 0, displayT = 0;
 
     function getProgress() {
-      const rect = wrapEl.getBoundingClientRect();
+      const rect = wrap!.getBoundingClientRect();
       return clamp(-rect.top, 0, VH*6.5) / (VH*6.5);
     }
 
@@ -222,43 +218,35 @@ export default function MemoryWarpTunnel() {
       const p = getProgress();
 
       // --- TIMELINE ---
-      const targetZoom = clamp((p - 0.025) / 0.22, 0, 1);
-      zoomProgress += (targetZoom - zoomProgress) * (dt * 0.008);
+      const targetExpand = clamp(p / 0.08, 0, 1);
+      expandProgress += (targetExpand - expandProgress) * (dt * 0.008);
 
       let targetT = 0;
-      if (p > 0.26) {
-        const seqP = clamp((p-0.26)/0.69, 0, 1);
-        targetT = seqP * (MEMORIES.length + 4); 
+      if (p > 0.1) {
+        const seqP = clamp((p-0.1)/0.85, 0, 1);
+        targetT = seqP * (MEMORIES.length + 0.5);
       }
       displayT += (targetT - displayT) * (dt * 0.004);
 
-      // --- stage zoom ---
-      const ep1 = easeBox(zoomProgress);
-      const r   = getBoxRect();
-      const fillScale = Math.max(VW / r.w, VH / r.h);
-      const sceneScale = lerp(1, fillScale, ep1);
-      const boxCenterX = r.l + r.w / 2;
-      const boxCenterY = r.t + r.h / 2;
-      const sceneX = lerp(0, VW / 2 - boxCenterX * fillScale, ep1);
-      const sceneY = lerp(0, VH / 2 - boxCenterY * fillScale, ep1);
-      const tilt = Math.sin(ep1 * Math.PI);
-      const tiltX = lerp(0, 2.5, tilt);
-      const tiltY = lerp(0, -7, tilt);
-      const tiltZ = lerp(0, -2.5, tilt);
-
-      sceneEl.style.transform = `perspective(1400px) translate3d(${sceneX}px, ${sceneY}px, 0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) rotateZ(${tiltZ}deg) scale(${sceneScale})`;
-      boxEl.style.width        = `${r.w}px`;
-      boxEl.style.height       = `${r.h}px`;
-      boxEl.style.left         = `${r.l}px`;
-      boxEl.style.top          = `${r.t}px`;
-      boxEl.style.borderRadius = `${r.r}px`;
-      boxEl.style.transform    = 'translateZ(0)';
+      // --- box ---
+      const ep1 = easeBox(expandProgress);
+      const r   = getBoxRect(ep1);
+      box.style.width        = `${r.w}px`;
+      box.style.height       = `${r.h}px`;
+      box.style.left         = `${r.l}px`;
+      box.style.top          = `${r.t}px`;
+      box.style.borderRadius = `${r.r}px`;
+      box.style.transform    = `perspective(1200px) rotateX(${lerp(6,0,ep1)}deg) rotateY(${lerp(12,0,ep1)}deg) scale(${lerp(0.85,1,ep1)})`;
       
-      boxEl.style.boxShadow    = `0 0 50px rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
-      boxEl.style.borderColor  = `rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
+      // ONLY the subtle blue glow that fades out
+      box.style.boxShadow    = `0 0 50px rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
       
-      rtextEl.style.opacity    = '1';
-      hintEl.style.opacity     = `${Math.max(0, 1 - p*7)}`;
+      // Dynamic border opacity to blend smoothly when full screen
+      box.style.borderColor  = `rgba(79, 174, 243, ${lerp(0.2, 0, ep1)})`;
+      
+      // Control content opacity
+      rtext.style.opacity    = `${Math.max(0, 1 - ep1*2.8)}`;
+      hint.style.opacity     = `${Math.max(0, 1 - p*7)}`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
       if (renderer.domElement.width !== Math.round(CW * Math.min(devicePixelRatio,2))) {
@@ -300,41 +288,36 @@ export default function MemoryWarpTunnel() {
       for (const mesh of instancedMeshes)
         mesh.instanceMatrix.needsUpdate = true;
 
-      // --- HORIZONTAL CAROUSEL MATH ---
       nodes.forEach((n, i) => {
-        const diff = displayT - (i + 2.5); 
-        const depth = clamp(Math.abs(diff), 0, 2.4);
-        const x = -diff * 5.2;
-        const y = Math.sin((i * 1.7) + displayT) * 0.55;
-        const worldZ = 2 - depth * 1.25;
-        const rotY = clamp(diff * -18, -38, 38);
-        const rotX = clamp(-y * 8, -7, 7);
-        const drift = Math.sin((time * 0.001) + i) * 10;
-        
-        const absDiff = Math.abs(diff);
-        let opacity = 0;
-        
-        if (absDiff < 1.0) {
-          opacity = 1;
-        } else if (absDiff < 2.0) {
-          opacity = 1 - (absDiff - 1.0);
+        const diff = displayT - (i + 0.5);
+        const ES = -1.2, HS = -0.15, HE = 0.15, EE = 1.2;
+        let z = FAR_Z, x = 0, rotY = 0, opacity = 0;
+
+        if (diff > ES && diff < EE) {
+          if (diff < HS) {
+            const pp = ease((diff-ES)/(HS-ES));
+            if (i===0) { z = lerp(FAR_Z,FOCUS_Z,pp); rotY = lerp(10,0,pp); }
+            else        { x = lerp(35,0,pp); z = lerp(-20,FOCUS_Z,pp); rotY = lerp(-25,0,pp); }
+            opacity = pp;
+          } else if (diff <= HE) {
+            z = FOCUS_Z; opacity = 1;
+          } else {
+            const pp = ease((diff-HE)/(EE-HE));
+            z = i===0 ? FOCUS_Z : lerp(FOCUS_Z,-20,pp);
+            x = lerp(0,-35,pp); rotY = lerp(0,i===0?15:25,pp); opacity = 1-pp;
+          }
         }
 
-        if (opacity <= 0.01) { n.el.style.opacity='0'; return; }
-        
-        const v = new THREE.Vector3(x, 0, worldZ);
+        const camRelZ = camera.position.z + z;
+        if (camRelZ > camera.position.z-0.1 || opacity <= 0.01) { n.el.style.opacity='0'; return; }
+        const v = new THREE.Vector3(x, 0, camRelZ);
         v.project(camera);
-        
         if (v.z < -1 || v.z > 1) { n.el.style.opacity='0'; return; }
-        
-        const sx    = (v.x * 0.5 + 0.5) * CW;
-        const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
-        
-        const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(0.9, 1.08, opacity);
-        
-        n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
+        const sx    = (v.x*0.5+0.5)*CW;
+        const sy    = (1-(v.y*0.5+0.5))*CH;
+        const scale = clamp(8/(camera.position.z-camRelZ), 0.05, 3.0);
+        n.el.style.transform = `translate(${sx}px,${sy}px) translate(-50%,-50%) perspective(1000px) scale(${scale}) rotateY(${rotY}deg)`;
         n.el.style.opacity   = `${opacity}`;
-        n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
       camera.position.x = Math.sin(displayT*2.0)*0.3;
@@ -365,12 +348,6 @@ export default function MemoryWarpTunnel() {
       <style jsx>{`
         .mwt-wrap { position: relative; height: 950vh; background: #0d0d0d; }
         .mwt-sticky { position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #0d0d0d; }
-        .mwt-scene {
-          position: absolute;
-          inset: 0;
-          transform-origin: 0 0;
-          will-change: transform;
-        }
         
         .mwt-grid {
           position: absolute; inset: 0; pointer-events: none; z-index: 1;
@@ -393,8 +370,8 @@ export default function MemoryWarpTunnel() {
         
         .mwt-box { 
           position: absolute; 
-          background: #05080c; 
-          border: 1px solid rgba(79, 174, 243, 0.2); 
+          background: #05080c; /* Back to solid dark color */
+          border: 1px solid rgba(79, 174, 243, 0.2); /* Static faint accent outline */
           border-radius: 4px;
           z-index: 5; overflow: hidden; 
         }
@@ -430,21 +407,17 @@ export default function MemoryWarpTunnel() {
         @keyframes mwt-blink { 0%,100%{opacity:.2} 50%{opacity:.8} }
         
         :global(.mwt-card) {
-          position: absolute; top: 0; left: 0; width: min(365px, 76vw);
-          transform-origin: center center; will-change: transform, opacity, filter;
+          position: absolute; top: 0; left: 0; width: 340px;
+          transform-origin: center center; will-change: transform, opacity;
           pointer-events: none; z-index: 6; transform-style: preserve-3d;
-          filter:
-            drop-shadow(0 0 10px rgba(79,174,243,var(--mwt-card-glow, 0.16)))
-            drop-shadow(0 12px 34px rgba(0,0,0,0.5));
         }
         
         :global(.mwt-card-inner) {
-          background: rgba(10, 10, 10, 0.92);
-          border: 1px solid rgba(255, 255, 255, 0.1); 
+          background: #0a0a0a;
+          border: 1px solid rgba(255, 255, 255, 0.08); 
           padding: 24px 20px 20px;
           border-radius: 4px;
           position: relative;
-          overflow: hidden;
         }
 
         :global(.mwt-card-bg) {
@@ -460,14 +433,6 @@ export default function MemoryWarpTunnel() {
           border: 1px solid rgba(235,238,242,0.28);
           pointer-events: none;
           z-index: 0;
-        }
-        :global(.mwt-card-bg::after) {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: repeating-linear-gradient(0deg, rgba(79,174,243,0.03) 0 1px, transparent 1px 8px);
-          opacity: 0.22;
-          mix-blend-mode: screen;
         }
         
         :global(.mwt-corner) {
@@ -488,13 +453,13 @@ export default function MemoryWarpTunnel() {
         }
 
         :global(.mwt-img-wrap) {
-          width: 100%; height: 166px; overflow: hidden; border-radius: 2px;
+          width: 100%; height: 160px; overflow: hidden; border-radius: 2px;
           margin-bottom: 20px; background: #000;
           border: 1px solid rgba(255,255,255,0.05); 
         }
         :global(.mwt-img-wrap img) { 
           width:100%; height:100%; object-fit:cover; opacity:0.85; 
-          filter: grayscale(100%) contrast(1.25) brightness(0.78); 
+          filter: grayscale(100%) contrast(1.2); 
         }
         :global(.mwt-card-date)    {
           font-family: monospace; font-size: 11px; letter-spacing: 0.18em;
@@ -502,7 +467,7 @@ export default function MemoryWarpTunnel() {
           text-transform: uppercase; margin: 0 0 10px;
         }
         :global(.mwt-card-title)   {
-          font-family: "Inter", "Arial Black", sans-serif; font-weight: 900; font-size: 23px; color: #fff;
+          font-family: "Inter", "Arial Black", sans-serif; font-weight: 900; font-size: 22px; color: #fff;
           text-transform: uppercase; letter-spacing: 0.02em; margin: 0 0 12px; line-height: 1.1;
         }
         :global(.mwt-card-desc)    {
@@ -510,6 +475,7 @@ export default function MemoryWarpTunnel() {
           color: rgba(255,255,255,0.5); margin: 0;
         }
 
+        /* Glowing dots from background inspiration */
         .mwt-bg-dot {
           position: absolute; width: 5px; height: 5px; border-radius: 50%;
           background: rgba(255,255,255,0.25);
@@ -519,31 +485,31 @@ export default function MemoryWarpTunnel() {
 
       <div className="mwt-wrap" ref={wrapRef}>
         <div className="mwt-sticky">
-          <div className="mwt-scene" ref={sceneRef}>
-            <div className="mwt-grid" />
-            <svg className="mwt-svg-overlay" xmlns="http://www.w3.org/2000/svg">
-              <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-              <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-              <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-            </svg>
-            {([
-              [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
-            ] as [number, number][]).map(([lp, tp], i) => (
-              <div key={i} className="mwt-bg-dot z-[1]" style={{ left: `${lp}%`, top: `${tp}%` }} />
-            ))}
+          
+          {/* Blueprint Background Elements */}
+          <div className="mwt-grid" />
+          <svg className="mwt-svg-overlay" xmlns="http://www.w3.org/2000/svg">
+            <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+            <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+            <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+          </svg>
+          {([
+            [8, 9], [66, 14], [15, 58], [80, 47], [44, 78],
+          ] as [number, number][]).map(([lp, tp], i) => (
+            <div key={i} className="mwt-bg-dot z-[1]" style={{ left: `${lp}%`, top: `${tp}%` }} />
+          ))}
 
-            <div className="mwt-label"><b>06.</b>SYSTEM.LOGS // MEMORY_BANK</div>
-            
-            <div className="mwt-box" ref={boxRef}>
-              <canvas ref={canvasRef} />
-              <div ref={cardLayerRef} />
-            </div>
-            
-            <div className="mwt-rtext" ref={rtextRef}>
-              <span className="eyebrow">▶ BOOT_SEQUENCE.LOAD()</span>
-              <h2>YEARS OF<br /><span>DATA.</span></h2>
-              <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
-            </div>
+          <div className="mwt-label"><b>06.</b>SYSTEM.LOGS // MEMORY_BANK</div>
+          
+          <div className="mwt-box" ref={boxRef}>
+            <canvas ref={canvasRef} />
+            <div ref={cardLayerRef} />
+          </div>
+          
+          <div className="mwt-rtext" ref={rtextRef}>
+            <span className="eyebrow">▶ BOOT_SEQUENCE.LOAD()</span>
+            <h2>YEARS OF<br /><span>DATA.</span></h2>
+            <p className="sub">From late-night builds to competition floors&mdash;<br />every circuit and line of code that shaped RoboVITics.</p>
           </div>
           
           <div className="mwt-hint" ref={hintRef}>SCROLL TO DEPLOY ↓</div>
