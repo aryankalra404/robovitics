@@ -175,14 +175,16 @@ const DOMAINS = [
   },
 ];
 
-function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
+function CardInner({ domain, compact = false }: { domain: (typeof DOMAINS)[0]; compact?: boolean }) {
   const { title, sub, icon } = domain;
   return (
     <div className="group relative w-full h-full transition-transform duration-500 ease-out hover:-translate-y-2">
       <div
         className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(79,174,243,0.18)]"
         style={{
-          padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
+          padding: compact
+            ? '12px 8px 10px'
+            : 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
           background: '#0a0a0a',
           border: '1px solid rgba(255,255,255,0.08)',
         }}
@@ -218,9 +220,9 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
 
         <div className="relative z-30 flex h-full flex-col items-center">
           <div style={{
-            margin: '6px auto 14px',
-            width: 'clamp(46px, 5.4vw, 68px)',
-            height: 'clamp(46px, 5.4vw, 68px)',
+            margin: compact ? '4px auto 10px' : '6px auto 14px',
+            width: compact ? '42px' : 'clamp(46px, 5.4vw, 68px)',
+            height: compact ? '42px' : 'clamp(46px, 5.4vw, 68px)',
             borderRadius: '4px',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: 'linear-gradient(145deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))',
@@ -232,13 +234,13 @@ function CardInner({ domain }: { domain: (typeof DOMAINS)[0] }) {
 
           <h3
             className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
-            style={{ margin: '0 0 6px', fontSize: 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}
+            style={{ margin: '0 0 6px', fontSize: compact ? '10px' : 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}
           >
             {title}
           </h3>
           <p
             className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
-            style={{ margin: '0 0 10px', fontSize: 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}
+            style={{ margin: compact ? '0 0 8px' : '0 0 10px', fontSize: compact ? '6.5px' : 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}
           >
             {sub}
           </p>
@@ -282,8 +284,8 @@ function DomainCardDesktop({
 
 function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
   return (
-    <div className="relative w-full max-w-[240px] mx-auto mb-8 z-10">
-      <CardInner domain={domain} />
+    <div className="relative z-10 h-[148px] min-w-0">
+      <CardInner domain={domain} compact />
     </div>
   );
 }
@@ -489,19 +491,19 @@ export default function Domains() {
       {/* MOBILE LAYOUT */}
       <section
         id="domains-mobile"
-        className="relative w-full min-h-screen py-24 px-6 flex flex-col md:hidden bg-transparent"
+        className="relative flex min-h-screen w-full flex-col bg-transparent px-4 pb-16 pt-28 md:hidden"
       >
         <EventsBackground />
-        <div className="absolute top-6 left-6 z-20 pointer-events-none">
+        <div className="absolute left-5 top-6 z-20 pointer-events-none">
           <span style={{
-            fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
+            fontFamily: 'monospace', fontSize: '9px', letterSpacing: '0.18em',
             color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
           }}>
             <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
             SYSTEM.LOGS // DOMAINS
           </span>
         </div>
-        <div className="z-20 flex flex-col items-center pointer-events-none text-center mt-12 mb-16">
+        <div className="z-20 mb-8 flex flex-col items-center text-center pointer-events-none">
           <span style={{
             fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)',
             fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase',
@@ -509,19 +511,19 @@ export default function Domains() {
             ▶ SECTOR_MAP // DOMAINS
           </span>
           <h2 style={{
-            margin: 0, fontSize: 'clamp(32px,10vw,48px)', fontWeight: '900',
+            margin: 0, fontSize: 'clamp(30px,9.5vw,42px)', fontWeight: '900',
             color: '#ffffff', letterSpacing: '-0.01em',
             fontFamily: '"Inter", "Arial Black", sans-serif',
-            textTransform: 'uppercase', lineHeight: 1,
+            textTransform: 'uppercase', lineHeight: 1.02,
           }}>
-
+            DOMAINS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
           </h2>
           <div style={{
-            marginTop: '14px', width: '80%', height: '1px',
+            marginTop: '14px', width: '72%', height: '1px',
             background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)',
           }} />
         </div>
-        <div className="w-full flex flex-col justify-center">
+        <div className="z-10 grid w-full grid-cols-2 gap-3">
           {DOMAINS.map((domain) => (
             <DomainCardMobile key={`mobile-${domain.id}`} domain={domain} />
           ))}
