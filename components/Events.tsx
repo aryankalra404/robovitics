@@ -33,6 +33,22 @@ const outreach: DeckItem[] = [
   { id: "FIELD_03", name: "BUILD A BOT", type: "WEEKEND MENTORSHIP", date: "ONGOING · OPEN APPLICATIONS", desc: "A multi-week mentorship where school students design and build their own bot from scratch, guided by our seniors.", status: "OPEN", img: "/outreach-buildabot.png", details: "Build a Bot pairs small teams of school students with RoboVITics mentors over several weekends. Students go from a blank sheet to a working autonomous bot, learning CAD basics, simple embedded programming, and assembly along the way. It's our most hands-on outreach format and consistently produces a few future club members each cycle." },
 ];
 
+function EventsBackground() {
+  return (
+    <>
+      <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
+      {([[8, 9], [66, 14], [15, 58], [80, 47], [44, 78]] as [number, number][]).map(([lp, tp], i) => (
+        <div key={i} className="pointer-events-none absolute rounded-full bg-white/25" style={{ left: `${lp}%`, top: `${tp}%`, width: 5, height: 5, boxShadow: '0 0 6px rgba(255,255,255,0.15)' }} />
+      ))}
+      <svg className="pointer-events-none absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+        <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+        <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+        <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
+      </svg>
+    </>
+  );
+}
+
 export default function Events() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const pinRef = useRef<HTMLDivElement>(null);
@@ -52,7 +68,7 @@ export default function Events() {
 
   // Modal & Carousel States
   const [mode, setMode] = useState<Mode>("events");
-  const [introDone, setIntroDone] = useState(false);
+  const [, setIntroDone] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<DeckItem | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
@@ -194,6 +210,8 @@ export default function Events() {
 
   // ── Main Background Animations ─────────────────────────────────────────
   useEffect(() => {
+    if (typeof window !== "undefined" && !window.matchMedia("(min-width: 768px)").matches) return;
+
     const section = sectionRef.current;
     const pin = pinRef.current;
     const title = titleRef.current;
@@ -430,7 +448,7 @@ export default function Events() {
         </div>
         <div className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-[#0a0a0a] rounded-[4px] overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
           <div className="relative w-full h-full flex flex-col">
-            <img src={ev.img} alt={ev.name} className="absolute inset-0 w-full h-full object-cover opacity-60" />
+            <img src={ev.img} alt={ev.name} className="absolute inset-0 w-full h-full object-cover opacity-60" onError={(e) => { e.currentTarget.style.display = "none"; }} />
             <div className="absolute inset-0 flex items-center justify-center z-10">
               <span className="font-mono text-white text-[10px] tracking-[0.2em] border border-white/40 px-5 py-2.5 backdrop-blur-sm rounded bg-black/30">
                 {isOutreach ? "VIEW OUTREACH" : "VIEW EVENT"}
@@ -442,18 +460,107 @@ export default function Events() {
     </div>
   );
 
+  const renderMobileCard = (ev: DeckItem, isOutreach: boolean) => (
+    <button
+      key={`mobile-${ev.id}`}
+      type="button"
+      onClick={() => setSelectedEvent(ev)}
+      className="group relative w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] text-left shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
+    >
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(165deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 38%, rgba(0,0,0,0.35)), rgba(28,30,34,0.95)`,
+          backgroundSize: '18px 18px, 18px 18px, auto, auto',
+        }}
+      />
+      <span className="absolute left-2 top-2 z-10 h-4 w-4 border-l border-t border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
+      <span className="absolute right-2 top-2 z-10 h-4 w-4 border-r border-t border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
+      <span className="absolute bottom-2 left-2 z-10 h-4 w-4 border-b border-l border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
+      <span className="absolute bottom-2 right-2 z-10 h-4 w-4 border-b border-r border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
+
+      <div className="relative z-10">
+        <div className="relative h-36 overflow-hidden border-b border-[#4FAEF3]/20 bg-neutral-900">
+          <img src={ev.img} alt={ev.name} className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
+          <span className="absolute left-4 top-4 border border-[#4FAEF3]/40 bg-black/45 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3] backdrop-blur-sm">
+            {ev.status}
+          </span>
+        </div>
+
+        <div className="p-4">
+          <div className="mb-2 flex items-start justify-between gap-3">
+            <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">{ev.id}</span>
+            <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/45">{isOutreach ? "Outreach" : "Event"}</span>
+          </div>
+          <h3 className="font-sans text-xl font-black uppercase leading-tight tracking-[0.03em] text-white">
+            {ev.name}
+          </h3>
+          <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-[#4FAEF3]/90">
+            {ev.type}
+          </p>
+          <div className="my-3 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent" />
+          <p className="font-mono text-[11px] leading-relaxed text-white/75">
+            {ev.desc}
+          </p>
+          <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
+            <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/45">{ev.date}</span>
+            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3]">Open</span>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+
   return (
-    <section id="events" ref={sectionRef} className="h-[600vh] bg-[#0d0d0d]">
+    <>
+    <section id="events-mobile" className="relative overflow-hidden bg-[#0d0d0d] px-4 py-24 md:hidden">
+      <EventsBackground />
+
+      <div className="relative z-10">
+        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
+          <span className="mr-2 font-bold text-white">03.</span>
+          SYSTEM.LOGS // EVENTS
+        </span>
+
+        <div className="mt-10 text-center">
+          <span className="mb-3 block font-mono text-[9px] uppercase tracking-[0.35em] text-white/25">
+            ▶ SECTOR_MAP // EVENTS
+          </span>
+          <h2 className="font-sans text-[clamp(32px,10vw,44px)] font-black uppercase leading-none tracking-[-0.01em] text-white">
+            EVENTS AT <span className="text-[#4FAEF3]">ROBOVITICS.</span>
+          </h2>
+          <div className="mx-auto mt-4 h-px w-3/4 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+        </div>
+
+        <div className="sticky top-[76px] z-30 mx-auto mt-8 flex w-full max-w-xs items-center gap-1 rounded-[4px] border border-white/15 bg-black/70 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md">
+          <button
+            type="button"
+            onClick={() => setMode("events")}
+            className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
+            style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
+          >
+            Events
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("outreach")}
+            className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
+            style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
+          >
+            Outreach
+          </button>
+        </div>
+
+        <div className="mt-7 grid gap-4">
+          {activeList.map((ev) => renderMobileCard(ev, mode === "outreach"))}
+        </div>
+      </div>
+    </section>
+
+    <section id="events" ref={sectionRef} className="hidden h-[600vh] bg-[#0d0d0d] md:block">
       <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
-        <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: `linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)`, backgroundSize: "40px 40px" }} />
-        {([[8, 9], [66, 14], [15, 58], [80, 47], [44, 78]] as [number, number][]).map(([lp, tp], i) => (
-          <div key={i} className="pointer-events-none absolute rounded-full bg-white/25" style={{ left: `${lp}%`, top: `${tp}%`, width: 5, height: 5, boxShadow: '0 0 6px rgba(255,255,255,0.15)' }} />
-        ))}
-        <svg className="pointer-events-none absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
-          <line x1="8%" y1="9%" x2="66%" y2="14%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-          <line x1="66%" y1="14%" x2="80%" y2="47%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-          <line x1="15%" y1="58%" x2="44%" y2="78%" stroke="rgba(255,255,255,0.07)" strokeWidth="1" />
-        </svg>
+        <EventsBackground />
 
         <div className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
           <span ref={labelRef} style={{ fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
@@ -527,6 +634,7 @@ export default function Events() {
           </div>
         </div>
       </div>
+    </section>
 
       {/* Pop-up Modal */}
       {selectedEvent && (
@@ -562,7 +670,7 @@ export default function Events() {
                 {activeList.map((ev) => (
                   <div key={ev.id} data-id={ev.id} className="ev-slide-item absolute inset-0 w-full h-full flex flex-col invisible">
                     <div className="relative h-[42%] md:h-[48%] w-full flex-shrink-0 bg-neutral-900 border-b border-[#4FAEF3]/20 overflow-hidden">
-                      <img src={ev.img} alt={ev.name} className="w-full h-full object-cover opacity-90" />
+                      <img src={ev.img} alt={ev.name} className="w-full h-full object-cover opacity-90" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
                       <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(79,174,243,0.08)]" />
                     </div>
@@ -606,6 +714,6 @@ export default function Events() {
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
       `}</style>
-    </section>
+    </>
   );
 }
