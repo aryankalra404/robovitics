@@ -72,10 +72,13 @@ export default function Events() {
   const [selectedEvent, setSelectedEvent] = useState<DeckItem | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
+  const [mobileIndex, setMobileIndex] = useState(0);
 
   // Refs for tracking animation state
   const flippedRef = useRef<boolean[]>([]);
   const carouselRef = useRef<HTMLDivElement>(null);
+  const mobileTouchStartX = useRef<number | null>(null);
+  const mobileDidSwipe = useRef(false);
   const prevEventId = useRef<string | null>(null);
   const isSlideAnimating = useRef(false);
   const activeList = mode === "events" ? events : outreach;
@@ -176,6 +179,31 @@ export default function Events() {
     setSlideDir('prev');
     const currentIndex = activeList.findIndex(ev => ev.id === selectedEvent.id);
     setSelectedEvent(activeList[(currentIndex - 1 + activeList.length) % activeList.length]);
+  };
+
+  const goMobileCard = (direction: 'next' | 'prev') => {
+    setMobileIndex((current) => {
+      const delta = direction === 'next' ? 1 : -1;
+      return (current + delta + activeList.length) % activeList.length;
+    });
+  };
+
+  const handleMobileTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    mobileTouchStartX.current = event.touches[0]?.clientX ?? null;
+  };
+
+  const handleMobileTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (mobileTouchStartX.current === null) return;
+    const endX = event.changedTouches[0]?.clientX ?? mobileTouchStartX.current;
+    const deltaX = endX - mobileTouchStartX.current;
+    mobileTouchStartX.current = null;
+
+    if (Math.abs(deltaX) < 42) return;
+    mobileDidSwipe.current = true;
+    goMobileCard(deltaX < 0 ? 'next' : 'prev');
+    window.setTimeout(() => {
+      mobileDidSwipe.current = false;
+    }, 250);
   };
 
   // ── GSAP Slide Transition Effect ─────────────────────────────────────────
@@ -464,7 +492,10 @@ export default function Events() {
     <button
       key={`mobile-${ev.id}`}
       type="button"
-      onClick={() => setSelectedEvent(ev)}
+      onClick={() => {
+        if (mobileDidSwipe.current) return;
+        setSelectedEvent(ev);
+      }}
       className="group relative w-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] text-left shadow-[0_12px_34px_rgba(0,0,0,0.38)]"
     >
       <div
@@ -480,7 +511,16 @@ export default function Events() {
       <span className="absolute bottom-2 right-2 z-10 h-4 w-4 border-b border-r border-[#4FAEF3] shadow-[0_0_8px_rgba(79,174,243,0.55)]" />
 
       <div className="relative z-10">
-        <div className="relative h-36 overflow-hidden border-b border-[#4FAEF3]/20 bg-neutral-900">
+        <div
+          className="relative h-28 overflow-hidden border-b border-[#4FAEF3]/20 bg-neutral-900"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+              linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
+            `,
+            backgroundSize: '22px 22px',
+          }}
+        >
           <img src={ev.img} alt={ev.name} className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105" onError={(e) => { e.currentTarget.style.display = "none"; }} />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent" />
           <span className="absolute left-4 top-4 border border-[#4FAEF3]/40 bg-black/45 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3] backdrop-blur-sm">
@@ -500,12 +540,12 @@ export default function Events() {
             {ev.type}
           </p>
           <div className="my-3 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent" />
-          <p className="font-mono text-[11px] leading-relaxed text-white/75">
+          <p className="line-clamp-2 font-mono text-[11px] leading-relaxed text-white/75">
             {ev.desc}
           </p>
           <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/10 pt-3">
             <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/45">{ev.date}</span>
-            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3]">Open</span>
+            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.16em] text-[#4FAEF3]">Details</span>
           </div>
         </div>
       </div>
@@ -536,7 +576,10 @@ export default function Events() {
         <div className="sticky top-[76px] z-30 mx-auto mt-8 flex w-full max-w-xs items-center gap-1 rounded-[4px] border border-white/15 bg-black/70 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md">
           <button
             type="button"
-            onClick={() => setMode("events")}
+            onClick={() => {
+              setMode("events");
+              setMobileIndex(0);
+            }}
             className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
             style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
           >
@@ -544,7 +587,10 @@ export default function Events() {
           </button>
           <button
             type="button"
-            onClick={() => setMode("outreach")}
+            onClick={() => {
+              setMode("outreach");
+              setMobileIndex(0);
+            }}
             className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
             style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
           >
@@ -552,8 +598,57 @@ export default function Events() {
           </button>
         </div>
 
-        <div className="mt-7 grid gap-4">
-          {activeList.map((ev) => renderMobileCard(ev, mode === "outreach"))}
+        <div
+          className="mt-7"
+          onTouchStart={handleMobileTouchStart}
+          onTouchEnd={handleMobileTouchEnd}
+        >
+          <div className="mb-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+            <span>{String(mobileIndex + 1).padStart(2, '0')} / {String(activeList.length).padStart(2, '0')}</span>
+            <span>Swipe to browse</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Previous event"
+              onClick={() => goMobileCard('prev')}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/65 backdrop-blur-sm transition-colors active:bg-white/10"
+            >
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+
+            <div className="min-w-0 flex-1">
+              {renderMobileCard(activeList[mobileIndex], mode === "outreach")}
+            </div>
+
+            <button
+              type="button"
+              aria-label="Next event"
+              onClick={() => goMobileCard('next')}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/65 backdrop-blur-sm transition-colors active:bg-white/10"
+            >
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="mt-5 flex items-center justify-center gap-2">
+            {activeList.map((ev, index) => (
+              <button
+                key={`dot-${ev.id}`}
+                type="button"
+                aria-label={`Show ${ev.name}`}
+                onClick={() => setMobileIndex(index)}
+                className={`h-1.5 rounded-full transition-all ${
+                  index === mobileIndex ? 'w-7 bg-[#4FAEF3]' : 'w-1.5 bg-white/25'
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -639,51 +734,70 @@ export default function Events() {
       {/* Pop-up Modal */}
       {selectedEvent && (
         <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/30 backdrop-blur-xl p-3 md:p-8"
+          className="fixed inset-0 z-[9999] flex items-end justify-center bg-black/65 p-0 backdrop-blur-xl md:items-center md:p-8"
           style={{ animation: isClosing ? 'ev-fade-out 0.3s ease-in forwards' : 'ev-fade-in 0.3s ease-out forwards' }}
           onClick={handleCloseModal}
         >
           <div
-            className="relative w-full max-w-4xl h-[90vh] sm:h-[88vh] max-h-[760px] mx-0 md:mx-20"
+            className="relative h-[86svh] w-full max-w-4xl mx-0 md:mx-20 md:h-[88vh] md:max-h-[760px]"
             onClick={(e) => e.stopPropagation()}
             style={{ animation: isClosing ? 'ev-modal-exit 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards' : 'ev-modal-entry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards' }}
           >
-            <button className="absolute left-2 md:-left-16 top-1/2 -translate-y-1/2 z-[10010] flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-black/60 text-white/70 hover:bg-black/90 hover:text-[#4FAEF3] hover:scale-110 active:scale-90 transition-all duration-200 ease-out border border-white/20 hover:border-[#4FAEF3]/60 backdrop-blur-md shadow-lg" onClick={handlePrev}>
+            <button className="absolute bottom-4 left-5 z-[10010] flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/70 text-white/70 shadow-lg backdrop-blur-md transition-all duration-200 ease-out hover:bg-black/90 hover:text-[#4FAEF3] active:scale-90 md:-left-16 md:bottom-auto md:top-1/2 md:h-12 md:w-12 md:-translate-y-1/2 md:hover:scale-110" onClick={handlePrev}>
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
             </button>
 
-            <button className="absolute right-2 md:-right-16 top-1/2 -translate-y-1/2 z-[10010] flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-full bg-black/60 text-white/70 hover:bg-black/90 hover:text-[#4FAEF3] hover:scale-110 active:scale-90 transition-all duration-200 ease-out border border-white/20 hover:border-[#4FAEF3]/60 backdrop-blur-md shadow-lg" onClick={handleNext}>
+            <button className="absolute bottom-4 right-5 z-[10010] flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/70 text-white/70 shadow-lg backdrop-blur-md transition-all duration-200 ease-out hover:bg-black/90 hover:text-[#4FAEF3] active:scale-90 md:-right-16 md:bottom-auto md:top-1/2 md:h-12 md:w-12 md:-translate-y-1/2 md:hover:scale-110" onClick={handleNext}>
               <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
             </button>
 
-            <div className="absolute inset-0 bg-[#0a0a0a] border border-white/20 rounded-xl shadow-2xl shadow-[#4FAEF3]/15 overflow-hidden">
-              <span className="absolute z-40 pointer-events-none" style={{ top: 10, left: 10, width: 22, height: 22, borderTop: '2px solid rgba(79,174,243,0.8)', borderLeft: '2px solid rgba(79,174,243,0.8)', filter: 'drop-shadow(0 0 6px rgba(79,174,243,0.45))' }} />
-              <span className="absolute z-40 pointer-events-none" style={{ top: 10, right: 10, width: 22, height: 22, borderTop: '2px solid rgba(79,174,243,0.8)', borderRight: '2px solid rgba(79,174,243,0.8)', filter: 'drop-shadow(0 0 6px rgba(79,174,243,0.45))' }} />
-              <span className="absolute z-40 pointer-events-none" style={{ bottom: 10, left: 10, width: 22, height: 22, borderBottom: '2px solid rgba(79,174,243,0.8)', borderLeft: '2px solid rgba(79,174,243,0.8)', filter: 'drop-shadow(0 0 6px rgba(79,174,243,0.45))' }} />
-              <span className="absolute z-40 pointer-events-none" style={{ bottom: 10, right: 10, width: 22, height: 22, borderBottom: '2px solid rgba(79,174,243,0.8)', borderRight: '2px solid rgba(79,174,243,0.8)', filter: 'drop-shadow(0 0 6px rgba(79,174,243,0.45))' }} />
+            <div className="absolute bottom-5 left-1/2 z-[10010] -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.18em] text-white/45 md:hidden">
+              {selectedEvent ? String(activeList.findIndex((ev) => ev.id === selectedEvent.id) + 1).padStart(2, '0') : '01'} / {String(activeList.length).padStart(2, '0')}
+            </div>
 
-              <button className="absolute top-4 right-4 z-50 flex h-8 w-8 items-center justify-center rounded-full bg-black/50 text-white/70 hover:bg-black/80 hover:text-[#4FAEF3] active:scale-90 transition-all duration-200 ease-out border border-white/10 hover:border-[#4FAEF3]/50 backdrop-blur-md" onClick={handleCloseModal}>
+            <div className="absolute inset-0 overflow-hidden rounded-t-[18px] border border-white/12 bg-[#0a0a0a] shadow-2xl shadow-black/60 md:rounded-xl md:border-white/20 md:shadow-[#4FAEF3]/15">
+
+              <button className="absolute right-4 top-4 z-50 flex h-9 w-9 items-center justify-center rounded-full border border-white/12 bg-black/60 text-white/75 backdrop-blur-md transition-all duration-200 ease-out hover:bg-black/80 hover:text-[#4FAEF3] active:scale-90 md:h-8 md:w-8" onClick={handleCloseModal}>
                 ✕
               </button>
 
               <div className="relative w-full h-full" ref={carouselRef}>
                 {activeList.map((ev) => (
                   <div key={ev.id} data-id={ev.id} className="ev-slide-item absolute inset-0 w-full h-full flex flex-col invisible">
-                    <div className="relative h-[42%] md:h-[48%] w-full flex-shrink-0 bg-neutral-900 border-b border-[#4FAEF3]/20 overflow-hidden">
+                    <div
+                      className="relative h-[30%] w-full flex-shrink-0 overflow-hidden border-b border-[#4FAEF3]/20 bg-neutral-900 md:h-[48%]"
+                      style={{
+                        backgroundImage: `
+                          linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                          linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
+                        `,
+                        backgroundSize: '24px 24px',
+                      }}
+                    >
                       <img src={ev.img} alt={ev.name} className="w-full h-full object-cover opacity-90" onError={(e) => { e.currentTarget.style.display = "none"; }} />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
                       <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(79,174,243,0.08)]" />
                     </div>
 
-                    <div className="p-8 md:p-10 relative z-10 flex-grow flex flex-col">
-                      <h2 className="text-3xl md:text-5xl font-black text-white tracking-wide mb-2" style={{ fontFamily: '"Inter", "Arial Black", sans-serif', textShadow: '0 0 26px rgba(255,255,255,0.25)' }}>
+                    <div className="relative z-10 flex min-h-0 flex-grow flex-col px-5 pb-20 pt-5 md:p-10">
+                      <div className="mb-3 flex flex-wrap gap-2 md:hidden">
+                        <span className="border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-[#4FAEF3]">
+                          {ev.status}
+                        </span>
+                        <span className="border border-white/10 bg-white/[0.035] px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/55">
+                          {mode === "outreach" ? "Outreach" : "Event"}
+                        </span>
+                      </div>
+                      <h2 className="mb-2 pr-8 text-[26px] font-black uppercase leading-tight tracking-wide text-white md:pr-0 md:text-5xl" style={{ fontFamily: '"Inter", "Arial Black", sans-serif', textShadow: '0 0 26px rgba(255,255,255,0.25)' }}>
                         {ev.name}
                       </h2>
-                      <h3 className="font-mono text-xs md:text-sm tracking-widest text-[#4FAEF3]/90 mb-5 uppercase">
-                        {ev.type} {"//"} {ev.date}
+                      <h3 className="mb-3 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-[#4FAEF3]/90 md:mb-5 md:text-sm md:tracking-widest">
+                        <span className="block md:inline">{ev.type}</span>
+                        <span className="hidden md:inline"> {"//"} </span>
+                        <span className="mt-1 block text-white/45 md:mt-0 md:inline md:text-[#4FAEF3]/90">{ev.date}</span>
                       </h3>
-                      <div className="w-full h-[1px] bg-gradient-to-r from-[#4FAEF3]/30 via-white/10 to-transparent mb-6" />
-                      <div className="space-y-4 md:space-y-5 overflow-y-auto pr-2 custom-scrollbar">
+                      <div className="mb-3 h-[1px] w-full bg-gradient-to-r from-[#4FAEF3]/30 via-white/10 to-transparent md:mb-6" />
+                      <div className="custom-scrollbar min-h-0 flex-1 space-y-3 overflow-y-auto pr-2 md:space-y-5">
                         <p className="font-mono text-xs md:text-sm text-white/90 leading-relaxed">{ev.desc}</p>
                         <p className="font-mono text-[10px] md:text-xs text-white/65 leading-relaxed">{ev.details}</p>
                       </div>
