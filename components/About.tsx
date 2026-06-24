@@ -27,50 +27,97 @@ export default function About() {
   return (
     <>
       {/* MOBILE LAYOUT */}
-      <section id="about-mobile" className="relative z-10 w-full text-white px-6 py-24 block md:hidden">
-        <div className="font-mono text-gray-500 text-sm tracking-widest uppercase mb-12">
-          <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
+      <section id="about-mobile" className="relative z-10 block w-full px-4 py-20 text-white md:hidden">
+        <div className="mb-10 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
+          <span className="mr-2 font-bold text-white">01.</span> System.Logs // About
         </div>
 
-        <div className="flex flex-col gap-24">
+        <div className="flex flex-col gap-7">
           
           {/* About Us Mobile */}
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col justify-center">
-              <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-                About Us <br/> <span className="text-xl md:text-2xl font-medium tracking-tight mt-3 block" style={{ color: 'rgba(255,255,255,0.7)' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
+          <div className="relative overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: `
+                  linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                  linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+                `,
+                backgroundSize: '18px 18px, 18px 18px, auto',
+              }}
+            />
+            <div className="relative z-10">
+              <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#4FAEF3]/75">Mission Brief</span>
+              <h2 className="mt-3 text-[34px] font-black uppercase leading-none tracking-[-0.02em]">
+                About <span className="text-[#4FAEF3]">RoboVITics</span>
               </h2>
-              <div className="flex flex-col gap-5 mt-2">
-                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
-                  RoboVITics, the official Robotics Club of VIT Vellore, is a community of passionate innovators exploring robotics, automation, and emerging technologies. Through hands-on projects, workshops, and technical events, we provide students with opportunities to learn, create, and transform ideas into reality.
-                </p>
-                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
-                  Over the years, RoboVITics has grown into a hub of innovation and excellence, empowering students to build impactful solutions, compete on prestigious platforms, and continuously expand their technical expertise. Driven by creativity, collaboration, and ambition, we strive to shape the next generation of engineers and innovators.
-                </p>
+              <p className="mt-3 font-mono text-[11px] leading-relaxed text-white/55">
+                &quot;Innovation is when imagination meets ambition.&quot;
+              </p>
+
+              <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/35 to-transparent" />
+
+              <p className="font-mono text-[12px] leading-relaxed text-white/78">
+                The official Robotics Club of VIT Vellore. We build bots, run workshops, compete, and turn student ideas into working systems.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {['Since 2010', 'Robotics', 'AI', 'Hardware'].map((chip) => (
+                  <span key={chip} className="border border-white/10 bg-white/[0.035] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/65">
+                    {chip}
+                  </span>
+                ))}
               </div>
-            </div>
-            <div className="w-full flex justify-center mt-2">
-              <img src="/AboutUs.png.jpeg" alt="About Us" className="w-full max-w-[400px] rounded-2xl object-cover shadow-[0_0_40px_rgba(79,174,243,0.15)] ring-1 ring-white/10" />
+
+              <div className="mt-5 overflow-hidden rounded-[3px] border border-white/10 bg-black">
+                <img src="/AboutUs.png.jpeg" alt="About Us" className="h-48 w-full object-cover opacity-90 grayscale" />
+              </div>
             </div>
           </div>
 
           {/* About VIT Mobile */}
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col justify-center">
-              <h2 className="text-5xl font-black tracking-tighter mb-4 drop-shadow-lg">
-                About VIT <br/> <span className="text-xl md:text-2xl font-medium tracking-tight mt-3 block" style={{ color: 'rgba(255,255,255,0.7)' }}>&quot;A place to learn, a chance to grow&quot;</span>
+          <div className="relative overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background: `
+                  linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                  linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+                `,
+                backgroundSize: '18px 18px, 18px 18px, auto',
+              }}
+            />
+            <div className="relative z-10">
+              <span className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#4FAEF3]/75">Campus Node</span>
+              <h2 className="mt-3 text-[34px] font-black uppercase leading-none tracking-[-0.02em]">
+                About <span className="text-[#4FAEF3]">VIT</span>
               </h2>
-              <div className="flex flex-col gap-5 mt-2">
-                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
-                  Vellore Institute of Technology (VIT) is one of India&apos;s leading private universities, accredited with A++ by NAAC and consistently ranked among the top institutions by NIRF. With a thriving community of 40,000+ students, strong industry partnerships, and global collaborations, VIT fosters an environment that encourages innovation, research, and hands-on learning.
-                </p>
-                <p className="text-white/90 text-base md:text-lg leading-relaxed drop-shadow-md tracking-normal font-light">
-                  This dynamic ecosystem empowers students to explore their interests, develop practical skills, and contribute to impactful initiatives, serving as the foundation for communities like RoboVITics to learn, innovate, and grow.
-                </p>
+              <p className="mt-3 font-mono text-[11px] leading-relaxed text-white/55">
+                &quot;A place to learn, a chance to grow.&quot;
+              </p>
+
+              <div className="my-4 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/35 to-transparent" />
+
+              <p className="font-mono text-[12px] leading-relaxed text-white/78">
+                VIT Vellore is one of India&apos;s leading universities, with a strong engineering culture and global ecosystem.
+              </p>
+              <p className="mt-3 font-mono text-[12px] leading-relaxed text-white/62">
+                It gives communities like RoboVITics the space to build, experiment, and grow.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {['40k+ Students', 'A++ NAAC', 'Global Network'].map((chip) => (
+                  <span key={chip} className="border border-white/10 bg-white/[0.035] px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-white/65">
+                    {chip}
+                  </span>
+                ))}
               </div>
-            </div>
-            <div className="w-full flex justify-center mt-2">
-              <img src="/AboutVit.png.jpeg" alt="About VIT" className="w-full max-w-[400px] rounded-2xl object-cover shadow-[0_0_40px_rgba(79,174,243,0.15)] ring-1 ring-white/10" />
+
+              <div className="mt-5 overflow-hidden rounded-[3px] border border-white/10 bg-black">
+                <img src="/AboutVit.png.jpeg" alt="About VIT" className="h-48 w-full object-cover opacity-90 grayscale" />
+              </div>
             </div>
           </div>
 
