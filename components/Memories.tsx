@@ -430,11 +430,11 @@ export default function MemoryWarpTunnel() {
       nodes.forEach((n, i) => {
         const diff  = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
-        const x     = -diff * (isMobile ? 3.45 : 5.2);
-        const y     = Math.sin(i * 1.7) * 0.6;
+        const x     = isMobile ? 0 : -diff * 5.2;
+        const y     = isMobile ? diff * 5.2 : Math.sin(i * 1.7) * 0.6;
         const worldZ = 2 - depth * 1.25;
-        const rotY  = clamp(diff * -18, -38, 38);
-        const rotX  = clamp(-y * 8, -7, 7);
+        const rotY  = isMobile ? 0 : clamp(diff * -18, -38, 38);
+        const rotX  = isMobile ? 0 : clamp(-y * 8, -7, 7);
         const drift = Math.sin((time * 0.001) + i) * 10;
 
         const absDiff = Math.abs(diff);
@@ -444,7 +444,7 @@ export default function MemoryWarpTunnel() {
 
         if (opacity <= 0.01) { n.el.style.opacity = '0'; return; }
 
-        const v = new THREE.Vector3(x, 0, worldZ);
+        const v = new THREE.Vector3(x, isMobile ? y : 0, worldZ);
         v.project(camera);
         if (v.z < -1 || v.z > 1) { n.el.style.opacity = '0'; return; }
 
@@ -452,7 +452,7 @@ export default function MemoryWarpTunnel() {
         const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
         const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(isMobile ? 0.58 : 0.9, isMobile ? 0.76 : 1.08, opacity) * lerp(1, isMobile ? 0.72 : 0.55, portalT);
 
-        n.el.style.transform = `translate(${sx + drift}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
+        n.el.style.transform = `translate(${sx + (isMobile ? 0 : drift)}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
         n.el.style.opacity   = `${opacity * (1 - portalT)}`;
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
