@@ -246,14 +246,9 @@ export default function Projects() {
         offset: ["start end", "end start"] 
     });
 
-    // GEAR MAPPING:
-    // 0.0 = Gear begins entering immediately as the section touches the screen
-    // 0.10 = Gear fully exits left just before the section pins
     const rawGearX = useTransform(scrollYProgress, [0, 0.10], [120, -120]); 
-    // Met in the middle: exactly 1 full rotation (-360 degrees) for a perfectly balanced heavy roll
     const rawGearRot = useTransform(scrollYProgress, [0, 0.10], [0, -360]);
 
-    // Slightly tuned physics: Less stiff than original, but a bit more responsive than previous
     const springConfig = { stiffness: 32, damping: 38, restDelta: 0.001 };
     
     const smoothGearX = useSpring(rawGearX, springConfig);
@@ -367,13 +362,14 @@ export default function Projects() {
         tl.to({}, { duration: 0.1 });
 
         // ── ScrollTrigger ─────────────────────────────────────────────────────
+        // NOTE: no more `pin` / `anticipatePin`. The sticky `pinRef` div handles
+        // the "staying in place" visually via CSS. GSAP only drives timeline
+        // progress against scroll — same fix as Domains/Events.
         stRef.current = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
             end: `+=${window.innerHeight * total}`, 
             scrub: 1,
-            pin: pin,
-            anticipatePin: 1,
             animation: tl,
         });
 
@@ -389,6 +385,7 @@ export default function Projects() {
             id="projects"
             ref={sectionRef}
             className="relative bg-[#0d0d0d]"
+            style={{ height: `${(total + 1) * 100}vh` }}
         >
             <motion.div
                 style={{ x: gearX, rotate: smoothGearRot }}
@@ -402,7 +399,7 @@ export default function Projects() {
 
             <div
                 ref={pinRef}
-                className="relative h-screen w-full overflow-hidden"
+                className="sticky top-0 h-screen w-full overflow-hidden"
             >
                 <SectionBackground />
 

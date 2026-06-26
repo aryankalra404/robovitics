@@ -312,7 +312,7 @@ function IndividualLogPanel() {
 /* Main export 
 /* ------------------------------------------------------------------ */
 export default function Achievements({
-  clubCertificateImageSrc = '/achievements/elite-club-2024.jpg',
+  clubCertificateImageSrc = '/achievements/elite-club-2024.jpeg',
 }: {
   clubCertificateImageSrc?: string;
 }) {

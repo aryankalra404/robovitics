@@ -100,13 +100,23 @@ const getGridPositions = useCallback((count: number) => {
   const offsetY = Math.min(vh * 0.22, Math.max(vh / 2 - 160, 120));
 
   if (count === 6) {
+    const cardW = 270;
+    const cardH = 195;
+    const colGap = 90;   // edge-to-edge gap between left/center/right columns
+    const rowGap = 80;   // edge-to-edge gap between top/bottom rows
+
+    // keep columns from overflowing on narrower desktop widths
+    const maxOx = Math.max(vw / 2 - cardW / 2 - 30, 200);
+    const ox = Math.min(cardW + colGap, maxOx);
+    const oy = (cardH + rowGap) / 2;
+
     return [
-      { x: -offsetX, y: -offsetY },  // top-left
-      { x: 0,        y: -offsetY },  // top-center
-      { x:  offsetX, y: -offsetY },  // top-right
-      { x: -offsetX, y:  offsetY },  // bottom-left
-      { x: 0,        y:  offsetY },  // bottom-center
-      { x:  offsetX, y:  offsetY },  // bottom-right
+      { x: -ox, y: -oy },  // top-left
+      { x: 0,   y: -oy },  // top-center
+      { x:  ox, y: -oy },  // top-right
+      { x: -ox, y:  oy },  // bottom-left
+      { x: 0,   y:  oy },  // bottom-center
+      { x:  ox, y:  oy },  // bottom-right
     ];
   }
 
