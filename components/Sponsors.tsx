@@ -43,6 +43,7 @@ const SPONSORS: Sponsor[] = [
     { id: 'SP_008', name: 'QUASAR DESIGN', tier: 'LEVEL 3' },
     { id: 'SP_009', name: 'OMNI SYSTEMS', tier: 'LEVEL 2' },
     { id: 'SP_010', name: 'VANGUARD AI', tier: 'LEVEL 1' },
+    { id: 'SP_011', name: 'YOUR_SPONSOR_NAME', tier: 'LEVEL X' },
 ];
 
 function SponsorMarquee() {
@@ -552,14 +553,40 @@ export default function Sponsors() {
             <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
                 <Header />
 
-                {/* Desktop Grid */}
-                <div className="hidden md:grid md:grid-cols-5 gap-5">
-                    {SPONSORS.map(sp => (
-                        <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-                            <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
-                        </motion.div>
-                    ))}
-                </div>
+                {/* Desktop Grid — 3 / 5 / 3 symmetric layout */}
+<div className="hidden md:flex md:flex-col gap-5">
+
+    {/* Row 1 — 3 cards, centered */}
+    <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
+        {SPONSORS.slice(0, 3).map((sp, i) => (
+            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+                <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
+            </motion.div>
+        ))}
+    </div>
+
+    {/* Row 2 — 5 cards, full width */}
+    <div className="grid grid-cols-5 gap-5">
+        {SPONSORS.slice(3, 8).map((sp, i) => (
+            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: (i + 3) * 0.06 }}>
+                <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
+            </motion.div>
+        ))}
+    </div>
+
+    {/* Row 3 — 3 cards, centered */}
+    <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
+        {SPONSORS.slice(8, 11).map((sp, i) => (
+            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: (i + 8) * 0.06 }}>
+                <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
+            </motion.div>
+        ))}
+    </div>
+
+</div>
 
                 {/* Mobile Auto-Scroll */}
                 <div className="md:hidden">
