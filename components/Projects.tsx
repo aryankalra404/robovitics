@@ -454,7 +454,7 @@ export default function Projects() {
 
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
                     <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-                        &gt; SCROLL TO ADVANCE ASSEMBLY
+                        &gt;  
                     </span>
                 </div>
             </div>

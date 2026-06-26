@@ -33,15 +33,35 @@ function solveFABRIK(joints: Point[], target: Point, lens: number[]): Point[] {
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const SPONSORS: Sponsor[] = [
-    { id: 'SP_001', name: 'NEXON DYNAMICS', tier: 'LEVEL 1 PARTNER' },
-    { id: 'SP_002', name: 'TITANFORGE LABS', tier: 'LEVEL 1 PARTNER' },
-    { id: 'SP_003', name: 'VOLTARC SYSTEMS', tier: 'LEVEL 2 PARTNER' },
-    { id: 'SP_004', name: 'CYGNUS ROBOTICS', tier: 'LEVEL 1 PARTNER' },
-    { id: 'SP_005', name: 'AXION VENTURES', tier: 'LEVEL 2 PARTNER' },
-    { id: 'SP_006', name: 'HELIX FOUNDRY', tier: 'LEVEL 3 PARTNER' },
-    { id: 'SP_007', name: 'MERIDIAN TECH', tier: 'LEVEL 2 PARTNER' },
-    { id: 'SP_008', name: 'QUASAR DESIGN', tier: 'LEVEL 3 PARTNER' },
+    { id: 'SP_001', name: 'NEXON DYNAMICS', tier: 'LEVEL 1' },
+    { id: 'SP_002', name: 'TITANFORGE LABS', tier: 'LEVEL 1' },
+    { id: 'SP_003', name: 'VOLTARC SYSTEMS', tier: 'LEVEL 2' },
+    { id: 'SP_004', name: 'CYGNUS ROBOTICS', tier: 'LEVEL 1' },
+    { id: 'SP_005', name: 'AXION VENTURES', tier: 'LEVEL 2' },
+    { id: 'SP_006', name: 'HELIX FOUNDRY', tier: 'LEVEL 3' },
+    { id: 'SP_007', name: 'MERIDIAN TECH', tier: 'LEVEL 2' },
+    { id: 'SP_008', name: 'QUASAR DESIGN', tier: 'LEVEL 3' },
+    { id: 'SP_009', name: 'OMNI SYSTEMS', tier: 'LEVEL 2' },
+    { id: 'SP_010', name: 'VANGUARD AI', tier: 'LEVEL 1' },
 ];
+
+function SponsorMarquee() {
+    return (
+        <div className="flex w-full overflow-hidden md:hidden">
+            <motion.div 
+                className="flex gap-4"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ duration: 25, ease: "linear", repeat: Infinity }}
+            >
+                {[...SPONSORS, ...SPONSORS].map((sp, i) => (
+                    <div key={`${sp.id}-${i}`} className="w-[200px] flex-shrink-0">
+                        <SponsorCard sponsor={sp} isHovered={false} onHoverChange={() => {}} />
+                    </div>
+                ))}
+            </motion.div>
+        </div>
+    );
+}
 
 // ─── SPONSOR CARD ───────────────────────────────────────────────────────────
 function SponsorCard({ sponsor, isHovered, onHoverChange }: {
@@ -524,171 +544,247 @@ export default function Sponsors() {
     }, [measure]);
 
     return (
-        <section ref={secRef} id="sponsors" className="relative z-40 w-full overflow-hidden bg-[#0d0d0d]">
-            
-            {/* MATCHING EVENTS / DOMAINS BACKGROUND GRID */}
+        <section ref={secRef} id="sponsors" className="relative z-40 w-full overflow-hidden bg-[#0d0d0d] py-20">
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                <div
-                    className="absolute inset-0"
-                    style={{
-                        backgroundImage: `
-                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-                            linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)
-                        `,
-                        backgroundSize: "40px 40px",
-                    }}
-                />
+                <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)', backgroundSize: "40px 40px" }} />
             </div>
-            <div className="absolute inset-0 pointer-events-none z-0" style={{ background: 'radial-gradient(ellipse 60% 40% at 50% 30%,rgba(79,174,243,0.04),transparent 70%)' }} />
-
-            {/* DOMAINS SYSTEM LOG OVERLAY TOP-LEFT */}
-            <div className="absolute top-[10%] left-[6%] z-20 pointer-events-none hidden md:block">
-                <span style={{
-                    fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
-                    color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
-                }}>
-                    <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>03.</span>
-                    SYSTEM.LOGS // SPONSORS
-                </span>
-            </div>
-
-            {/* ═══════════ SVG ROBOTIC ARM ═══════════ */}
-<svg ref={svgRef} className="absolute inset-0 w-full h-full z-[30] pointer-events-none hidden md:block" viewBox="0 0 1400 900" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
-                <defs>
-                    <linearGradient id="beamMetal" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#3a3f47" />
-                        <stop offset="45%" stopColor="#23262b" />
-                        <stop offset="55%" stopColor="#1c1e22" />
-                        <stop offset="100%" stopColor="#0d0e10" />
-                    </linearGradient>
-                    <radialGradient id="jointMetal" cx="35%" cy="30%" r="75%">
-                        <stop offset="0%" stopColor="#454a52" />
-                        <stop offset="55%" stopColor="#262a30" />
-                        <stop offset="100%" stopColor="#0a0b0d" />
-                    </radialGradient>
-                    <linearGradient id="pistonMetal" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#34383e" />
-                        <stop offset="50%" stopColor="#1a1c1f" />
-                        <stop offset="100%" stopColor="#0a0b0c" />
-                    </linearGradient>
-                    <pattern id="carbonFiber" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-                        <rect width="6" height="6" fill="#15171a" />
-                        <path d="M0 0H3V3H0Z" fill="#1b1e22" />
-                        <path d="M3 3H6V6H3Z" fill="#1b1e22" />
-                    </pattern>
-                    <filter id="edgeGlow" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="1.4" result="b" />
-                        <feMerge>
-                            <feMergeNode in="b" />
-                            <feMergeNode in="SourceGraphic" />
-                        </feMerge>
-                    </filter>
-                    <linearGradient id="beamDepth" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.10" />
-                        <stop offset="35%" stopColor="#ffffff" stopOpacity="0" />
-                        <stop offset="70%" stopColor="#000000" stopOpacity="0" />
-                        <stop offset="100%" stopColor="#000000" stopOpacity="0.35" />
-                    </linearGradient>
-                    <radialGradient id="jointDepth" cx="32%" cy="28%" r="80%">
-                        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
-                        <stop offset="50%" stopColor="#ffffff" stopOpacity="0" />
-                        <stop offset="100%" stopColor="#000000" stopOpacity="0.4" />
-                    </radialGradient>
-                    <pattern id="wireGrid" width="14" height="14" patternUnits="userSpaceOnUse">
-                        <path d="M0 0H14M0 0V14" stroke="#4FAEF3" strokeWidth="0.4" strokeOpacity="0.10" />
-                    </pattern>
-                    <pattern id="wireGridFine" width="9" height="9" patternUnits="userSpaceOnUse">
-                        <path d="M0 0H9M0 0V9" stroke="#4FAEF3" strokeWidth="0.35" strokeOpacity="0.08" />
-                    </pattern>
-                </defs>
-
-                {/* Reach radius */}
-                <circle ref={ref('rc')} fill="none" strokeWidth="1" strokeDasharray="16 12" />
-                {/* Cables / Hoses */}
-                {[0, 1, 2].map(i => <path key={`cb${i}`} ref={ref(`cb${i}`)} fill="none" strokeWidth="2.5" strokeDasharray="7 6" strokeLinecap="round" />)}
-                {/* Heavy Base pedestal */}
-                <rect ref={ref('bP')} x={-90} y={-5} width={180} height={25} rx={4} strokeWidth="3" />
-                <polygon ref={ref('bC')} points="-45,-45 45,-45 60,-5 -60,-5" strokeWidth="2.5" />
-                {[0, 1, 2, 3, 4, 5].map(i => <circle key={`bB${i}`} ref={ref(`bB${i}`)} r={4} />)}
-
-                {/* Structural beams (Tapered Polygons) with depth + wireframe + bevel */}
-                {[0, 1, 2].map(i => (
-                    <g key={`s${i}`}>
-                        <polygon ref={ref(`bm${i}`)} strokeWidth="3" strokeLinejoin="round" />
-                        <polygon ref={ref(`bmDepth${i}`)} fill="url(#beamDepth)" stroke="none" />
-                        <polygon ref={ref(`bmGrid${i}`)} fill="url(#wireGrid)" stroke="none" />
-                        <polygon ref={ref(`pn${i}`)} strokeWidth="1.5" strokeLinejoin="round" />
-                        <line ref={ref(`bmBevel${i}`)} strokeWidth="1" strokeLinecap="round" />
-                        <line ref={ref(`hk${i}0`)} />
-                        <line ref={ref(`hk${i}1`)} />
-                        <line ref={ref(`hk${i}2`)} />
-                    </g>
-                ))}
-
-                {/* Hydraulic Piston on Base Link */}
-                <rect ref={ref('hydC')} rx="4" strokeWidth="2" />
-                <rect ref={ref('hydR')} rx="1" strokeWidth="1.5" />
-
-                {/* Joints with depth, wireframe grid, and beveled rim */}
-                {[0, 1, 2, 3].map(j => (
-                    <g key={`j${j}`}>
-                        <rect ref={ref(`jF${j}0`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
-                        <rect ref={ref(`jF${j}1`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
-                        <rect ref={ref(`jF${j}2`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
-                        <circle ref={ref(`jM${j}`)} r={JR[j] * 0.85} strokeWidth="2" />
-                        <circle ref={ref(`jH${j}`)} r={JR[j]} strokeWidth="3" />
-                        <circle ref={ref(`jDepth${j}`)} fill="url(#jointDepth)" stroke="none" />
-                        <circle ref={ref(`jGrid${j}`)} fill="url(#wireGridFine)" stroke="none" opacity="0.5" />
-                        <circle ref={ref(`jBevel${j}`)} fill="none" strokeWidth="1" strokeDasharray="3 2" />
-                        <circle ref={ref(`jG${j}`)} r={JR[j] - 4} strokeWidth="4" strokeDasharray="6 4" />
-                        <circle ref={ref(`jI${j}`)} r={JIR[j]} strokeWidth="2" />
-                        <circle ref={ref(`jS${j}`)} r={JSR[j]} />
-                        <line ref={ref(`cH${j}`)} strokeWidth="1.5" />
-                        <line ref={ref(`cV${j}`)} strokeWidth="1.5" />
-                        {j >= 1 && j <= 2 && [0, 1, 2, 3, 4, 5, 6, 7].map(bi => <circle key={`jB${j}${bi}`} ref={ref(`jB${j}${bi}`)} r={2} />)}
-                        <circle ref={ref(`jLed${j}`)} r={2.2} fill="#4FAEF3" filter="url(#edgeGlow)" />
-                    </g>
-                ))}
-
-                {/* Advanced Pincer Claw */}
-                <polygon ref={ref('wB')} strokeWidth="2.5" strokeLinejoin="round" />
-                <polygon ref={ref('wBDepth')} fill="url(#beamDepth)" stroke="none" />
-                <path ref={ref('fG_T')} strokeWidth="2.5" strokeLinejoin="round" />
-                <path ref={ref('fG_B')} strokeWidth="2.5" strokeLinejoin="round" />
-                <path ref={ref('pD_T')} strokeWidth="1.5" strokeLinejoin="round" />
-                <path ref={ref('pD_B')} strokeWidth="1.5" strokeLinejoin="round" />
-                <circle ref={ref('pl')} fill="none" strokeWidth="2" />
-
-                {/* Angle annotations */}
-                {[1, 2].map(i => <text key={`lb${i}`} ref={ref(`lb${i}`)} fontSize="14" fontWeight="bold" fontFamily="var(--font-geist-mono),monospace" />)}
-            </svg>
-
-            {/* Content */}
-            <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-8 md:px-12 lg:px-24 py-20 sm:py-24 md:py-32">
+            
+            <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
                 <Header />
-                <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}
-                    variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+
+                {/* Desktop Grid */}
+                <div className="hidden md:grid md:grid-cols-5 gap-5">
                     {SPONSORS.map(sp => (
-                        <motion.div key={sp.id} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } } }}>
+                        <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
                             <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
                         </motion.div>
                     ))}
-                </motion.div>
+                </div>
 
-                {/* Status Telemetry */}
-                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.8 }}
-                    className="mt-12 sm:mt-16 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 pointer-events-none">
-                    {[{ l: 'IK_JOINTS', v: `${NJ}` }, { l: 'COVERAGE', v: '100%' }, { l: 'ARM_STATUS', v: hId ? 'LOCKED' : 'TRACKING' }].map(x => (
-                        <div key={x.l} className="flex items-center gap-2">
-                            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#4FAEF3', boxShadow: '0 0 6px rgba(79,174,243,0.5)' }} />
-                            <span className="font-mono text-[9px] sm:text-[10px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
-                                {x.l}: <span style={{ color: '#ffffff', fontWeight: 'bold' }}>{x.v}</span>
-                            </span>
-                        </div>
-                    ))}
-                </motion.div>
+                {/* Mobile Auto-Scroll */}
+                <div className="md:hidden">
+                    <SponsorMarquee />
+                </div>
             </div>
+
+            {/* Arm SVG remains behind or above as you prefer */}
+            <svg ref={svgRef} className="absolute inset-0 w-full h-full z-[30] pointer-events-none hidden md:block" viewBox="0 0 1400 900" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+
+                <defs>
+
+                    <linearGradient id="beamMetal" x1="0" y1="0" x2="0" y2="1">
+
+                        <stop offset="0%" stopColor="#3a3f47" />
+
+                        <stop offset="45%" stopColor="#23262b" />
+
+                        <stop offset="55%" stopColor="#1c1e22" />
+
+                        <stop offset="100%" stopColor="#0d0e10" />
+
+                    </linearGradient>
+
+                    <radialGradient id="jointMetal" cx="35%" cy="30%" r="75%">
+
+                        <stop offset="0%" stopColor="#454a52" />
+
+                        <stop offset="55%" stopColor="#262a30" />
+
+                        <stop offset="100%" stopColor="#0a0b0d" />
+
+                    </radialGradient>
+
+                    <linearGradient id="pistonMetal" x1="0" y1="0" x2="0" y2="1">
+
+                        <stop offset="0%" stopColor="#34383e" />
+
+                        <stop offset="50%" stopColor="#1a1c1f" />
+
+                        <stop offset="100%" stopColor="#0a0b0c" />
+
+                    </linearGradient>
+
+                    <pattern id="carbonFiber" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+
+                        <rect width="6" height="6" fill="#15171a" />
+
+                        <path d="M0 0H3V3H0Z" fill="#1b1e22" />
+
+                        <path d="M3 3H6V6H3Z" fill="#1b1e22" />
+
+                    </pattern>
+
+                    <filter id="edgeGlow" x="-50%" y="-50%" width="200%" height="200%">
+
+                        <feGaussianBlur stdDeviation="1.4" result="b" />
+
+                        <feMerge>
+
+                            <feMergeNode in="b" />
+
+                            <feMergeNode in="SourceGraphic" />
+
+                        </feMerge>
+
+                    </filter>
+
+                    <linearGradient id="beamDepth" x1="0" y1="0" x2="1" y2="1">
+
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.10" />
+
+                        <stop offset="35%" stopColor="#ffffff" stopOpacity="0" />
+
+                        <stop offset="70%" stopColor="#000000" stopOpacity="0" />
+
+                        <stop offset="100%" stopColor="#000000" stopOpacity="0.35" />
+
+                    </linearGradient>
+
+                    <radialGradient id="jointDepth" cx="32%" cy="28%" r="80%">
+
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
+
+                        <stop offset="50%" stopColor="#ffffff" stopOpacity="0" />
+
+                        <stop offset="100%" stopColor="#000000" stopOpacity="0.4" />
+
+                    </radialGradient>
+
+                    <pattern id="wireGrid" width="14" height="14" patternUnits="userSpaceOnUse">
+
+                        <path d="M0 0H14M0 0V14" stroke="#4FAEF3" strokeWidth="0.4" strokeOpacity="0.10" />
+
+                    </pattern>
+
+                    <pattern id="wireGridFine" width="9" height="9" patternUnits="userSpaceOnUse">
+
+                        <path d="M0 0H9M0 0V9" stroke="#4FAEF3" strokeWidth="0.35" strokeOpacity="0.08" />
+
+                    </pattern>
+
+                </defs>
+
+
+
+                {/* Reach radius */}
+
+                <circle ref={ref('rc')} fill="none" strokeWidth="1" strokeDasharray="16 12" />
+
+                {/* Cables / Hoses */}
+
+                {[0, 1, 2].map(i => <path key={`cb${i}`} ref={ref(`cb${i}`)} fill="none" strokeWidth="2.5" strokeDasharray="7 6" strokeLinecap="round" />)}
+
+                {/* Heavy Base pedestal */}
+
+                <rect ref={ref('bP')} x={-90} y={-5} width={180} height={25} rx={4} strokeWidth="3" />
+
+                <polygon ref={ref('bC')} points="-45,-45 45,-45 60,-5 -60,-5" strokeWidth="2.5" />
+
+                {[0, 1, 2, 3, 4, 5].map(i => <circle key={`bB${i}`} ref={ref(`bB${i}`)} r={4} />)}
+
+
+
+                {/* Structural beams (Tapered Polygons) with depth + wireframe + bevel */}
+
+                {[0, 1, 2].map(i => (
+
+                    <g key={`s${i}`}>
+
+                        <polygon ref={ref(`bm${i}`)} strokeWidth="3" strokeLinejoin="round" />
+
+                        <polygon ref={ref(`bmDepth${i}`)} fill="url(#beamDepth)" stroke="none" />
+
+                        <polygon ref={ref(`bmGrid${i}`)} fill="url(#wireGrid)" stroke="none" />
+
+                        <polygon ref={ref(`pn${i}`)} strokeWidth="1.5" strokeLinejoin="round" />
+
+                        <line ref={ref(`bmBevel${i}`)} strokeWidth="1" strokeLinecap="round" />
+
+                        <line ref={ref(`hk${i}0`)} />
+
+                        <line ref={ref(`hk${i}1`)} />
+
+                        <line ref={ref(`hk${i}2`)} />
+
+                    </g>
+
+                ))}
+
+
+
+                {/* Hydraulic Piston on Base Link */}
+
+                <rect ref={ref('hydC')} rx="4" strokeWidth="2" />
+
+                <rect ref={ref('hydR')} rx="1" strokeWidth="1.5" />
+
+
+
+                {/* Joints with depth, wireframe grid, and beveled rim */}
+
+                {[0, 1, 2, 3].map(j => (
+
+                    <g key={`j${j}`}>
+
+                        <rect ref={ref(`jF${j}0`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
+
+                        <rect ref={ref(`jF${j}1`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
+
+                        <rect ref={ref(`jF${j}2`)} x={JR[j] - 4} y={-6} width={14} height={12} rx={2} strokeWidth="2" />
+
+                        <circle ref={ref(`jM${j}`)} r={JR[j] * 0.85} strokeWidth="2" />
+
+                        <circle ref={ref(`jH${j}`)} r={JR[j]} strokeWidth="3" />
+
+                        <circle ref={ref(`jDepth${j}`)} fill="url(#jointDepth)" stroke="none" />
+
+                        <circle ref={ref(`jGrid${j}`)} fill="url(#wireGridFine)" stroke="none" opacity="0.5" />
+
+                        <circle ref={ref(`jBevel${j}`)} fill="none" strokeWidth="1" strokeDasharray="3 2" />
+
+                        <circle ref={ref(`jG${j}`)} r={JR[j] - 4} strokeWidth="4" strokeDasharray="6 4" />
+
+                        <circle ref={ref(`jI${j}`)} r={JIR[j]} strokeWidth="2" />
+
+                        <circle ref={ref(`jS${j}`)} r={JSR[j]} />
+
+                        <line ref={ref(`cH${j}`)} strokeWidth="1.5" />
+
+                        <line ref={ref(`cV${j}`)} strokeWidth="1.5" />
+
+                        {j >= 1 && j <= 2 && [0, 1, 2, 3, 4, 5, 6, 7].map(bi => <circle key={`jB${j}${bi}`} ref={ref(`jB${j}${bi}`)} r={2} />)}
+
+                        <circle ref={ref(`jLed${j}`)} r={2.2} fill="#4FAEF3" filter="url(#edgeGlow)" />
+
+                    </g>
+
+                ))}
+
+
+
+                {/* Advanced Pincer Claw */}
+
+                <polygon ref={ref('wB')} strokeWidth="2.5" strokeLinejoin="round" />
+
+                <polygon ref={ref('wBDepth')} fill="url(#beamDepth)" stroke="none" />
+
+                <path ref={ref('fG_T')} strokeWidth="2.5" strokeLinejoin="round" />
+
+                <path ref={ref('fG_B')} strokeWidth="2.5" strokeLinejoin="round" />
+
+                <path ref={ref('pD_T')} strokeWidth="1.5" strokeLinejoin="round" />
+
+                <path ref={ref('pD_B')} strokeWidth="1.5" strokeLinejoin="round" />
+
+                <circle ref={ref('pl')} fill="none" strokeWidth="2" />
+
+
+
+                {/* Angle annotations */}
+
+                {[1, 2].map(i => <text key={`lb${i}`} ref={ref(`lb${i}`)} fontSize="14" fontWeight="bold" fontFamily="var(--font-geist-mono),monospace" />)}
+
+            </svg>
         </section>
     );
 }
