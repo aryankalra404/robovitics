@@ -252,15 +252,11 @@ export default function Projects() {
         offset: ["start end", "end start"]
     });
 
-    const rawGearX   = useTransform(scrollYProgress, [0, 0.10], [120, -120]);
-    const rawGearRot = useTransform(scrollYProgress, [0, 0.10], [0, -360]);
-
-    const springConfig = { stiffness: 32, damping: 38, restDelta: 0.001 };
-
-    const smoothGearX   = useSpring(rawGearX,   springConfig);
+    // Gear rotation only — scroll controlled, spring lagged
+    const rawGearRot    = useTransform(scrollYProgress, [0, 1], [0, -720]);
+    const springConfig  = { stiffness: 60, damping: 20, restDelta: 0.001 };
     const smoothGearRot = useSpring(rawGearRot, springConfig);
-
-    const gearX = useTransform(smoothGearX, x => `${x}vw`);
+    const gearOpacity   = useTransform(scrollYProgress, [0, 0.04, 0.96, 1], [0, 0.22, 0.22, 0]);
 
     // ── GSAP: Horizontal Filmstrip ───────────────────────────────────────────
     useEffect(() => {
@@ -361,22 +357,6 @@ export default function Projects() {
             className="relative bg-[#0d0d0d]"
             style={{ height: `${(total * 0.72 + 1.1) * 100}vh` }}
         >
-            {/* Gear — desktop only */}
-            <motion.div
-                style={{ x: gearX, rotate: smoothGearRot }}
-                className="hidden md:block fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
-            >
-                <svg
-                    className="h-[460px] w-[460px] lg:h-[600px] lg:w-[600px]"
-                    viewBox="0 0 24 24" fill="none"
-                    stroke="#ffffff" strokeWidth="0.5"
-                    strokeLinecap="round" strokeLinejoin="round"
-                >
-                    <circle cx="12" cy="12" r="3" stroke="#ffffff"/>
-                    <path stroke="#ffffff" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-                </svg>
-            </motion.div>
-
             {/* ── Sticky viewport ── */}
             <div ref={pinRef} className="sticky top-0 h-screen w-full overflow-hidden">
                 <SectionBackground />
@@ -403,7 +383,6 @@ export default function Projects() {
                     ref={titleRef}
                     className="absolute left-1/2 -translate-x-1/2 z-20 pointer-events-none text-center w-full px-4"
                     style={{ top: 'clamp(12%, 16%, 16%)' }}
-
                 >
                     {/* Sub-label hidden on mobile */}
                     <p className="hidden sm:block font-mono text-[9px] uppercase tracking-[0.35em] text-white/20 mb-3">
@@ -429,23 +408,31 @@ export default function Projects() {
                 </div>
 
                 {/* ── Card belt ── */}
-                {/*
-                    top-[58%] on mobile  — cards sit well below the title
-                    sm:top-[32%]         — original desktop position
-                    paddingLeft: 16px mobile / 40px desktop — card starts with a small margin
-                    gap: tighter on mobile
-                    paddingRight: room for the last card to breathe
-                */}
                 <div
                     ref={beltRef}
-                    className="absolute left-0 flex items-start top-[38%] sm:top-[32%]"
-
+                    className="absolute left-0 flex items-center top-[28%] sm:top-[32%]"
                     style={{
                         gap:          'clamp(12px, 2vw, 32px)',
                         paddingLeft:  'clamp(16px, 2.5vw, 40px)',
                         paddingRight: 'clamp(40px, 5vw, 80px)',
                     }}
                 >
+                    {/* Gear sits in the blank space before the first card, rides the belt */}
+                    <motion.div
+                        style={{ rotate: smoothGearRot, opacity: gearOpacity, width: 360, height: 360 }}
+                        className="hidden md:flex flex-shrink-0 items-center justify-center pointer-events-none"
+                    >
+                        <svg
+                            style={{ width: 360, height: 360 }}
+                            viewBox="0 0 24 24" fill="none"
+                            stroke="#ffffff" strokeWidth="0.5"
+                            strokeLinecap="round" strokeLinejoin="round"
+                        >
+                            <circle cx="12" cy="12" r="3" stroke="#ffffff"/>
+                            <path stroke="#ffffff" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </motion.div>
+
                     {projectsData.map((project, index) => (
                         <ProjectCard
                             key={project.id}

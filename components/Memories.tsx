@@ -489,7 +489,7 @@ displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      cons
       <style jsx>{`
         .mwt-wrap { position: relative; z-index: 30; height: 1500vh; background: #000; }
         .mwt-sticky {
-          position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #121212;
+          position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #0d0d0d;
           perspective: 1300px;
           perspective-origin: center center;
         }

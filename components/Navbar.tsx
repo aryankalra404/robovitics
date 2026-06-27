@@ -4,27 +4,49 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useRef } from 'react';
 
-// MOVED OUTSIDE: Prevents the infinite render loop
-const navItems = ['About', 'Domains', 'Events', 'Teams', 'Projects'];
+const navItems = ['About', 'Domains', 'Teams', 'Events', 'Projects'];
+
 const desktopNavTargets: Record<string, string> = {
   About: 'about',
   Domains: 'domains-desktop',
-  Events: 'events-desktop',
   Teams: 'technical-teams',
+  Events: 'events',
   Projects: 'projects',
 };
+
 const mobileNavTargets: Record<string, string> = {
   About: 'about-mobile',
   Domains: 'domains-mobile',
-  Events: 'events-mobile',
   Teams: 'technical-teams',
+  Events: 'events-mobile',
   Projects: 'projects',
+};
+
+// 🛠️ NEW: Custom scroll offsets for each specific section
+// Tweak these numbers to get the perfect stopping point.
+// • Less negative (e.g., -50) = Scrolls FURTHER DOWN (fixes stopping early)
+// • More negative (e.g., -400) = Scrolls LESS (fixes stopping too late)
+const sectionOffsets: Record<string, number> = {
+  // Moved from -50 to 20 (scrolls ~70px further down)
+  'technical-teams': 20,   
+  
+  'events': 1400,           
+  'events-mobile': 100,    
+  
+  // Moved from -70 to 0 (scrolls ~70px further down)
+  'projects': 500,          
+  
+  // Moved from -120 to -50 (scrolls ~70px further down)
+  'about': 0,            
+  'about-mobile': 0,
+  
+  'domains-desktop': -120,
+  'domains-mobile': 0,
 };
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [heroChromeOpacity, setHeroChromeOpacity] = useState(1);
-  
+  const [isExpanded, setIsExpanded] = useState(true);
   const [activeSection, setActiveSection] = useState('');
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
   const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -32,81 +54,61 @@ export default function Navbar() {
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string, item: string) => {
     e.preventDefault();
     const target = document.getElementById(targetId);
+    
     if (target) {
-      const yOffset = -120; // Offset for sticky navbar
+      // 🛠️ Grab the custom offset for this specific ID, fallback to -120 if not found
+      const yOffset = sectionOffsets[targetId] ?? -120;
+      
       const y = target.getBoundingClientRect().top + window.scrollY + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
+    
     setActiveSection(item);
     setMenuOpen(false);
     window.history.pushState(null, '', `#${targetId}`);
   };
 
   useEffect(() => {
-    let frame = 0;
-
-    const updateHeroChrome = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const fadeDistance = Math.min(window.innerHeight * 0.55, 460);
-        const opacity = Math.max(0, Math.min(1, 1 - window.scrollY / fadeDistance));
-        setHeroChromeOpacity(opacity);
-
-        if (window.scrollY < window.innerHeight * 0.85) {
-          setActiveSection('');
-        }
-      });
+    const handleScroll = () => {
+      setIsExpanded(window.scrollY < 80);
+      if (window.scrollY < window.innerHeight * 0.85) {
+        setActiveSection('');
+      }
     };
-
-    updateHeroChrome();
-    window.addEventListener('scroll', updateHeroChrome, { passive: true });
-    window.addEventListener('resize', updateHeroChrome);
-
-    return () => {
-      cancelAnimationFrame(frame);
-      window.removeEventListener('scroll', updateHeroChrome);
-      window.removeEventListener('resize', updateHeroChrome);
-    };
+    
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Intersection Observer to track scroll position
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const visibleEntry = entries.find((entry) => entry.isIntersecting);
         if (visibleEntry) {
           const id = visibleEntry.target.id;
-          
           if (id === 'hero' || id === 'sponsors') {
             setActiveSection('');
             return;
           }
-
           const matchingItem = navItems.find((item) => {
             return item.toLowerCase() === id || desktopNavTargets[item] === id || mobileNavTargets[item] === id;
           });
           if (matchingItem) setActiveSection(matchingItem);
         }
       },
-      { threshold: 0, rootMargin: '-20% 0px -60% 0px' } 
+      { threshold: 0, rootMargin: '-20% 0px -60% 0px' }
     );
 
     const timeout = setTimeout(() => {
       navItems.forEach((item) => {
-        const idsToObserve = [
-            item.toLowerCase(),
-            desktopNavTargets[item],
-            mobileNavTargets[item]
-        ].filter(Boolean);
-        
-        Array.from(new Set(idsToObserve)).forEach(id => {
-            const el = document.getElementById(id as string);
-            if (el) observer.observe(el);
+        const idsToObserve = [item.toLowerCase(), desktopNavTargets[item], mobileNavTargets[item]].filter(Boolean);
+        Array.from(new Set(idsToObserve)).forEach((id) => {
+          const el = document.getElementById(id as string);
+          if (el) observer.observe(el);
         });
       });
-      
-      // Observe boundary sections to clear active state
-      ['hero', 'sponsors'].forEach(id => {
+      ['hero', 'sponsors'].forEach((id) => {
         const el = document.getElementById(id);
         if (el) observer.observe(el);
       });
@@ -118,17 +120,14 @@ export default function Navbar() {
     };
   }, []);
 
-  // Update slider position AND strictly match height/top so it doesn't stretch the navbar
   useEffect(() => {
     const updateIndicator = () => {
       if (!activeSection) {
         setIndicatorStyle((prev) => ({ ...prev, opacity: 0 }));
         return;
       }
-
       const activeIndex = navItems.indexOf(activeSection);
       const activeElement = navRefs.current[activeIndex];
-
       if (activeElement) {
         setIndicatorStyle({
           left: activeElement.offsetLeft,
@@ -139,10 +138,8 @@ export default function Navbar() {
         });
       }
     };
-
     const timeout = setTimeout(updateIndicator, 50);
     window.addEventListener('resize', updateIndicator);
-    
     return () => {
       clearTimeout(timeout);
       window.removeEventListener('resize', updateIndicator);
@@ -151,61 +148,50 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!menuOpen) return;
-
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setMenuOpen(false);
     };
-
     document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', onKeyDown);
-
     return () => {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [menuOpen]);
 
-  // Derived state to determine if user has scrolled
-  const isScrolled = heroChromeOpacity < 1;
+  const isScrolled = !isExpanded;
 
-  const heroChromeStyle = {
-    opacity: heroChromeOpacity,
-    transform: `translateY(${(1 - heroChromeOpacity) * -10}px)`,
-    pointerEvents: heroChromeOpacity > 0.08 ? 'auto' : 'none',
-  } as const;
-  
   const navShellStyle = {
-    maxWidth: `${860 + heroChromeOpacity * 292}px`,
+    maxWidth: isExpanded ? '1152px' : '860px',
+    gridTemplateColumns: isExpanded ? '1fr auto 1fr' : '0fr auto 0fr',
   };
+
+  const fadeClass = `transition-all duration-300 ease-out ${
+    isExpanded ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+  }`;
 
   return (
     <header className="fixed left-0 right-0 top-0 z-[80] px-3 pt-3 sm:px-6 md:px-10">
       <div
         style={navShellStyle}
-        className={`relative ml-auto grid w-fit grid-cols-[auto] items-center gap-3 overflow-hidden border text-white transition-[max-width,background-color,border-color,box-shadow,padding,transform] duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
+        className={`relative ml-auto grid w-fit items-center gap-3 overflow-hidden border text-white transition-all duration-300 ease-out md:mx-auto md:backdrop-blur-2xl md:backdrop-saturate-150 md:border-white/[0.14] md:bg-black/65 md:shadow-[0_12px_40px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-1px_0_rgba(255,255,255,0.04)] ${
           isScrolled
-            ? 'max-md:mr-0 max-md:w-fit max-md:border-transparent max-md:bg-transparent max-md:p-0 max-md:shadow-none md:w-fit md:grid-cols-[auto] md:px-3 md:py-2'
-            : 'border-transparent bg-transparent p-0 shadow-none md:w-auto md:grid-cols-[1fr_auto_1fr] md:px-4 md:py-2.5'
+            ? 'max-md:mr-0 max-md:w-fit max-md:border-transparent max-md:bg-transparent max-md:p-0 max-md:shadow-none md:w-fit md:px-3 md:py-2'
+            : 'border-transparent bg-transparent p-0 shadow-none md:w-auto md:px-4 md:py-2.5'
         }`}
       >
-        {/* Corner accents — cyan HUD style */}
-        <span className="max-md:hidden pointer-events-none absolute left-0 top-0 h-3 w-3 border-l border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="max-md:hidden pointer-events-none absolute right-0 top-0 h-3 w-3 border-r border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="max-md:hidden pointer-events-none absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        <span className="max-md:hidden pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] transition-all duration-500" />
-        
-        {!isScrolled && (
-          <>
-            <span className="pointer-events-none absolute left-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
-            <span className="pointer-events-none absolute right-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block" />
-          </>
-        )}
+        <span className={`max-md:hidden absolute left-0 top-0 h-3 w-3 border-l border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] ${fadeClass}`} />
+        <span className={`max-md:hidden absolute right-0 top-0 h-3 w-3 border-r border-t border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] ${fadeClass}`} />
+        <span className={`max-md:hidden absolute bottom-0 left-0 h-3 w-3 border-b border-l border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] ${fadeClass}`} />
+        <span className={`max-md:hidden absolute bottom-0 right-0 h-3 w-3 border-b border-r border-[#4FAEF3] shadow-[0_0_14px_rgba(79,174,243,0.85)] ${fadeClass}`} />
+
+        <span className={`absolute left-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block ${fadeClass}`} />
+        <span className={`absolute right-[22%] top-0 hidden h-full w-px bg-gradient-to-b from-transparent via-[#4FAEF3]/25 to-transparent lg:block ${fadeClass}`} />
 
         <Link
           href="/"
           onClick={() => setMenuOpen(false)}
-          style={heroChromeStyle}
-          className={`hidden min-w-0 items-center justify-self-start transition-[opacity,transform] duration-200 ${isScrolled ? 'md:hidden' : 'md:flex'}`}
+          className={`hidden min-w-0 overflow-hidden items-center justify-self-start md:flex ${fadeClass}`}
         >
           <Image
             src="/robovitics-logo.png"
@@ -217,10 +203,7 @@ export default function Navbar() {
           />
         </Link>
 
-        {/* Center nav links */}
         <nav className="relative hidden items-center gap-0.5 justify-self-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/90 md:flex">
-          
-          {/* THE SLIDING HIGHLIGHT - Now using explicit top/height to prevent layout shifting */}
           <div
             className="pointer-events-none absolute z-0 flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
             style={{
@@ -244,9 +227,7 @@ export default function Navbar() {
             return (
               <Link
                 key={item}
-                ref={(el) => {
-                  navRefs.current[index] = el;
-                }}
+                ref={(el) => { navRefs.current[index] = el; }}
                 href={`#${desktopNavTargets[item] ?? item.toLowerCase()}`}
                 onClick={(e) => scrollToSection(e, desktopNavTargets[item] ?? item.toLowerCase(), item)}
                 className={`group relative z-10 px-2.5 py-1.5 transition-colors duration-200 xl:px-3 ${
@@ -254,24 +235,21 @@ export default function Navbar() {
                 }`}
               >
                 <span className={`mr-2 transition-colors duration-200 ${
-                  isActive 
-                    ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]' 
+                  isActive
+                    ? 'text-[#4FAEF3] drop-shadow-[0_0_6px_rgba(79,174,243,0.8)]'
                     : 'text-[#4FAEF3]/60 group-hover:text-[#4FAEF3]'
                 }`}>
                   0{index + 1}
                 </span>
                 {item}
-                
-                {/* Fallback hover underline for inactive items */}
                 {!isActive && (
                   <span className="absolute bottom-0 left-3 right-3 h-px origin-left scale-x-0 bg-[#4FAEF3]/60 transition-transform duration-300 group-hover:scale-x-100" />
                 )}
               </Link>
-            )
+            );
           })}
         </nav>
 
-        {/* CTA */}
         <Link
           href="#about"
           onClick={(e) => {
@@ -282,13 +260,11 @@ export default function Navbar() {
               window.scrollTo({ top: y, behavior: 'smooth' });
             }
           }}
-          style={heroChromeStyle}
-          className={`hidden justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 transition-all duration-300 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] ${isScrolled ? 'sm:hidden' : 'sm:inline-flex'}`}
+          className={`hidden overflow-hidden whitespace-nowrap justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] sm:inline-flex ${fadeClass}`}
         >
           Join the Club
         </Link>
 
-        {/* Mobile menu toggle with subtle square background */}
         <button
           type="button"
           aria-label="Toggle navigation menu"
@@ -363,9 +339,7 @@ export default function Navbar() {
                   href={`#${mobileNavTargets[item] ?? item.toLowerCase()}`}
                   onClick={(e) => scrollToSection(e, mobileNavTargets[item] ?? item.toLowerCase(), item)}
                   className={`group relative border-b border-white/10 px-1 py-4 transition-colors ${
-                    isActive
-                      ? 'text-white'
-                      : 'text-white/62 hover:text-white'
+                    isActive ? 'text-white' : 'text-white/62 hover:text-white'
                   }`}
                 >
                   <span className="flex items-center justify-between gap-4">
