@@ -246,14 +246,9 @@ export default function Projects() {
         offset: ["start end", "end start"] 
     });
 
-    // GEAR MAPPING:
-    // 0.0 = Gear begins entering immediately as the section touches the screen
-    // 0.10 = Gear fully exits left just before the section pins
     const rawGearX = useTransform(scrollYProgress, [0, 0.10], [120, -120]); 
-    // Met in the middle: exactly 1 full rotation (-360 degrees) for a perfectly balanced heavy roll
     const rawGearRot = useTransform(scrollYProgress, [0, 0.10], [0, -360]);
 
-    // Slightly tuned physics: Less stiff than original, but a bit more responsive than previous
     const springConfig = { stiffness: 32, damping: 38, restDelta: 0.001 };
     
     const smoothGearX = useSpring(rawGearX, springConfig);
@@ -367,13 +362,14 @@ export default function Projects() {
         tl.to({}, { duration: 0.1 });
 
         // ── ScrollTrigger ─────────────────────────────────────────────────────
+        // NOTE: no more `pin` / `anticipatePin`. The sticky `pinRef` div handles
+        // the "staying in place" visually via CSS. GSAP only drives timeline
+        // progress against scroll — same fix as Domains/Events.
         stRef.current = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
             end: `+=${window.innerHeight * total}`, 
             scrub: 1,
-            pin: pin,
-            anticipatePin: 1,
             animation: tl,
         });
 
@@ -389,11 +385,12 @@ export default function Projects() {
             id="projects"
             ref={sectionRef}
             className="relative bg-[#0d0d0d]"
+            style={{ height: `${(total + 1) * 100}vh` }}
         >
             <motion.div
-                style={{ x: gearX, rotate: smoothGearRot }}
-                className="fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
-            >
+    style={{ x: gearX, rotate: smoothGearRot }}
+    className="hidden md:block fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
+>
                 <svg className="h-[460px] w-[460px] lg:h-[600px] lg:w-[600px]" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3" stroke="#ffffff"></circle>
                     <path stroke="#ffffff" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -402,7 +399,7 @@ export default function Projects() {
 
             <div
                 ref={pinRef}
-                className="relative h-screen w-full overflow-hidden"
+                className="sticky top-0 h-screen w-full overflow-hidden"
             >
                 <SectionBackground />
 
@@ -457,7 +454,7 @@ export default function Projects() {
 
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
                     <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-                        &gt; SCROLL TO ADVANCE ASSEMBLY
+                        &gt;  
                     </span>
                 </div>
             </div>

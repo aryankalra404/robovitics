@@ -82,15 +82,15 @@ function ViewToggle({ view, setView }: { view: View; setView: (v: View) => void 
 function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: string }) {
   return (
     <div className="group relative h-auto min-h-[300px] w-full overflow-hidden rounded-2xl transition-all duration-500 border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] hover:bg-white/[0.03] hover:border-white/10 hover:shadow-[0_16px_48px_rgba(79,174,243,0.1)]">
-      
+
       {/* Soft Top Highlight */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/30 to-transparent opacity-50" />
 
       <div className="relative z-20 flex h-full flex-col gap-6 p-5 sm:p-10 md:p-12 lg:flex-row lg:items-center lg:gap-16">
-        
+
         {/* Left Side: Typography */}
         <div className="flex min-w-0 flex-1 flex-col justify-center text-left order-2 lg:order-1">
-          
+
           <div className="mb-3 sm:mb-6 inline-flex items-center gap-3">
              <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3]" />
              <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#4FAEF3]/80">
@@ -104,15 +104,15 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
               ELITE CATEGORY
             </span>
           </h3>
-          
-          <p className="mb-5 sm:mb-10 font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.25em] text-gray-500">
+
+          <p className="mb-4 sm:mb-10 font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.25em] text-gray-500">
             RECORDED TENURE // 2024 TO 2025
           </p>
 
           {/* Grouped Description Block with Left Border */}
-          <div className="relative border-l-2 border-[#4FAEF3]/20 pl-4 sm:pl-6 space-y-3 sm:space-y-5">
+          <div className="relative border-l-2 border-[#4FAEF3]/20 pl-4 sm:pl-6 space-y-4 sm:space-y-5">
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-300 md:text-[15px] font-light tracking-wide">
-              Awarded for exceptional technical innovation, sustained ecosystem impact, and engineering excellence across the university network. 
+              Awarded for exceptional technical innovation, sustained ecosystem impact, and engineering excellence across the university network.
             </p>
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-400 md:text-[15px] font-light tracking-wide">
               Anchored by <span className="text-[#4FAEF3] font-medium">Robowars</span>, the premier combat robotics league, solidifying a legacy of dominance.
@@ -121,45 +121,63 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
 
         </div>
 
-        {/* Right Side: Abstract Digital Artifact */}
-        <div className="flex flex-shrink-0 flex-col items-center justify-center gap-4 sm:gap-6 order-1 lg:order-2">
-          {/* Much smaller container on mobile */}
-          <div className="relative flex h-[130px] w-[130px] sm:h-[240px] sm:w-[240px] items-center justify-center lg:h-[280px] lg:w-[280px]">
-            
-            <div className="absolute inset-0 rounded-full bg-[#4FAEF3]/5 blur-[25px] sm:blur-[40px] transition-all duration-700 group-hover:bg-[#4FAEF3]/10" />
-            
-            <div className="absolute inset-4 animate-[spin_20s_linear_infinite] rounded-full border border-dashed border-[#4FAEF3]/20" />
-            <div className="absolute inset-8 animate-[spin_15s_linear_infinite_reverse] rounded-full border border-white/5" />
-            
-            {/* Tighter central graphic */}
-            <div className="relative z-10 flex h-[85px] w-[85px] sm:h-[150px] sm:w-[150px] items-center justify-center rounded-2xl border border-white/10 bg-black/40 p-2 sm:p-4 backdrop-blur-md shadow-[inset_0_0_20px_rgba(79,174,243,0.1)] lg:h-[170px] lg:w-[170px]">
-              <svg 
-                viewBox="0 0 200 200" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-full w-full drop-shadow-[0_0_15px_rgba(79,174,243,0.5)]"
-              >
-                <circle cx="100" cy="100" r="90" stroke="rgba(79,174,243,0.15)" strokeWidth="2" strokeDasharray="4 12" className="origin-center animate-[spin_20s_linear_infinite]" />
-                <circle cx="100" cy="100" r="75" stroke="rgba(79,174,243,0.3)" strokeWidth="1" strokeDasharray="30 10" className="origin-center animate-[spin_15s_linear_infinite_reverse]" />
-                
-                <path d="M100 20 L160 50 L140 130 L100 180 L60 130 L40 50 Z" fill="rgba(79,174,243,0.05)" stroke="#4FAEF3" strokeWidth="2" strokeLinejoin="round" />
-                
-                <path d="M100 20 L100 180" stroke="#4FAEF3" strokeWidth="1.5" strokeDasharray="4 4" />
-                <path d="M40 50 L100 80 L160 50" stroke="#4FAEF3" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M60 130 L100 80 L140 130" stroke="#4FAEF3" strokeWidth="1.5" strokeLinejoin="round" />
-                
-                <path d="M100 60 L105 75 L120 80 L105 85 L100 100 L95 85 L80 80 L95 75 Z" fill="#4FAEF3" className="origin-center animate-pulse shadow-[0_0_15px_#4FAEF3]" />
-                
-                <path d="M30 30 L20 30 L20 40" stroke="#4FAEF3" strokeWidth="2" fill="none" />
-                <path d="M170 30 L180 30 L180 40" stroke="#4FAEF3" strokeWidth="2" fill="none" />
-                <path d="M30 170 L20 170 L20 160" stroke="#4FAEF3" strokeWidth="2" fill="none" />
-                <path d="M170 170 L180 170 L180 160" stroke="#4FAEF3" strokeWidth="2" fill="none" />
-              </svg>
-            </div>
+        {/* Right Side: Trophy */}
+        <div className="flex flex-shrink-0 flex-col items-center justify-center gap-2 sm:gap-6 order-1 lg:order-2">
+          <div className="relative flex h-[90px] w-[90px] sm:h-[200px] sm:w-[200px] items-center justify-center lg:h-[260px] lg:w-[260px]">
+
+            {/* Soft glow behind the trophy */}
+            <div className="absolute inset-0 rounded-full bg-[#4FAEF3]/10 blur-[20px] sm:blur-[55px] transition-all duration-700 group-hover:bg-[#4FAEF3]/20" />
+
+            <svg
+              viewBox="0 0 200 200"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="relative z-10 h-full w-full drop-shadow-[0_0_25px_rgba(79,174,243,0.6)]"
+            >
+              <defs>
+                <linearGradient id="trophyCup" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4FAEF3" stopOpacity="0.45" />
+                  <stop offset="100%" stopColor="#4FAEF3" stopOpacity="0.08" />
+                </linearGradient>
+                <linearGradient id="trophyBase" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#4FAEF3" stopOpacity="0.3" />
+                  <stop offset="100%" stopColor="#2b8cd6" stopOpacity="0.15" />
+                </linearGradient>
+              </defs>
+
+              <path d="M52 34 C16 34, 10 96, 58 92" fill="none" stroke="#4FAEF3" strokeWidth="4" strokeLinecap="round" />
+              <path d="M148 34 C184 34, 190 96, 142 92" fill="none" stroke="#4FAEF3" strokeWidth="4" strokeLinecap="round" />
+
+              <path
+                d="M52 22 L148 22 L148 38 Q148 104 100 114 Q52 104 52 38 Z"
+                fill="url(#trophyCup)"
+                stroke="#4FAEF3"
+                strokeWidth="3.5"
+                strokeLinejoin="round"
+              />
+
+              <path d="M52 22 L148 22" stroke="#4FAEF3" strokeWidth="4" strokeLinecap="round" />
+
+              <path d="M86 114 L86 142 L114 142 L114 114" fill="rgba(79,174,243,0.14)" stroke="#4FAEF3" strokeWidth="3" strokeLinejoin="round" />
+
+              <path d="M66 142 L134 142 L148 166 L52 166 Z" fill="url(#trophyBase)" stroke="#4FAEF3" strokeWidth="3" strokeLinejoin="round" />
+
+              <rect x="44" y="166" width="112" height="14" rx="2" fill="url(#trophyBase)" stroke="#4FAEF3" strokeWidth="3" />
+
+              <path
+                d="M100 44 L108 64 L130 68 L108 72 L100 92 L92 72 L70 68 L92 64 Z"
+                fill="#4FAEF3"
+                className="origin-center animate-pulse"
+              />
+
+              <text x="100" y="158" textAnchor="middle" fontSize="14" fontWeight="700" fill="#4FAEF3" fontFamily="monospace" opacity="0.85">
+                01
+              </text>
+            </svg>
           </div>
 
           {certificateImageSrc && (
-            <a 
+            <a
               href={certificateImageSrc}
               target="_blank"
               rel="noopener noreferrer"
@@ -183,7 +201,7 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
 }
 
 /* ------------------------------------------------------------------ */
-/* Individual Achievements 
+/* Individual Achievements
 /* ------------------------------------------------------------------ */
 interface IndividualAchievement {
   id: string;
@@ -212,7 +230,7 @@ function LogRow({ data }: { data: IndividualAchievement }) {
         className="absolute left-0 top-0 h-full w-[2px] scale-y-0 bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3] transition-transform duration-200 group-hover:scale-y-100"
         style={{ transformOrigin: 'center' }}
       />
-      
+
       <div className="flex items-center justify-between sm:hidden w-full mb-0.5">
           <div className="flex items-center gap-3">
               <span className="w-5 flex-shrink-0 font-mono text-[9px] text-[#4FAEF3]/60">
@@ -257,7 +275,7 @@ function IndividualLogPanel() {
 
   return (
     <div className="relative flex h-auto max-h-[60vh] sm:max-h-[600px] w-full flex-col overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-      
+
       <div className="flex flex-shrink-0 flex-row items-center justify-between border-b border-white/[0.05] bg-black/20 px-4 py-4 sm:px-8 sm:py-5">
         <div className="flex items-center gap-2 sm:gap-3">
             <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-sm bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
@@ -316,7 +334,7 @@ function IndividualLogPanel() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Main export 
+/* Main export
 /* ------------------------------------------------------------------ */
 export default function Achievements({
   clubCertificateImageSrc = '/achievements/elite-club-2024.jpeg',
@@ -333,9 +351,9 @@ export default function Achievements({
       <AchievementsBackground />
 
       <div className="relative z-10 flex flex-1 w-full flex-col mx-auto max-w-[1400px]">
-        
+
         {/* Header Block */}
-        <div className="flex-shrink-0 mb-6 sm:mb-10 md:mb-14">
+        <div className="flex-shrink-0 mb-6 sm:mb-8 md:mb-10">
             <div className="mb-4 sm:mb-6 flex items-start justify-between gap-4">
               <div>
                   <span className="mb-2 sm:mb-3 block font-mono text-[9px] uppercase tracking-[0.25em] text-gray-500 sm:text-[11px]">
