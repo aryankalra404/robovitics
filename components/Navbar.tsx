@@ -262,7 +262,7 @@ export default function Navbar() {
           }}
           className={`hidden overflow-hidden whitespace-nowrap justify-self-end border border-white/16 bg-white/[0.04] px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/90 hover:border-[#4FAEF3]/70 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_18px_rgba(79,174,243,0.35)] sm:inline-flex ${fadeClass}`}
         >
-          Join the Club
+          Contact Us
         </Link>
 
         <button
