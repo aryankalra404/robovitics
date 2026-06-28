@@ -158,7 +158,10 @@ export default function MemoryWarpTunnel() {
     let VW = window.innerWidth;
     let VH = window.innerHeight;
 const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activeDebrisCount = isMobile ? 8 : DEBRIS_COUNT;
-    const scrollUnits = isMobile ? 12 : 14;
+    const scrollUnits = isMobile ? 5.2 : 5.6;
+
+
+
     const maxPixelRatio = isMobile ? 1.25 : 2;
 
     // ── Renderer ──────────────────────────────────────────────
@@ -332,16 +335,25 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
 
       const p = getProgress();
 
-      const targetZoom = clamp((p - 0.025) / 0.32, 0, 1);
+      const targetZoom = clamp((p - 0.025) / 0.22, 0, 1);
+
+
       zoomProgress += (targetZoom - zoomProgress) * (dt * 0.006);
 
       let targetT = 0;
-      if (p > 0.32) {
-        const seqP = clamp((p - 0.32) / 0.38, 0, 1);
+      if (p > 0.18) {
+  const seqP = clamp((p - 0.18) / 0.52, 0, 1);
         targetT = seqP * (MEMORIES.length + 5.8);
       }
-displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      const targetPortalProgress = clamp((p - 0.72) / 0.22, 0, 1);
+displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      
+const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
+
+
+
+
+
       portalProgress += (targetPortalProgress - portalProgress) * (dt * 0.003);
+
       const portalT = easeBox(portalProgress);
 
       const ep1 = easeBox(zoomProgress);
@@ -487,7 +499,7 @@ displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      cons
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
 
       <style jsx>{`
-        .mwt-wrap { position: relative; z-index: 30; height: 1500vh; background: #000; }
+        .mwt-wrap { position: relative; z-index: 30; height: calc(5.6 * 100vh + 100vh); background: #000; }
         .mwt-sticky {
           position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #0d0d0d;
           perspective: 1300px;
@@ -553,7 +565,7 @@ displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      cons
           box-shadow: 0 0 8px rgba(255,255,255,0.2);
         }
         @media (max-width: 700px) {
-          .mwt-wrap { height: 1300vh; }
+          .mwt-wrap { height: 620vh; }
           .mwt-label { left: 20px; top: 22px; font-size: 9px; }
           .mwt-grid { background-size: 32px 32px; }
           .mwt-rtext {
