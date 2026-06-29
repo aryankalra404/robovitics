@@ -71,14 +71,15 @@ function ContactChip({
     <Bracketed>
       <a
         href={href}
-        className="group flex min-h-14 items-center gap-3 border border-white/8 bg-white/[0.02] px-4 text-left transition-all duration-300 hover:border-[#4FAEF3]/40 hover:bg-white/[0.045] hover:shadow-[0_0_15px_rgba(79,174,243,0.15)]"
+                className="group flex min-h-10 items-center gap-3 border border-white/8 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-[#4FAEF3]/40 hover:bg-white/[0.045] hover:shadow-[0_0_15px_rgba(79,174,243,0.15)] sm:min-h-14 sm:px-4"
+
       >
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-colors group-hover:border-[#4FAEF3]/50 group-hover:text-[#4FAEF3]">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-colors group-hover:border-[#4FAEF3]/50 group-hover:text-[#4FAEF3] sm:h-9 sm:w-9">
           {icon}
         </span>
         <span className="min-w-0">
-          <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">{label}</span>
-          <span className="block truncate text-sm font-semibold text-white/80">{value}</span>
+          <span className="block font-mono text-[9px] uppercase tracking-[0.2em] text-white/30 sm:text-[10px]">{label}</span>
+          <span className="block truncate text-xs font-semibold text-white/80 sm:text-sm">{value}</span>
         </span>
       </a>
     </Bracketed>
@@ -91,7 +92,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative z-20 overflow-hidden bg-[#050607] pt-12 text-white">
+    <footer className="relative z-20 overflow-hidden bg-[#050607] pt-10 text-white sm:pt-12">
       {/* Top border glow */}
       <div className="pointer-events-none absolute left-0 top-0 h-px w-full bg-gradient-to-r from-transparent via-[#4FAEF3]/60 to-transparent" />
 
@@ -119,41 +120,36 @@ export default function Footer() {
       <div className="relative mx-auto w-full max-w-7xl px-5 pb-8 sm:px-8 md:px-12 lg:px-16">
 
         {/* System label */}
-        <div className="mb-6 flex items-center gap-3">
+        <div className="mb-5 flex items-center gap-3 sm:mb-6">
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/25">
             SYSTEM.CONNECT //
           </span>
           <span className="h-px flex-1 bg-white/8" />
         </div>
 
-        {/* Top row */}
-        <div className="grid gap-6 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-8">
+        {/* ── MOBILE LAYOUT ── */}
+        <div className="lg:hidden">
 
-          {/* Quick Links */}
-          <section>
-            <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">
-              Navigation
-            </p>
-            <div className="flex gap-10 font-mono text-[11px] uppercase tracking-[0.15em] text-white/60">
-              <div className="flex flex-col gap-3">
-                <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
-                <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
-              </div>
-              <div className="flex flex-col gap-3">
-                <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
-                <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
-              </div>
+          {/* Nav links — horizontal, compact */}
+          <div className="mb-5 flex gap-8 font-mono text-[10px] uppercase tracking-[0.15em] text-white/55">
+            <div className="flex flex-col gap-2.5">
+              <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
+              <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
             </div>
-          </section>
+            <div className="flex flex-col gap-2.5">
+              <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
+              <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
+            </div>
+          </div>
 
-          {/* Contact Chips — stacked on mobile, side by side on sm+ */}
-          <section className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-[480px]">
+          {/* Contact chips — stacked, full width */}
+          <div className="mb-5 flex flex-col gap-2">
             <ContactChip
               label="Email"
               value={contactEmail}
               href={`mailto:${contactEmail}`}
               icon={
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
                   <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
                   <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
                 </svg>
@@ -164,7 +160,7 @@ export default function Footer() {
               value={contactPhone}
               href={`tel:${contactPhone.replaceAll(' ', '')}`}
               icon={
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
                   <path
                     d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
                     fill="none"
@@ -174,58 +170,149 @@ export default function Footer() {
                 </svg>
               }
             />
-          </section>
-        </div>
-
-        {/* Social + back to top row */}
-        <div className="flex flex-col gap-4 pb-8 pt-6 sm:flex-row sm:items-center sm:justify-between md:grid md:grid-cols-[1fr_auto] md:gap-5 md:items-center">
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-              Connect
-            </p>
-            <div className="h-px w-10 bg-[#4FAEF3]/45" />
-            {socialLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                target="_blank"
-                rel="noreferrer"
-                aria-label={link.label}
-                title={link.label}
-                className="flex h-10 w-10 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:border-[#4FAEF3]/60 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_12px_rgba(79,174,243,0.3)]"
-              >
-                {link.icon}
-              </a>
-            ))}
           </div>
 
-          <div className="flex items-center sm:justify-end">
-            <Bracketed>
-              <button
-                type="button"
-                onClick={scrollToTop}
-                className="flex min-h-10 items-center gap-3 border border-white/20 bg-transparent px-4 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-all duration-300 hover:border-[#4FAEF3]/50 hover:bg-white/[0.04] hover:text-white hover:shadow-[0_0_12px_rgba(79,174,243,0.2)]"
-              >
-                <span>Back to top</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
-                  <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
-                </svg>
-              </button>
-            </Bracketed>
+          {/* Divider */}
+          <div className="mb-5 h-px w-full bg-white/8" />
+
+          {/* Social + back to top — same row */}
+          <div className="mb-5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">Connect</p>
+              <div className="h-px w-6 bg-[#4FAEF3]/45" />
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={link.label}
+                  title={link.label}
+                  className="flex h-8 w-8 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:border-[#4FAEF3]/60 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3]"
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={scrollToTop}
+              className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.15em] text-white/50 transition-colors hover:text-white"
+            >
+              <span>Top</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="h-3.5 w-3.5">
+                <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Copyright */}
+                   <div className="flex flex-col gap-2 border-b border-white/8 pb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-white/35">
+
+            <div className="flex items-center gap-3">
+              <span className="text-white/20">05. EOF</span>
+              <span className="h-px w-5 bg-white/15" />
+              <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+            </div>
+            <p>VIT Vellore Campus, Tamil Nadu</p>
           </div>
         </div>
 
-        {/* Copyright & Location */}
-        <div className="flex flex-col gap-2 border-b border-white/8 pb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <span className="text-white/20">05. EOF</span>
-            <span className="h-px w-6 bg-white/15" />
-            <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+        {/* ── DESKTOP LAYOUT (lg+) ── unchanged from original */}
+        <div className="hidden lg:block">
+
+          {/* Top row */}
+          <div className="grid gap-8 border-b border-white/8 pb-8 lg:grid-cols-[1fr_auto] lg:items-end">
+            <section>
+              <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">Navigation</p>
+              <div className="flex gap-10 font-mono text-[11px] uppercase tracking-[0.15em] text-white/60">
+                <div className="flex flex-col gap-3">
+                  <a href="/about" className="transition-colors hover:text-[#4FAEF3]">About Us</a>
+                  <a href="/projects" className="transition-colors hover:text-[#4FAEF3]">Projects</a>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <a href="/events" className="transition-colors hover:text-[#4FAEF3]">Events</a>
+                  <a href="/join" className="transition-colors hover:text-[#4FAEF3]">Contact Us</a>
+                </div>
+              </div>
+            </section>
+            <section className="grid gap-3 sm:grid-cols-2 lg:min-w-[480px]">
+              <ContactChip
+                label="Email"
+                value={contactEmail}
+                href={`mailto:${contactEmail}`}
+                icon={
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                    <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
+                    <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                }
+              />
+              <ContactChip
+                label="Phone"
+                value={contactPhone}
+                href={`tel:${contactPhone.replaceAll(' ', '')}`}
+                icon={
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                    <path
+                      d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    />
+                  </svg>
+                }
+              />
+            </section>
           </div>
-          <p>VIT Vellore Campus, Tamil Nadu</p>
+
+          {/* Social + back to top */}
+          <div className="grid gap-5 pb-8 pt-6 md:grid-cols-[1fr_auto] md:items-center">
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="mr-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Connect</p>
+              <div className="h-px w-10 bg-[#4FAEF3]/45" />
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={link.label}
+                  title={link.label}
+                  className="flex h-10 w-10 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:border-[#4FAEF3]/60 hover:bg-[#4FAEF3]/10 hover:text-[#4FAEF3] hover:shadow-[0_0_12px_rgba(79,174,243,0.3)]"
+                >
+                  {link.icon}
+                </a>
+              ))}
+            </div>
+            <div className="flex items-center justify-end">
+              <Bracketed>
+                <button
+                  type="button"
+                  onClick={scrollToTop}
+                  className="flex min-h-10 items-center gap-3 border border-white/20 bg-transparent px-4 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-all duration-300 hover:border-[#4FAEF3]/50 hover:bg-white/[0.04] hover:text-white hover:shadow-[0_0_12px_rgba(79,174,243,0.2)]"
+                >
+                  <span>Back to top</span>
+                  <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
+                    <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+                  </svg>
+                </button>
+              </Bracketed>
+            </div>
+          </div>
+
+          {/* Copyright */}
+          <div className="flex flex-col gap-2 border-b border-white/8 pb-6 font-mono text-[10px] uppercase tracking-[0.16em] text-white/40 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <span className="text-white/20">05. EOF</span>
+              <span className="h-px w-6 bg-white/15" />
+              <p>&copy; {new Date().getFullYear()} All rights reserved.</p>
+            </div>
+            <p>VIT Vellore Campus, Tamil Nadu</p>
+          </div>
         </div>
 
-        {/* Logo + tagline — sits above the scene image */}
+        {/* Logo + tagline — shared across all breakpoints */}
         <motion.div
           className="relative z-20 mt-4 flex flex-col items-center justify-center sm:mt-20 md:mt-28"
           initial={{ opacity: 0, y: 24 }}
@@ -238,13 +325,13 @@ export default function Footer() {
             alt="RoboVITics Logo"
             width={600}
             height={200}
-            className="h-auto w-full max-w-[260px] object-contain sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[46rem]"
+            className="h-auto w-full max-w-[240px] object-contain sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[46rem]"
           />
           <div className="mt-3 flex flex-col items-center gap-2 px-4">
             <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[10px] sm:tracking-[0.3em]">
               Official Robotics Club of VIT Vellore
             </p>
-            <p className="max-w-xs text-center font-mono text-[9px] leading-relaxed text-white/35 sm:max-w-none sm:text-[10px]">
+            <p className="max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:max-w-none sm:text-[10px]">
               Student-led robotics, workshops, competitions, and engineering projects since 2010.
             </p>
           </div>
@@ -253,10 +340,7 @@ export default function Footer() {
       </div>
 
       {/* Full Bleed Image Foundation */}
-      {/* Desktop: negative margins overlap logo section for cinematic blend */}
-      {/* Mobile: no negative top margin so image sits below text without overlap */}
-            <div className="pointer-events-none relative z-0 -mt-4 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
-
+      <div className="pointer-events-none relative z-0 -mt-4 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
         <Image
           src="/footer.png"
           alt="RoboVITics Technical Landscape Foundation"
