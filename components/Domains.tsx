@@ -317,7 +317,7 @@ export default function Domains() {
             trigger: sectionRef.current,
             start: 'top top',
             end: '+=5000',
-            scrub: 1.5,
+            scrub: 0.8,
             fastScrollEnd: true,
             onUpdate: (self) => {
               const p = self.progress;
@@ -384,7 +384,7 @@ export default function Domains() {
           y: (i) => expandedCircleY[i],
           scale: 1.18,
           duration: 1.05,
-          ease: 'power2.inOut',
+          ease: 'none',
           force3D: true,
         });
 
@@ -408,7 +408,7 @@ export default function Domains() {
           y: (i) => zoomY[i],
           scale: 5.2,
           duration: 1.75,
-          ease: 'power3.inOut',
+          ease: 'none',
           force3D: true,
         });
 
@@ -421,7 +421,6 @@ export default function Domains() {
           ease: 'power3.out', force3D: true,
         }, '<');
 
-        tl.to({}, { duration: 1.0 });
       });
     }, sectionRef);
 

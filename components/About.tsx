@@ -152,8 +152,8 @@ export default function About() {
                     className="absolute inset-0 flex items-center justify-between gap-12 lg:gap-20"
                   >
                     <div className="flex-1 flex flex-col justify-center">
-                      <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                        About Us <br/> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
+                      <h2 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter mb-6 drop-shadow-lg">
+                        About Us <br/> <span className="text-xl lg:text-2xl font-medium normal-case tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
                       </h2>
                       <div className="flex flex-col gap-5">
                         <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
@@ -193,8 +193,8 @@ export default function About() {
                     className="absolute inset-0 flex items-center justify-between gap-12 lg:gap-20"
                   >
                     <div className="flex-1 flex flex-col justify-center">
-                      <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                        About VIT <br/> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
+                      <h2 className="text-6xl lg:text-7xl font-black uppercase tracking-tighter mb-6 drop-shadow-lg">
+                        About VIT <br/> <span className="text-xl lg:text-2xl font-medium normal-case tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
                       </h2>
                       <div className="flex flex-col gap-5">
                         <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
