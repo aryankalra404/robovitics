@@ -314,7 +314,7 @@ export default function Footer() {
 
         {/* Logo + tagline — shared across all breakpoints */}
         <motion.div
-          className="relative z-20 mt-4 flex flex-col items-center justify-center sm:mt-20 md:mt-28"
+          className="relative z-20 mt-4 flex flex-col items-center justify-center sm:mt-14 md:mt-16 lg:mt-28"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
@@ -325,13 +325,13 @@ export default function Footer() {
             alt="RoboVITics Logo"
             width={600}
             height={200}
-            className="h-auto w-full max-w-[240px] object-contain sm:max-w-[30rem] md:max-w-[38rem] lg:max-w-[46rem]"
+            className="h-auto w-full max-w-[240px] object-contain sm:max-w-[26rem] md:max-w-[31rem] lg:max-w-[46rem]"
           />
-          <div className="mt-3 flex flex-col items-center gap-2 px-4">
-            <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[10px] sm:tracking-[0.3em]">
+          <div className="mt-3 flex flex-col items-center gap-2 px-4 sm:mt-2 lg:mt-3">
+            <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[9px] sm:tracking-[0.26em] lg:text-[10px] lg:tracking-[0.3em]">
               Official Robotics Club of VIT Vellore
             </p>
-            <p className="hidden max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:block sm:max-w-none sm:text-[10px]">
+            <p className="hidden max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:block sm:max-w-[46rem] sm:text-[9px] lg:max-w-none lg:text-[10px]">
               Student-led robotics, workshops, competitions, and engineering projects since 2010.
             </p>
           </div>
@@ -340,7 +340,7 @@ export default function Footer() {
       </div>
 
       {/* Full Bleed Image Foundation */}
-      <div className="pointer-events-none relative z-0 -mt-20 flex w-full justify-center leading-none sm:-mt-56 sm:-mb-28 md:-mt-80 md:-mb-40 lg:-mt-[26rem] lg:-mb-52">
+      <div className="pointer-events-none relative z-0 -mt-20 flex w-full justify-center leading-none sm:-mt-44 sm:-mb-20 md:-mt-52 md:-mb-28 lg:-mt-[26rem] lg:-mb-52">
         <Image
           src="/footer.png"
           alt="RoboVITics Technical Landscape Foundation"

@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 type ContactModalProps = {
   open: boolean;
@@ -38,6 +39,7 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
   const [form, setForm] = useState(initialForm);
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
   const [statusMessage, setStatusMessage] = useState('');
+  const shouldReduceMotion = useReducedMotion();
   const startedAtRef = useRef(0);
 
   const closeModal = useCallback(() => {
@@ -65,8 +67,6 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
       window.removeEventListener('keydown', onKeyDown);
     };
   }, [closeModal, open]);
-
-  if (!open) return null;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -104,15 +104,33 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[120] flex items-center justify-center px-4 py-6 text-white">
-      <button
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="fixed inset-0 z-[120] flex items-center justify-center px-4 py-6 text-white"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: shouldReduceMotion ? 0 : 0.18, ease: 'easeOut' }}
+        >
+      <motion.button
         type="button"
         aria-label="Close contact form"
         className="absolute inset-0 bg-black/70 backdrop-blur-[3px]"
         onClick={closeModal}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.18, ease: 'easeOut' }}
       />
 
-      <div className="relative z-10 w-full max-w-[520px] overflow-hidden border border-white/15 bg-[#070808]/95 shadow-[0_22px_80px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl">
+      <motion.div
+        className="relative z-10 w-full max-w-[520px] overflow-hidden border border-white/15 bg-[#070808]/95 shadow-[0_22px_80px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-2xl"
+        initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 18, scale: 0.98 }}
+        animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
+        exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 12, scale: 0.985 }}
+        transition={{ duration: shouldReduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+      >
         <div
           className="pointer-events-none absolute inset-0 opacity-35"
           style={{
@@ -237,7 +255,9 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
             </div>
           </form>
         </div>
-      </div>
-    </div>
+      </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

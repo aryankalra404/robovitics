@@ -87,13 +87,13 @@ function SponsorCard({
     return (
         <motion.div 
             ref={setCardRef} 
-            className="cursor-grab group relative w-full h-full active:cursor-grabbing"
+            className="cursor-grab relative w-full h-full active:cursor-grabbing"
             style={{ touchAction: 'none', willChange: 'transform' }}
             onPointerDown={onCardPointerDown}
             onMouseEnter={() => onHoverChange(true, ref.current?.getBoundingClientRect() ?? null)}
             onMouseLeave={() => onHoverChange(false, null)}>
             
-            <div className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500 group-hover:shadow-[0_0_25px_rgba(79,174,243,0.18)]"
+            <div className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500"
                 style={{
                     padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
                     // 1. FROSTED GLASS BASE LAYER
@@ -101,6 +101,7 @@ function SponsorCard({
                     backdropFilter: 'blur(10px)',
                     WebkitBackdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255,255,255,0.08)',
+                    boxShadow: isHovered ? '0 0 25px rgba(79,174,243,0.18)' : 'none',
                 }}>
                 
                 {/* 2. THE GRID PATTERN OVERLAY */}
@@ -140,8 +141,13 @@ function SponsorCard({
                         <span className="font-mono text-[10px] text-[rgba(255,255,255,0.4)]">LOGO</span>
                     </div>
 
-                    <h3 className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
-                        style={{ margin: '0 0 7px', fontSize: 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}>
+                    <h3 className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500"
+                        style={{
+                            margin: '0 0 7px',
+                            fontSize: 'clamp(11px, 1vw, 14px)',
+                            lineHeight: 1.15,
+                            filter: isHovered ? 'drop-shadow(0 0 10px rgba(255,255,255,0.6))' : 'none',
+                        }}>
                         {sponsor.name}
                     </h3>
                     <p className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
@@ -200,10 +206,12 @@ const D = 180 / Math.PI;
 export default function Sponsors() {
     const secRef = useRef<HTMLElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
-    const [hId, setHId] = useState<string | null>(null);
     const [heldId, setHeldId] = useState<string | null>(null);
-    const hIdRef = useRef<string | null>(null);
+    const [pickableId, setPickableId] = useState<string | null>(null);
+    const [showSponsorHelp, setShowSponsorHelp] = useState(false);
+    const [hasMovedCards, setHasMovedCards] = useState(false);
     const heldIdRef = useRef<string | null>(null);
+    const pickableIdRef = useRef<string | null>(null);
     const cardEls = useRef<Record<string, HTMLDivElement | null>>({});
     const cardOrigins = useRef<Record<string, Point>>({});
     const cardOffsets = useRef<Record<string, Point>>({});
@@ -263,9 +271,7 @@ export default function Sponsors() {
         return () => { sec.removeEventListener('mousemove', mv); sec.removeEventListener('mouseleave', lv2); };
     }, []);
 
-    const onCard = useCallback((id: string) => (on: boolean, rect: DOMRect | null) => {
-        hIdRef.current = on ? id : null;
-        setHId(on ? id : null);
+    const onCard = useCallback(() => (on: boolean, rect: DOMRect | null) => {
         const s = st.current;
         if (heldIdRef.current) return;
         if (on && rect && secRef.current) {
@@ -324,10 +330,34 @@ export default function Sponsors() {
                 el.style.pointerEvents = '';
             }
             delete cardOrigins.current[current];
+            setHasMovedCards(true);
         }
         heldIdRef.current = null;
         setHeldId(null);
         st.current.locked = Boolean(st.current.hRect);
+    }, []);
+
+    const resetSponsorCards = useCallback(() => {
+        heldIdRef.current = null;
+        pickableIdRef.current = null;
+        cardOrigins.current = {};
+        cardOffsets.current = {};
+
+        SPONSORS.forEach((sponsor) => {
+            const el = cardEls.current[sponsor.id];
+            if (!el) return;
+            el.style.transform = '';
+            el.style.transition = 'transform 180ms ease-out';
+            el.style.zIndex = '';
+            el.style.pointerEvents = '';
+        });
+
+        setHeldId(null);
+        setPickableId(null);
+        setHasMovedCards(false);
+        setShowSponsorHelp(true);
+        st.current.hRect = null;
+        st.current.locked = false;
     }, []);
 
     const pickCard = useCallback((id: string) => {
@@ -336,8 +366,6 @@ export default function Sponsors() {
         releaseCard();
         heldIdRef.current = id;
         setHeldId(id);
-        hIdRef.current = id;
-        setHId(id);
         st.current.locked = true;
 
         const el = cardEls.current[id];
@@ -366,6 +394,7 @@ export default function Sponsors() {
     const onCardPointerDown = useCallback((id: string) => (event: ReactPointerEvent<HTMLDivElement>) => {
         if (!secRef.current || window.innerWidth < 768) return;
         event.preventDefault();
+        setShowSponsorHelp(true);
         pickCard(id);
         updateMouseFromPointer(event);
     }, [pickCard, updateMouseFromPointer]);
@@ -396,6 +425,7 @@ export default function Sponsors() {
             if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
                 if (!secRef.current || window.innerWidth < 768) return;
                 event.preventDefault();
+                setShowSponsorHelp(true);
                 const dir = event.key === 'ArrowLeft' ? -1 : 1;
                 const step = event.shiftKey ? 56 : 28;
                 const minBaseX = 95;
@@ -408,7 +438,7 @@ export default function Sponsors() {
             if (event.key === ' ' || event.key === 'Enter') {
                 if (!secRef.current || window.innerWidth < 768) return;
                 if (heldIdRef.current) return;
-                const targetId = hIdRef.current;
+                const targetId = pickableIdRef.current;
                 if (!targetId) return;
                 event.preventDefault();
                 pickCard(targetId);
@@ -453,6 +483,36 @@ export default function Sponsors() {
             s.joints[0] = { ...s.base };
             s.joints = solveFABRIK(s.joints, s.target, s.lens);
 
+            const eeForPick = s.joints[NJ - 1];
+            const wrForPick = s.joints[NJ - 2];
+            const pickAngle = angOf(wrForPick, eeForPick);
+            const clawPoint = {
+                x: eeForPick.x + Math.cos(pickAngle) * 42,
+                y: eeForPick.y + Math.sin(pickAngle) * 42,
+            };
+            const srForPick = secRef.current?.getBoundingClientRect();
+            let nextPickableId: string | null = null;
+            if (!holding && srForPick) {
+                const pickupMargin = 10;
+                for (const sponsor of SPONSORS) {
+                    const el = cardEls.current[sponsor.id];
+                    if (!el) continue;
+                    const rect = el.getBoundingClientRect();
+                    const left = rect.left - srForPick.left - pickupMargin;
+                    const right = rect.right - srForPick.left + pickupMargin;
+                    const top = rect.top - srForPick.top - pickupMargin;
+                    const bottom = rect.bottom - srForPick.top + pickupMargin;
+                    if (clawPoint.x >= left && clawPoint.x <= right && clawPoint.y >= top && clawPoint.y <= bottom) {
+                        nextPickableId = sponsor.id;
+                        break;
+                    }
+                }
+            }
+            if (pickableIdRef.current !== nextPickableId) {
+                pickableIdRef.current = nextPickableId;
+                setPickableId(nextPickableId);
+            }
+
             // Intensity
             const activeGrip = holding || s.locked;
             s.I = lv(s.I, activeGrip ? 1 : 0, 0.09);
@@ -468,7 +528,6 @@ export default function Sponsors() {
             const cSH = `rgba(79,174,243,${lv(.65, 1.0, t).toFixed(3)})`;      // shaft fill
             const cGS = `rgba(79,174,243,${lv(.55, .90, t).toFixed(3)})`;      // gripper stroke
             const cBL = `rgba(79,174,243,${lv(.50, .85, t).toFixed(3)})`;      // bolt fill
-            const cLB = `rgba(79,174,243,${lv(.40, .70, t).toFixed(3)})`;      // label color
             const cCB = `rgba(79,174,243,${lv(.40, .70, t).toFixed(3)})`;      // cable color
             const glow = t > .05 ? `drop-shadow(0 0 ${(t * 12).toFixed(1)}px rgba(79,174,243,${(t * .6).toFixed(2)}))` : 'none';
 
@@ -725,19 +784,6 @@ export default function Sponsors() {
                 pl.setAttribute('stroke', `rgba(79,174,243,${(t * .4 * (.5 + .5 * Math.sin(pt2 * Math.PI * 2))).toFixed(3)})`);
             }
 
-            // ══════════ ANGLE LABELS ══════════
-            for (let i = 1; i < NJ - 1; i++) {
-                const lb = e[`lb${i}`] as SVGTextElement;
-                if (lb) {
-                    const iA = angOf(s.joints[i], s.joints[i - 1]), oA = angOf(s.joints[i], s.joints[i + 1]);
-                    let ja = Math.abs(oA - iA) * D; if (ja > 180) ja = 360 - ja;
-                    lb.setAttribute('x', (s.joints[i].x + 36).toFixed(1));
-                    lb.setAttribute('y', (s.joints[i].y - 36).toFixed(1));
-                    lb.textContent = `J${i}: ${ja.toFixed(0)}°`;
-                    lb.setAttribute('fill', cLB);
-                }
-            }
-
             s.raf = requestAnimationFrame(tick);
         };
 
@@ -756,6 +802,28 @@ export default function Sponsors() {
                     SYSTEM.LOGS // SPONSORS
                 </span>
             </div>
+            {showSponsorHelp && (
+                <motion.div
+                    className="absolute bottom-6 left-1/2 z-20 hidden -translate-x-1/2 items-center gap-3 rounded-[4px] border border-white/8 bg-black/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-white/42 backdrop-blur-sm md:flex"
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, ease: 'easeOut' }}
+                >
+                    <span className="text-white/55">Hold when claw is over card</span>
+                    <span className="h-3 w-px bg-white/15" />
+                    <span>Release to drop</span>
+                    <span className="h-3 w-px bg-white/15" />
+                    <span>Arrow keys move arm</span>
+                    <button
+                        type="button"
+                        onClick={resetSponsorCards}
+                        disabled={!hasMovedCards && !heldId}
+                        className="ml-1 rounded-[4px] border border-white/15 px-2 py-1 text-white/50 transition-colors duration-200 hover:border-white/35 hover:bg-white/5 hover:text-white/70 disabled:cursor-default disabled:border-white/8 disabled:text-white/20 disabled:hover:bg-transparent"
+                    >
+                        RESET
+                    </button>
+                </motion.div>
+            )}
             
             <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
                 <Header />
@@ -770,8 +838,8 @@ export default function Sponsors() {
                 viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
                 <SponsorCard
                     sponsor={sp}
-                    isHovered={hId === sp.id || heldId === sp.id}
-                    onHoverChange={onCard(sp.id)}
+                    isHovered={pickableId === sp.id || heldId === sp.id}
+                    onHoverChange={onCard()}
                     onCardPointerDown={onCardPointerDown(sp.id)}
                     registerCard={registerCard}
                 />
@@ -786,8 +854,8 @@ export default function Sponsors() {
                 viewport={{ once: true }} transition={{ delay: (i + 3) * 0.06 }}>
                 <SponsorCard
                     sponsor={sp}
-                    isHovered={hId === sp.id || heldId === sp.id}
-                    onHoverChange={onCard(sp.id)}
+                    isHovered={pickableId === sp.id || heldId === sp.id}
+                    onHoverChange={onCard()}
                     onCardPointerDown={onCardPointerDown(sp.id)}
                     registerCard={registerCard}
                 />
@@ -802,8 +870,8 @@ export default function Sponsors() {
                 viewport={{ once: true }} transition={{ delay: (i + 8) * 0.06 }}>
                 <SponsorCard
                     sponsor={sp}
-                    isHovered={hId === sp.id || heldId === sp.id}
-                    onHoverChange={onCard(sp.id)}
+                    isHovered={pickableId === sp.id || heldId === sp.id}
+                    onHoverChange={onCard()}
                     onCardPointerDown={onCardPointerDown(sp.id)}
                     registerCard={registerCard}
                 />
@@ -1025,10 +1093,6 @@ export default function Sponsors() {
                 <circle ref={ref('pl')} fill="none" strokeWidth="2" />
 
 
-
-                {/* Angle annotations */}
-
-                {[1, 2].map(i => <text key={`lb${i}`} ref={ref(`lb${i}`)} fontSize="14" fontWeight="bold" fontFamily="var(--font-geist-mono),monospace" />)}
 
             </svg>
         </section>

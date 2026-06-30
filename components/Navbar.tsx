@@ -105,8 +105,15 @@ export default function Navbar() {
         const target = document.getElementById(targets[item]);
         if (!target) return;
 
-        const targetTop = target.getBoundingClientRect().top + window.scrollY;
-        if (targetTop <= scrollPoint) {
+        const targetRoot =
+          target.offsetHeight <= 2
+            ? target.closest('section') ?? target
+            : target;
+        const rootRect = targetRoot.getBoundingClientRect();
+        const targetTop = rootRect.top + window.scrollY;
+        const targetBottom = targetTop + rootRect.height;
+
+        if (targetTop <= scrollPoint && targetBottom > scrollPoint) {
           currentSection = item;
         }
       });
@@ -259,6 +266,8 @@ export default function Navbar() {
           >
             <button
               type="button"
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => setMoreOpen((open) => !open)}
               className={`relative px-2.5 py-1.5 uppercase transition-colors duration-200 xl:px-3 ${
                 moreNavItems.includes(activeSection) ? 'text-white' : 'hover:text-white/80'
               }`}

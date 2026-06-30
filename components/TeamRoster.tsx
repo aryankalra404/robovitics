@@ -130,7 +130,7 @@ function ProfileCard({
       <div
         className={compact ? 'team-card-inner team-card-compact relative h-full overflow-hidden rounded-[4px] flex flex-col' : 'team-card-inner relative h-full overflow-hidden rounded-[4px] flex flex-col'}
         style={{
-         padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(11px, 1vw, 13px)' : 'clamp(12px, 1.2vw, 16px)',
+         padding: compact ? 'clamp(9px, 0.8vw, 11px)' : facultyCompact ? 'clamp(9px, 0.8vw, 11px)' : 'clamp(12px, 1.2vw, 16px)',
 
 
           background: '#0a0a0a',
@@ -192,7 +192,7 @@ function ProfileCard({
           className="team-image relative w-full mb-4 overflow-hidden rounded-[2px] bg-[#111]"
           style={{
 aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
-            marginBottom: compact ? '10px' : facultyCompact ? '12px' : '16px',
+            marginBottom: compact ? '10px' : facultyCompact ? '9px' : '16px',
             border: isActive ? '1px solid rgba(79,174,243,0.5)' : '1px solid rgba(255,255,255,0.1)',
             boxShadow: isActive ? '0 0 15px rgba(79,174,243,0.2)' : 'none',
             transition: 'all 0.4s ease',
@@ -246,8 +246,8 @@ aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
             className="team-name text-center font-sans font-black uppercase"
             style={{
               margin: '0 0 4px',
-              fontSize: compact ? 'clamp(10px, 0.78vw, 12px)' : facultyCompact ? 'clamp(11px, 0.92vw, 13px)' : 'clamp(12px, 1.1vw, 15px)',
-              letterSpacing: compact ? '0.045em' : facultyCompact ? '0.05em' : '0.06em',
+              fontSize: compact ? 'clamp(10px, 0.78vw, 12px)' : facultyCompact ? 'clamp(10px, 0.78vw, 12px)' : 'clamp(12px, 1.1vw, 15px)',
+              letterSpacing: compact ? '0.045em' : facultyCompact ? '0.045em' : '0.06em',
               lineHeight: 1.15,
               color: isActive ? '#4FAEF3' : '#ffffff',
               textShadow: isActive ? '0 0 10px rgba(79,174,243,0.6)' : 'none',
@@ -259,9 +259,9 @@ aspectRatio: compact || facultyCompact ? '1/1' : '4/5',
           <p
             className="team-role text-center font-mono uppercase"
             style={{
-              margin: compact ? '0 0 6px' : facultyCompact ? '0 0 7px' : '0 0 8px',
-              fontSize: compact ? 'clamp(6.5px, 0.5vw, 8px)' : facultyCompact ? 'clamp(7px, 0.55vw, 8.5px)' : 'clamp(8px, 0.65vw, 10px)',
-              letterSpacing: compact ? '0.08em' : facultyCompact ? '0.09em' : '0.1em',
+              margin: compact ? '0 0 6px' : facultyCompact ? '0 0 6px' : '0 0 8px',
+              fontSize: compact ? 'clamp(6.5px, 0.5vw, 8px)' : facultyCompact ? 'clamp(6.5px, 0.5vw, 8px)' : 'clamp(8px, 0.65vw, 10px)',
+              letterSpacing: compact ? '0.08em' : facultyCompact ? '0.08em' : '0.1em',
               color: 'rgba(79,174,243,0.85)',
               transition: 'all 0.4s ease',
             }}
@@ -391,7 +391,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
 
           <RevealGrid
             people={FACULTY}
-            columns="grid-cols-2 lg:grid-cols-4"
+            columns="team-grid-faculty grid-cols-2 lg:grid-cols-4"
             interactive={false}
             facultyCompact
           />
@@ -445,11 +445,19 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         :global(.team-grid-balanced::-webkit-scrollbar) {
           display: none;
         }
+        :global(.team-grid-faculty) {
+          max-width: min(100%, 520px);
+          margin-left: auto;
+          margin-right: auto;
+        }
         :global(.team-grid-balanced > *) {
           flex: 0 0 clamp(142px, 42vw, 164px);
           scroll-snap-align: start;
         }
         @media (min-width: 768px) {
+          :global(.team-grid-faculty) {
+            max-width: min(100%, 640px);
+          }
           :global(.team-grid-balanced) {
             display: grid;
             gap: 16px;
@@ -466,6 +474,9 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           }
         }
         @media (min-width: 1024px) {
+          :global(.team-grid-faculty) {
+            max-width: min(100%, 760px);
+          }
           :global(.team-grid-balanced) {
             grid-template-columns: repeat(10, minmax(0, 1fr));
             max-width: 1040px;
