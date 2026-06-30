@@ -405,8 +405,8 @@ export default function Projects() {
 
                 <div className="absolute left-10 top-8 z-30 pointer-events-none">
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
-                        <span className="font-bold text-white mr-2">04.</span>
-                        SYSTEM.LOGS // PROJECTS
+                        <span className="font-bold text-white mr-2">06.</span>
+                        system.logs // Projects
                     </span>
                 </div>
 
@@ -429,7 +429,7 @@ export default function Projects() {
                         }}
                     >
                         WHAT WE&apos;VE{' '}
-                        <span style={{ color: '#4FAEF3' }}>BUILT.</span>
+                        <span style={{ color: '#4FAEF3' }}>BUILT</span>
                     </h2>
                     <div style={{
                         marginTop: 12, height: 1, width: '100%',

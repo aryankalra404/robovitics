@@ -43,31 +43,68 @@ function EventsBackground() {
 // ----------------------------------------------------------------------
 // FACULTY & BOARD DATA
 // ----------------------------------------------------------------------
-const FACULTY = Array.from({ length: 4 }).map((_, i) => ({
+const FACULTY = [
+  { name: 'Prof. Kalaiarassan G', role: 'School of Mechanical Engineering' },
+  { name: 'Prof. Abraham Sampson S', role: 'School of Electronic Engineering' },
+  { name: 'Prof. Brisilla R M', role: 'School of Computer Science & Engineering' },
+  { name: 'Prof. Radhakrishnan Delhibabu', role: 'School of Computer Science & Engineering' },
+].map((person, i) => ({
   id: `fac-${i + 1}`,
-  name: `FACULTY ${i + 1}`,
-  role: 'ADVISOR',
+  name: person.name,
+  role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=fac${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=fac${i}&backgroundColor=transparent`,
 }));
 
-const BOARD = Array.from({ length: 19 }).map((_, i) => ({
+const BOARD = [
+  { name: 'Shuktika', role: 'Chairperson' },
+  { name: 'Aarushi', role: 'Vice-Chairperson' },
+  { name: 'Krrish', role: 'Secretary' },
+  { name: 'Shambhavi', role: 'Co-Secretary' },
+  { name: 'Tharun', role: 'Events Head' },
+  { name: 'Kashikaa', role: 'PR Head' },
+  { name: 'Arushi', role: 'Tech Lead' },
+  { name: 'Kesava Prasath', role: 'R&D Head' },
+  { name: 'Azad', role: 'Design Head' },
+  { name: 'Mahmood', role: 'AI/ML Lead & Project Lead' },
+  { name: 'Kriday', role: 'Cyber Security Lead' },
+  { name: 'Harshita', role: 'Web Development Lead' },
+  { name: 'Jacinth', role: 'App Development Lead & RoboWars Head' },
+  { name: 'Kiruba', role: 'Managing Director (MD)' },
+  { name: 'Shravan', role: 'Hands-on Robotics (HoR)' },
+  { name: 'Ishan', role: 'Hacks' },
+  { name: 'Suyash', role: 'Editorial Head' },
+  { name: 'Animeha', role: 'Creative Head' },
+].map((person, i) => ({
   id: `board-${i + 1}`,
-  name: `BOARD MEMBER ${i + 1}`,
-  role: i === 0 ? 'PRESIDENT' : i === 1 ? 'VICE PRESIDENT' : 'CORE BOARD',
+  name: person.name,
+  role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=board${i}&backgroundColor=transparent`,
 }));
 
-const SENIOR_BOARD = Array.from({ length: 15 }).map((_, i) => ({
-  id: `senior-board-${i + 1}`,
-  name: `SENIOR BOARD ${i + 1}`,
-  role: 'SENIOR BOARD',
+const SENIOR_CORE = [
+  'Ryan',
+  'Sheyansh',
+  'Anjali Chougule',
+  'Ankith',
+  'Bhavya Singla',
+  'Naman Chauhan',
+  'Sarvesh',
+  'Vasabdatwa',
+  'Aadithya Chourasia',
+  'Advay',
+  'Charvi',
+  'Rithvik'
+].map((name, i) => ({
+  id: `senior-core-${i + 1}`,
+  name: name,
+  role: '',
   // Replace photoUrl with real member photo. Robot shown on hover.
-  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
-  robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
+  photoUrl: `https://api.dicebear.com/7.x/personas/svg?seed=senior-core${i}&backgroundColor=b6e3f4`,
+  robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-core${i}&backgroundColor=transparent`,
 }));
 
 // ----------------------------------------------------------------------
@@ -162,15 +199,15 @@ function ProfileCard({
             key={ci}
             className="absolute z-10 pointer-events-none"
             style={{
-              ...(c.top    !== undefined ? { top:    c.top }    : {}),
+              ...(c.top !== undefined ? { top: c.top } : {}),
               ...(c.bottom !== undefined ? { bottom: c.bottom } : {}),
-              ...(c.left   !== undefined ? { left:   c.left }   : {}),
-              ...(c.right  !== undefined ? { right:  c.right }  : {}),
+              ...(c.left !== undefined ? { left: c.left } : {}),
+              ...(c.right !== undefined ? { right: c.right } : {}),
               width: isSmall ? 10 : 14, height: isSmall ? 10 : 14,
-              borderTop:    c.borderTop    ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderTop: c.borderTop ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
               borderBottom: c.borderBottom ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderLeft:   c.borderLeft   ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
-              borderRight:  c.borderRight  ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderLeft: c.borderLeft ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
+              borderRight: c.borderRight ? `1.5px solid ${isActive ? 'rgba(79,174,243,1)' : 'rgba(79,174,243,0.85)'}` : undefined,
               opacity: isActive ? 1 : 0,
               transform: isActive ? 'scale(1)' : 'scale(0.82)',
               filter: isActive ? 'drop-shadow(0 0 6px rgba(79,174,243,0.9))' : 'drop-shadow(0 0 4px rgba(79,174,243,0.5))',
@@ -260,7 +297,7 @@ function ProfileCard({
             className="team-role text-center font-mono uppercase"
             style={{
               margin: compact ? '0 0 6px' : facultyCompact ? '0 0 7px' : '0 0 8px',
-              fontSize: compact ? 'clamp(6.5px, 0.5vw, 8px)' : facultyCompact ? 'clamp(7px, 0.55vw, 8.5px)' : 'clamp(8px, 0.65vw, 10px)',
+              fontSize: compact ? 'clamp(8.5px, 0.7vw, 10px)' : facultyCompact ? 'clamp(9px, 0.75vw, 11px)' : 'clamp(10px, 0.85vw, 12px)',
               letterSpacing: compact ? '0.08em' : facultyCompact ? '0.09em' : '0.1em',
               color: 'rgba(79,174,243,0.85)',
               transition: 'all 0.4s ease',
@@ -399,8 +436,8 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
           color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
         }}>
-          <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>05.</span>
-          SYSTEM.LOGS // COMMAND_STRUCTURE
+          <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>09.</span>
+          system.logs // Club_Committee
         </span>
       </div>
 
@@ -408,7 +445,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         {/* ── FACULTY SECTION ── */}
         <div id="team-faculty" className="w-full max-w-5xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // TIER_01"
+            eyebrow="▶ AUTHORITY_NODE // FACULTY"
             title="FACULTY"
             accent="ADVISORS"
           />
@@ -424,7 +461,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
         {/* ── BOARD SECTION ── */}
         <div id="team-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center mb-14 md:mb-24">
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // TIER_02"
+            eyebrow="▶ LEADERSHIP_NODE // BOARD"
             title="BOARD"
           />
 
@@ -436,16 +473,16 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           />
         </div>
 
-        {/* ── SENIOR BOARD SECTION ── */}
-        <div id="team-senior-board" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
+        {/* ── SENIOR CORE SECTION ── */}
+        <div id="team-senior-core" className="w-full max-w-7xl scroll-mt-28 flex flex-col items-center">
           <SectionTitle
-            eyebrow="▶ ACCESS_LEVEL // TIER_03"
+            eyebrow="▶ LEADERSHIP_NODE // SENIOR_CORE"
             title="SENIOR"
-            accent="BOARD"
+            accent="CORE"
           />
 
           <RevealGrid
-            people={SENIOR_BOARD}
+            people={SENIOR_CORE}
             columns=""
             compact
             balanced
@@ -519,7 +556,7 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
             margin-bottom: 4px !important;
           }
           :global(.team-role) {
-            font-size: 7px !important;
+            font-size: 9px !important;
             letter-spacing: 0.08em !important;
             margin-bottom: 7px !important;
           }

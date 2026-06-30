@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { teamsData } from '../data/clubData';
@@ -122,9 +123,30 @@ function TeamSlide({
                     border: '1px solid rgba(255,255,255,0.08)',
                 }}
             >
+                {/* Team Watermark */}
+                {['ARTEMIS', 'AVATAR', 'ORCUS'].includes(team.id.toUpperCase()) && (
+                    <div className="absolute inset-0 pointer-events-none flex flex-col md:flex-row z-0">
+                        <div className="h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0" />
+                        <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+                            <div
+                                className={`relative w-[70%] max-w-[320px] aspect-square ${team.id.toUpperCase() === 'AVATAR' ? 'scale-[1.35] opacity-100' : 'opacity-100'}`}
+                                style={{ filter: `drop-shadow(0 0 24px ${accent.replace('0.9', '0.5')}) brightness(1.15)` }}
+                            >
+                                <Image
+                                    src={`/${team.id.charAt(0).toUpperCase() + team.id.slice(1).toLowerCase()}Logo.svg`}
+                                    alt={`${team.teamName} Watermark`}
+                                    fill
+                                    className="object-contain"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Inner texture overlay */}
                 <div
-                    className="absolute inset-0 pointer-events-none"
+                    className="absolute inset-0 pointer-events-none z-0"
                     style={{
                         background: `
                             linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
@@ -207,10 +229,10 @@ function TeamSlide({
                 </div>
 
                 {/* Text pane */}
-                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-transparent to-black/40">
+                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-black/45 to-black/90 backdrop-blur-[3px]">
                     <span
                         className="font-mono uppercase tracking-[0.3em] mb-2 sm:mb-3"
-                        style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 8px ${accent.replace('0.9', '0.4')}` }}
+                        style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 12px ${accent.replace('0.9', '0.8')}` }}
                     >
                         {team.id}
                     </span>
@@ -221,6 +243,7 @@ function TeamSlide({
                             fontFamily: '"Inter", "Arial Black", sans-serif',
                             fontSize: 'clamp(22px, 3vw, 36px)',
                             letterSpacing: '-0.01em',
+                            textShadow: '0 4px 12px rgba(0,0,0,0.9)',
                         }}
                     >
                         {team.teamName}
@@ -228,7 +251,7 @@ function TeamSlide({
 
                     <p
                         className="font-mono uppercase tracking-[0.15em] mb-5 sm:mb-6"
-                        style={{ fontSize: 'clamp(8.5px, 0.7vw, 11px)', color: 'rgba(255,255,255,0.4)' }}
+                        style={{ fontSize: 'clamp(8.5px, 0.7vw, 11px)', color: 'rgba(255,255,255,0.6)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
                     >
                         {team.tagline}
                     </p>
@@ -245,33 +268,40 @@ function TeamSlide({
                         className="leading-relaxed font-light tracking-wide"
                         style={{
                             fontSize: 'clamp(13px, 1vw, 15px)',
-                            color: 'rgba(255,255,255,0.65)',
+                            color: 'rgba(255,255,255,0.75)',
                             maxWidth: '46ch',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.9)',
                         }}
                     >
                         {team.description}
                     </p>
 
-                    {/* Member count badges */}
-                    <div className="mt-6 flex items-center gap-4">
-                        <div
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-[3px]"
-                            style={{ border: `1px solid ${accent.replace('0.9', '0.25')}`, background: accent.replace('0.9', '0.06') }}
+                    {/* External Profile CTA */}
+                    <div className="mt-7 flex items-center">
+                        <a
+                            href={
+                                team.id.toUpperCase() === 'ORCUS' ? 'https://www.instagram.com/team_orcus/' :
+                                    team.id.toUpperCase() === 'ARTEMIS' ? 'https://www.instagram.com/team_artemis_vit/' :
+                                        team.id.toUpperCase() === 'AVATAR' ? 'https://www.instagram.com/team_avatar_vit?igsh=MjlmcWQ5dXNjbG42' : '#'
+                            }
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative inline-flex items-center font-mono text-[11px] sm:text-[12px] tracking-[0.2em] transition-all duration-300 ease-out"
+                            style={{ color: '#4FAEF3' }}
                         >
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: accent, boxShadow: `0 0 6px ${accent}`, display: 'inline-block', flexShrink: 0 }} />
-                            <span className="font-mono uppercase tracking-[0.2em]" style={{ fontSize: '9px', color: accent }}>
-                                12 Senior Board
+                            <span
+                                className="transition-all duration-300 group-hover:brightness-125 group-hover:[text-shadow:0_0_12px_rgba(79,174,243,0.8)]"
+                                style={{ textShadow: '0 0 6px rgba(79,174,243,0.3)' }}
+                            >
+                                OPEN PROFILE
                             </span>
-                        </div>
-                        <div
-                            className="flex items-center gap-2 px-3 py-1.5 rounded-[3px]"
-                            style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.03)' }}
-                        >
-                            <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'rgba(255,255,255,0.4)', display: 'inline-block', flexShrink: 0 }} />
-                            <span className="font-mono uppercase tracking-[0.2em]" style={{ fontSize: '9px', color: 'rgba(255,255,255,0.4)' }}>
-                                18 Core Board
+                            <span
+                                className="ml-2 transition-all duration-300 group-hover:-translate-y-[2px] group-hover:translate-x-[2px] group-hover:brightness-125 group-hover:[text-shadow:0_0_12px_rgba(79,174,243,0.8)]"
+                            >
+                                ↗
                             </span>
-                        </div>
+                            <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-[#4FAEF3] transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_#4FAEF3]" />
+                        </a>
                     </div>
                 </div>
 
@@ -359,8 +389,8 @@ export default function TechnicalTeams() {
             {/* Top-left section label */}
             <div className="absolute left-5 sm:left-10 top-6 sm:top-10 z-20 pointer-events-none hidden sm:block">
                 <span style={{ fontFamily: 'monospace', fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
-                    <span style={{ color: '#ffffff', fontWeight: 700, marginRight: 8 }}>05.</span>
-                    SYSTEM.LOGS // TECH_TEAMS
+                    <span style={{ color: '#ffffff', fontWeight: 700, marginRight: 8 }}>03.</span>
+                    system logs // tech_teams
                 </span>
             </div>
 
@@ -380,7 +410,7 @@ export default function TechnicalTeams() {
 
                     <div ref={titleRef}>
                         <h2 style={{ margin: 0, fontSize: 'clamp(30px, 6vw, 64px)', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1 }}>
-                            TEAMS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+                            TEAMS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
                         </h2>
                         <div style={{ marginTop: 14, width: '40%', height: '1px', marginInline: 'auto', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)' }} />
                     </div>

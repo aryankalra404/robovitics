@@ -25,9 +25,9 @@ const events: DeckItem[] = [
   { id: "MODULE_02", name: "HANDS ON ROBOTICS", type: "WORKSHOP · HARDWARE + SOFTWARE", date: "PRE-GRAVITAS 2025 · 240+ ATTENDEES", desc: "Two days, zero prior experience needed. Sensors, microcontrollers, MicroPython, and live WebSocket-controlled robots.", status: "OPEN", img: "/hands-on.png", details: "Sponsored by Module143 and run on 22–23 Sept 2025, this two-day workshop took ~240 students from zero to building functional robotic systems. Sessions covered sensors, microcontrollers, and IoT-enabled devices, alongside MicroPython for efficient firmware. Participants also built web-based control systems using real-time communication and WebSocket integration — bridging embedded hardware, firmware, and browser-based control in one working pipeline." },
   { id: "MODULE_01", name: "ROBOWARS", type: "COMBAT ROBOTICS", date: "FLAGSHIP · GRAVITAS 2025", desc: "3 weight classes. ₹3L prize pool. One of India's largest combat arenas — Team Orcus fought across all categories.", status: "FLAGSHIP", img: "/robowars.png", details: "Held 26–28 Sept 2025 and sponsored by Siemens and Analog Devices, RoboWars brought elite teams from across the country into one of India's largest and safest combat robotics arenas. Matches spanned 8kg, 15kg, and 60kg weight categories, testing mechanical design, electronics, and strategy under pressure. Our own Team Orcus competed in every category. Winners: Team Dot Robotics (8kg), Team Black Diamonds (15kg), and Team Shadow (60kg)." },
   { id: "MODULE_04", name: "VORTEX 360", type: "72H CAD DESIGN-A-THON", date: "POWERED BY AUTODESK · FEB 2025", desc: "~1,300 participants. 3 days, real-world problem tracks, ₹1L prize pool, and direct access to Autodesk experts.", status: "FLAGSHIP", img: "/vortex.png", details: "A 72-hour CAD modeling design-a-thon sponsored by Autodesk, drawing nearly 1,300 students in teams of 3–5. Day 1 focused on problem understanding and brainstorming, Day 2 on refining designs and prototyping in Fusion 360, and Day 3 on final pitches before judges and industry experts. Beyond the ₹1L prize pool, the event offered direct networking with Autodesk professionals and industry leaders." },
-  { id: "MODULE_05", name: "CRUISE THE WEB3VERSE", type: "WEB3 EVENT", date: "2 DAYS · ENDED IN A LIVE AUCTION", desc: "A two-day dive into Web3 concepts and tooling, closing out with a live auction finale.", status: "UPCOMING", img: "/equinox.png", details: "A two-day Web3-focused event exploring decentralized concepts and tooling, designed for curious builders and newcomers alike. The event culminated in a live auction, turning theory into a tangible, competitive finale that brought the whole cohort together for one last high-energy session." },
+  { id: "MODULE_05", name: "CRUISE THE WEB3VERSE", type: "WEB3 EVENT", date: "YANTRA EVENT · 2 DAYS", desc: "A two-day dive into Web3 concepts and tooling, closing out with a live auction finale.", status: "UPCOMING", img: "/web3verse.png", details: "A two-day Web3-focused event exploring decentralized concepts and tooling, designed for curious builders and newcomers alike. The event culminated in a live auction, turning theory into a tangible, competitive finale that brought the whole cohort together for one last high-energy session." },
   // ← NEW 6th event — replace with your actual data:
-  { id: "MODULE_06", name: "YOUR EVENT NAME", type: "EVENT TYPE", date: "DATE · ATTENDEES", desc: "Short description of the event shown on the card face.", status: "OPEN", img: "/your-image.png", details: "Full description shown in the modal detail view." },
+  { id: "MODULE_06", name: "EQUINOX", type: "60-HOUR HACKATHON", date: "SMART INFRASTRUCTURE · 100+ TEAMS", desc: "A flagship 60-hour hackathon bringing innovators together to build and solve problems around Smart Infrastructure.", status: "COMPLETED", img: "/equinox.jpeg", details: "Equinox challenged participants to transform ideas into impactful solutions through an intense multi-stage hackathon experience. From healthcare and cybersecurity to smart homes and road safety, teams developed innovative projects while competing through rigorous evaluation rounds. The event culminated in live final pitches by the top teams, celebrating creativity, technical excellence, and the spirit of innovation that defines RoboVITics." },
 ];
 
 const outreach: DeckItem[] = [
@@ -59,11 +59,11 @@ export default function Events() {
   const deckRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
-  
+
   // Separate Refs for independent DOM mapping
   const eventsCardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const outreachCardsRef = useRef<(HTMLDivElement | null)[]>([]);
-  
+
   const stRef = useRef<ScrollTrigger | null>(null);
   const modeRef = useRef<Mode>("events");
   const introDoneRef = useRef(false);
@@ -89,53 +89,53 @@ export default function Events() {
   const isSlideAnimating = useRef(false);
   const isMobileSlideAnimating = useRef(false);
   const activeList = mode === "events" ? events : outreach;
-  
+
   const baseShadow = "inset 0 1px 0 rgba(255,255,255,0.14), inset 0 -1px 0 rgba(0,0,0,0.75), 0 0 0 1px rgba(0,0,0,0.75), 8px 10px 20px rgba(0,0,0,0.55)";
   const glowShadow = `${baseShadow}, 0 0 40px rgba(255,255,255,0.12), 0 0 90px rgba(255,255,255,0.07), 0 0 160px rgba(200,220,255,0.05)`;
 
-const getGridPositions = useCallback((count: number) => {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const offsetX = Math.min(vw * 0.28, Math.max(vw / 2 - 160, 180));
-  const offsetY = Math.min(vh * 0.22, Math.max(vh / 2 - 160, 120));
+  const getGridPositions = useCallback((count: number) => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const offsetX = Math.min(vw * 0.28, Math.max(vw / 2 - 160, 180));
+    const offsetY = Math.min(vh * 0.22, Math.max(vh / 2 - 160, 120));
 
-  if (count === 6) {
-    const cardW = 270;
-    const cardH = 195;
-    const colGap = 90;   // edge-to-edge gap between left/center/right columns
-    const rowGap = 80;   // edge-to-edge gap between top/bottom rows
+    if (count === 6) {
+      const cardW = 270;
+      const cardH = 195;
+      const colGap = 90;   // edge-to-edge gap between left/center/right columns
+      const rowGap = 80;   // edge-to-edge gap between top/bottom rows
 
-    // keep columns from overflowing on narrower desktop widths
-    const maxOx = Math.max(vw / 2 - cardW / 2 - 30, 200);
-    const ox = Math.min(cardW + colGap, maxOx);
-    const oy = (cardH + rowGap) / 2;
+      // keep columns from overflowing on narrower desktop widths
+      const maxOx = Math.max(vw / 2 - cardW / 2 - 30, 200);
+      const ox = Math.min(cardW + colGap, maxOx);
+      const oy = (cardH + rowGap) / 2;
+
+      return [
+        { x: -ox, y: -oy },  // top-left
+        { x: 0, y: -oy },  // top-center
+        { x: ox, y: -oy },  // top-right
+        { x: -ox, y: oy },  // bottom-left
+        { x: 0, y: oy },  // bottom-center
+        { x: ox, y: oy },  // bottom-right
+      ];
+    }
+
+    if (count === 3) {
+      return [
+        { x: -offsetX * 0.8, y: -offsetY * 0.55 },
+        { x: offsetX * 0.8, y: -offsetY * 0.55 },
+        { x: 0, y: offsetY * 0.65 },
+      ];
+    }
 
     return [
-      { x: -ox, y: -oy },  // top-left
-      { x: 0,   y: -oy },  // top-center
-      { x:  ox, y: -oy },  // top-right
-      { x: -ox, y:  oy },  // bottom-left
-      { x: 0,   y:  oy },  // bottom-center
-      { x:  ox, y:  oy },  // bottom-right
+      { x: -offsetX, y: -offsetY },
+      { x: offsetX, y: -offsetY },
+      { x: 0, y: 0 },
+      { x: -offsetX, y: offsetY },
+      { x: offsetX, y: offsetY },
     ];
-  }
-
-  if (count === 3) {
-    return [
-      { x: -offsetX * 0.8, y: -offsetY * 0.55 },
-      { x:  offsetX * 0.8, y: -offsetY * 0.55 },
-      { x: 0,              y:  offsetY * 0.65  },
-    ];
-  }
-
-  return [
-    { x: -offsetX, y: -offsetY },
-    { x:  offsetX, y: -offsetY },
-    { x: 0,        y: 0        },
-    { x: -offsetX, y:  offsetY },
-    { x:  offsetX, y:  offsetY },
-  ];
-}, []);
+  }, []);
 
   const prepStack = useCallback((cards: HTMLDivElement[]) => {
     cards.forEach((card, i) => {
@@ -150,39 +150,39 @@ const getGridPositions = useCallback((count: number) => {
     });
   }, [baseShadow]);
 
-const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "right" = "left") => {
-  const positions = getGridPositions(cards.length);
-  const vw = window.innerWidth;
-  const startX = direction === "left" ? vw * 0.92 : -vw * 0.92;
-  const tl = gsap.timeline({ onComplete: () => { isSwappingRef.current = false; } });
+  const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "right" = "left") => {
+    const positions = getGridPositions(cards.length);
+    const vw = window.innerWidth;
+    const startX = direction === "left" ? vw * 0.92 : -vw * 0.92;
+    const tl = gsap.timeline({ onComplete: () => { isSwappingRef.current = false; } });
 
-  cards.forEach((card, i) => {
-    const pos = positions[i];
-    gsap.set(card, { x: startX, y: pos.y, rotateX: 0, scale: 0.86, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
+    cards.forEach((card, i) => {
+      const pos = positions[i];
+      gsap.set(card, { x: startX, y: pos.y, rotateX: 0, scale: 0.86, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
 
-    const styledBg  = card.querySelector<HTMLElement>(".ev-styled-bg");
-    const highlights = card.querySelector<HTMLElement>(".ev-highlights");
-    const inner      = card.querySelector<HTMLElement>(".ev-inner");
-    const flash      = card.querySelector<HTMLElement>(".ev-flash");
-    if (styledBg)   gsap.set(styledBg,   { opacity: 0, boxShadow: baseShadow });
-    if (highlights) gsap.set(highlights, { opacity: 0 });
-    if (inner)      gsap.set(inner,      { opacity: 0 });
+      const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
+      const highlights = card.querySelector<HTMLElement>(".ev-highlights");
+      const inner = card.querySelector<HTMLElement>(".ev-inner");
+      const flash = card.querySelector<HTMLElement>(".ev-flash");
+      if (styledBg) gsap.set(styledBg, { opacity: 0, boxShadow: baseShadow });
+      if (highlights) gsap.set(highlights, { opacity: 0 });
+      if (inner) gsap.set(inner, { opacity: 0 });
 
-    // All cards fly in together at t=0, tiny i*0.018 stagger is barely perceptible
-    const t = i * 0.018;
-    tl.to(card, { x: pos.x, y: pos.y, scale: 1, duration: 0.44, ease: "power3.out" }, t);
-    tl.to(card, { y: pos.y + 8, duration: 0.06, ease: "power1.out" }, t + 0.38);
-    tl.to(card, { y: pos.y,     duration: 0.06, ease: "power1.in"  }, t + 0.44);
+      // All cards fly in together at t=0, tiny i*0.018 stagger is barely perceptible
+      const t = i * 0.018;
+      tl.to(card, { x: pos.x, y: pos.y, scale: 1, duration: 0.44, ease: "power3.out" }, t);
+      tl.to(card, { y: pos.y + 8, duration: 0.06, ease: "power1.out" }, t + 0.38);
+      tl.to(card, { y: pos.y, duration: 0.06, ease: "power1.in" }, t + 0.44);
 
-    if (styledBg) {
-      tl.to(styledBg, { opacity: 1,                 duration: 0.18, ease: "power2.inOut" }, t + 0.10);
-      tl.to(styledBg, { boxShadow: glowShadow,      duration: 0.28, ease: "power2.out"   }, t + 0.28);
-    }
-    if (highlights) tl.to(highlights, { opacity: 1, duration: 0.16 }, t + 0.14);
-    if (inner)      tl.to(inner,      { opacity: 1, duration: 0.14, ease: "power1.out" }, t + 0.24);
-    if (flash) tl.fromTo(flash, { opacity: 0.75 }, { opacity: 0,   duration: 0.14, ease: "power2.out" }, t + 0.28);
-  });
-}, [baseShadow, getGridPositions, glowShadow]);
+      if (styledBg) {
+        tl.to(styledBg, { opacity: 1, duration: 0.18, ease: "power2.inOut" }, t + 0.10);
+        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.28, ease: "power2.out" }, t + 0.28);
+      }
+      if (highlights) tl.to(highlights, { opacity: 1, duration: 0.16 }, t + 0.14);
+      if (inner) tl.to(inner, { opacity: 1, duration: 0.14, ease: "power1.out" }, t + 0.24);
+      if (flash) tl.fromTo(flash, { opacity: 0.75 }, { opacity: 0, duration: 0.14, ease: "power2.out" }, t + 0.28);
+    });
+  }, [baseShadow, getGridPositions, glowShadow]);
 
   // Close modal logic
   const handleCloseModal = () => {
@@ -349,122 +349,122 @@ const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "r
 
     // Top row cards (indices 0,1,2) all go at t=0.2
     // Bottom row cards (indices 3,4,5) all go at t=0.38
-    const topRow    = [0, 1, 2];
+    const topRow = [0, 1, 2];
     const bottomRow = [3, 4, 5];
     [...topRow, ...bottomRow].forEach((cardIdx) => {
-      const card  = cards[cardIdx];
-      const pos   = getGridPositions(cards.length)[cardIdx];
-      const t     = topRow.includes(cardIdx) ? 0.2 : 0.38;
-      const depth  = cards.length - 1 - cardIdx;
+      const card = cards[cardIdx];
+      const pos = getGridPositions(cards.length)[cardIdx];
+      const t = topRow.includes(cardIdx) ? 0.2 : 0.38;
+      const depth = cards.length - 1 - cardIdx;
       const startY = depth * 12;
 
       tl.set(card, { zIndex: 20 + cardIdx }, t);
-      tl.to(card, { rotateX: 18, y: startY - 60, duration: 0.06, ease: "power2.in"  }, t);
+      tl.to(card, { rotateX: 18, y: startY - 60, duration: 0.06, ease: "power2.in" }, t);
       tl.to(card, { x: pos.x, y: pos.y, rotateX: 0, scale: 1, duration: 0.11, ease: "power3.out" }, t + 0.06);
       tl.to(card, { y: pos.y + 8, duration: 0.025, ease: "power1.out" }, t + 0.15);
-      tl.to(card, { y: pos.y,     duration: 0.025, ease: "power1.in"  }, t + 0.175);
+      tl.to(card, { y: pos.y, duration: 0.025, ease: "power1.in" }, t + 0.175);
 
-      const styledBg   = card.querySelector<HTMLElement>(".ev-styled-bg");
+      const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
       const highlights = card.querySelector<HTMLElement>(".ev-highlights");
-      const inner      = card.querySelector<HTMLElement>(".ev-inner");
+      const inner = card.querySelector<HTMLElement>(".ev-inner");
 
       if (styledBg) {
-        tl.to(styledBg, { opacity: 1,            duration: 0.13, ease: "power2.inOut" }, t + 0.04);
-        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.26, ease: "power2.out"   }, t + 0.18);
+        tl.to(styledBg, { opacity: 1, duration: 0.13, ease: "power2.inOut" }, t + 0.04);
+        tl.to(styledBg, { boxShadow: glowShadow, duration: 0.26, ease: "power2.out" }, t + 0.18);
       }
       if (highlights) tl.to(highlights, { opacity: 1, duration: 0.13 }, t + 0.08);
-      if (inner)      tl.to(inner,      { opacity: 1, duration: 0.07, ease: "power1.out" }, t + 0.18);
+      if (inner) tl.to(inner, { opacity: 1, duration: 0.07, ease: "power1.out" }, t + 0.18);
 
       const flash = card.querySelector<HTMLElement>(".ev-flash");
       if (flash) tl.fromTo(flash, { opacity: 0.9 }, { opacity: 0, duration: 0.1, ease: "power2.out" }, t + 0.15);
     });
 
     // Toggle appears exactly when bottom row lands: 0.38 + 0.175 + small fade = ~0.57
-   if (toggleRef.current) {
-  tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.57);
-}
+    if (toggleRef.current) {
+      tl.to(toggleRef.current, { opacity: 1, y: 0, duration: 0.1, ease: "power2.out" }, 0.57);
+    }
 
-// Add this exact line. Increase the "0.8" if you want it to stay locked even longer.
-tl.set({}, {}, "+=0.8"); 
+    // Add this exact line. Increase the "0.8" if you want it to stay locked even longer.
+    tl.set({}, {}, "+=0.8");
 
-stRef.current = ScrollTrigger.create({
-  trigger: section,
-  start: "top top",
-  end: () => `+=${window.innerHeight * 4}`, // Matches the 400vh
+    stRef.current = ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: () => `+=${window.innerHeight * 4}`, // Matches the 400vh
       scrub: 1.2,
       animation: tl,
       onUpdate: (self) => {
-  syncToggleInteractivity();
+        syncToggleInteractivity();
 
-  // ── Reverse: Fade outreach and let events scrub naturally ──────
-  if (self.direction < 0 && introDoneRef.current && modeRef.current !== "events" && !isSwappingRef.current) {
-    isSwappingRef.current = true;
-    const outreachCards = outreachCardsRef.current.filter(Boolean) as HTMLDivElement[];
-    const vw = window.innerWidth;
-    
-    gsap.to(outreachCards, {
-      x: vw * 0.92,
-      scale: 0.84,
-      opacity: 0,
-      duration: 0.28,
-      stagger: 0.04,
-      ease: "power3.in",
-      onComplete: () => {
-        modeRef.current = "events";
-        if (labelRef.current) labelRef.current.textContent = "SYSTEM.LOGS // EVENTS";
-        setSelectedEvent(null);
-        
-        const eventsCards = eventsCardsRef.current.filter(Boolean) as HTMLDivElement[];
-        const positions = getGridPositions(eventsCards.length);
-        
-        eventsCards.forEach((card, i) => {
-          const pos = positions[i];
-          gsap.set(card, { x: pos.x, y: pos.y, scale: 1, rotateX: 0, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
-          const styledBg  = card.querySelector<HTMLElement>(".ev-styled-bg");
-          const highlights = card.querySelector<HTMLElement>(".ev-highlights");
-          const inner      = card.querySelector<HTMLElement>(".ev-inner");
-          if (styledBg)   gsap.set(styledBg,   { opacity: 1, boxShadow: glowShadow });
-          if (highlights) gsap.set(highlights, { opacity: 1 });
-          if (inner)      gsap.set(inner,       { opacity: 1 });
-        });
+        // ── Reverse: Fade outreach and let events scrub naturally ──────
+        if (self.direction < 0 && introDoneRef.current && modeRef.current !== "events" && !isSwappingRef.current) {
+          isSwappingRef.current = true;
+          const outreachCards = outreachCardsRef.current.filter(Boolean) as HTMLDivElement[];
+          const vw = window.innerWidth;
 
-        isSwappingRef.current = false;
-        setMode("events");
-      },
-    });
-  }
+          gsap.to(outreachCards, {
+            x: vw * 0.92,
+            scale: 0.84,
+            opacity: 0,
+            duration: 0.28,
+            stagger: 0.04,
+            ease: "power3.in",
+            onComplete: () => {
+              modeRef.current = "events";
+              if (labelRef.current) labelRef.current.innerHTML = "<span style='color: #ffffff; font-weight: 700; margin-right: 8px'>04.</span> system.logs // Events";
+              setSelectedEvent(null);
 
-  if (self.progress < 0.06 && introDoneRef.current) {
-    introDoneRef.current = false;
-    isSwappingRef.current = false;
-    flippedRef.current = cards.map(() => false);
-    setIntroDone(false);
-    setSelectedEvent(null);
-    if (toggleRef.current) toggleRef.current.style.pointerEvents = "none";
-  }
+              const eventsCards = eventsCardsRef.current.filter(Boolean) as HTMLDivElement[];
+              const positions = getGridPositions(eventsCards.length);
 
-  if (!self.isActive || self.direction < 0) return;
+              eventsCards.forEach((card, i) => {
+                const pos = positions[i];
+                gsap.set(card, { x: pos.x, y: pos.y, scale: 1, rotateX: 0, opacity: 1, zIndex: i + 1, pointerEvents: "auto" });
+                const styledBg = card.querySelector<HTMLElement>(".ev-styled-bg");
+                const highlights = card.querySelector<HTMLElement>(".ev-highlights");
+                const inner = card.querySelector<HTMLElement>(".ev-inner");
+                if (styledBg) gsap.set(styledBg, { opacity: 1, boxShadow: glowShadow });
+                if (highlights) gsap.set(highlights, { opacity: 1 });
+                if (inner) gsap.set(inner, { opacity: 1 });
+              });
 
-  // All cards land at the same timestamp now
-  const landTime = 0.38 + 0.3;
-  if (tl.time() >= landTime) {
-    // topRow and bottomRow variables are not in this scope, but peelOrder was removed. 
-    // We can just iterate over all cards.
-    cards.forEach((card, cardIdx) => {
-      if (!flippedRef.current[cardIdx]) {
-        flippedRef.current[cardIdx] = true;
-        if (events[cardIdx]?.id === "MODULE_01") {
-          const hintFlipper = eventsCardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
-          if (hintFlipper) {
-            gsap.timeline()
-              .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
-              .to(hintFlipper, { rotateY: 0,   duration: 0.4, ease: "power2.inOut", delay: 0.15 });
-          }
+              isSwappingRef.current = false;
+              setMode("events");
+            },
+          });
         }
-      }
-    });
-  }
-},
+
+        if (self.progress < 0.06 && introDoneRef.current) {
+          introDoneRef.current = false;
+          isSwappingRef.current = false;
+          flippedRef.current = cards.map(() => false);
+          setIntroDone(false);
+          setSelectedEvent(null);
+          if (toggleRef.current) toggleRef.current.style.pointerEvents = "none";
+        }
+
+        if (!self.isActive || self.direction < 0) return;
+
+        // All cards land at the same timestamp now
+        const landTime = 0.38 + 0.3;
+        if (tl.time() >= landTime) {
+          // topRow and bottomRow variables are not in this scope, but peelOrder was removed. 
+          // We can just iterate over all cards.
+          cards.forEach((card, cardIdx) => {
+            if (!flippedRef.current[cardIdx]) {
+              flippedRef.current[cardIdx] = true;
+              if (events[cardIdx]?.id === "MODULE_01") {
+                const hintFlipper = eventsCardsRef.current[cardIdx]?.querySelector(".ev-hint-flipper");
+                if (hintFlipper) {
+                  gsap.timeline()
+                    .to(hintFlipper, { rotateY: 180, duration: 0.4, ease: "power2.out" })
+                    .to(hintFlipper, { rotateY: 0, duration: 0.4, ease: "power2.inOut", delay: 0.15 });
+                }
+              }
+            }
+          });
+        }
+      },
       onRefresh: () => {
         syncToggleInteractivity();
         if (!introDoneRef.current) return;
@@ -490,11 +490,11 @@ stRef.current = ScrollTrigger.create({
     if (nextMode === mode || !introDoneRef.current || isSwappingRef.current) return;
 
     isSwappingRef.current = true;
-    
+
     // Determine which deck flies out and which flies in
     const outgoingCards = (mode === "events" ? eventsCardsRef : outreachCardsRef).current.filter(Boolean) as HTMLDivElement[];
     const incomingCards = (nextMode === "events" ? eventsCardsRef : outreachCardsRef).current.filter(Boolean) as HTMLDivElement[];
-    
+
     const vw = window.innerWidth;
     const direction = nextMode === "outreach" ? "left" : "right";
     const xOut = direction === "left" ? -vw * 0.92 : vw * 0.92;
@@ -506,7 +506,7 @@ stRef.current = ScrollTrigger.create({
         opacity: 0,
         duration: 0.14,
         onComplete: () => {
-          if (labelRef.current) labelRef.current.textContent = nextMode === "events" ? "SYSTEM.LOGS // EVENTS" : "SYSTEM.LOGS // OUTREACH";
+          if (labelRef.current) labelRef.current.innerHTML = nextMode === "events" ? "<span style='color: #ffffff; font-weight: 700; margin-right: 8px'>04.</span> system.logs // Events" : "<span style='color: #ffffff; font-weight: 700; margin-right: 8px'>04.</span> system.logs // Outreach";
           gsap.to(labelRef.current, { opacity: 1, duration: 0.2 });
         },
       });
@@ -527,7 +527,7 @@ stRef.current = ScrollTrigger.create({
         setSelectedEvent(null);
         setMode(nextMode);
         modeRef.current = nextMode;
-        
+
         revealCards(incomingCards, direction);
       },
     });
@@ -630,194 +630,193 @@ stRef.current = ScrollTrigger.create({
 
   return (
     <>
-    <section id="events-mobile" className="relative overflow-hidden bg-[#0d0d0d] px-4 py-24 md:hidden">
-      <EventsBackground />
-
-      <div className="relative z-10">
-        <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
-          <span className="mr-2 font-bold text-white">03.</span>
-          SYSTEM.LOGS // EVENTS
-        </span>
-
-        <div className="mt-10 text-center">
-          <span className="mb-3 block font-mono text-[9px] uppercase tracking-[0.35em] text-white/25">
-            ▶ SECTOR_MAP // EVENTS
-          </span>
-          <h2 className="font-sans text-[clamp(32px,10vw,44px)] font-black uppercase leading-none tracking-[-0.01em] text-white">
-            EVENTS AT <span className="text-[#4FAEF3]">ROBOVITICS.</span>
-          </h2>
-          <div className="mx-auto mt-4 h-px w-3/4 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
-        </div>
-
-        <div className="sticky top-[76px] z-30 mx-auto mt-8 flex w-full max-w-xs items-center gap-1 rounded-[4px] border border-white/15 bg-black/70 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md">
-          <button
-            type="button"
-            onClick={() => {
-              setMode("events");
-              setMobileIndex(0);
-              isMobileSlideAnimating.current = false;
-              prevMobileEventId.current = null;
-            }}
-            className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
-            style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
-          >
-            Events
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMode("outreach");
-              setMobileIndex(0);
-              isMobileSlideAnimating.current = false;
-              prevMobileEventId.current = null;
-            }}
-            className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
-            style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
-          >
-            Outreach
-          </button>
-        </div>
-
-        <div
-          className="mt-7"
-          onTouchStart={handleMobileTouchStart}
-          onTouchEnd={handleMobileTouchEnd}
-        >
-          <div className="mb-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
-            <span>{String(mobileIndex + 1).padStart(2, '0')} / {String(activeList.length).padStart(2, '0')}</span>
-            <span>Swipe to browse</span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              aria-label="Previous event"
-              onClick={() => goMobileCard('prev')}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/65 backdrop-blur-sm transition-colors active:bg-white/10"
-            >
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-
-            <div ref={mobileCarouselRef} className="relative h-[345px] min-w-0 flex-1 overflow-hidden">
-              {activeList.map((ev) => (
-                <div
-                  key={`mobile-slide-${ev.id}`}
-                  data-id={ev.id}
-                  className="ev-mobile-slide-item invisible absolute inset-0"
-                >
-                  {renderMobileCard(ev, mode === "outreach")}
-                </div>
-              ))}
-            </div>
-
-            <button
-              type="button"
-              aria-label="Next event"
-              onClick={() => goMobileCard('next')}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/65 backdrop-blur-sm transition-colors active:bg-white/10"
-            >
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
-
-          <div className="mt-5 flex items-center justify-center gap-2">
-            {activeList.map((ev, index) => (
-              <button
-                key={`dot-${ev.id}`}
-                type="button"
-                aria-label={`Show ${ev.name}`}
-                onClick={() => goMobileIndex(index)}
-                className={`h-1.5 rounded-full transition-all ${
-                  index === mobileIndex ? 'w-7 bg-[#4FAEF3]' : 'w-1.5 bg-white/25'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
-<section id="events" ref={sectionRef} className="relative hidden h-[400vh] bg-[#0d0d0d] md:block">    <span id="events-desktop" className="pointer-events-none absolute top-[480vh] h-px w-px" aria-hidden="true" />
-      <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+      <section id="events-mobile" className="relative overflow-hidden bg-[#0d0d0d] px-4 py-24 md:hidden">
         <EventsBackground />
 
-        <div className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
-          <span ref={labelRef} style={{ fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
-            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>03.</span>
-            SYSTEM.LOGS // EVENTS
+        <div className="relative z-10">
+          <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">
+            <span className="mr-2 font-bold text-white">04.</span>
+            system.logs // Events
           </span>
-        </div>
 
-        <div style={{ perspective: "1100px", perspectiveOrigin: "50% 50%", position: "relative", width: "100vw", height: "100vh" }}>
-          <div ref={titleRef} className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center" style={{ zIndex: 10, top: '-6%' }}>
-            <span style={{ fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
+          <div className="mt-10 text-center">
+            <span className="mb-3 block font-mono text-[9px] uppercase tracking-[0.35em] text-white/25">
               ▶ SECTOR_MAP // EVENTS
             </span>
-            <h2 style={{ margin: 0, fontSize: 'clamp(32px,5.5vw,72px)', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.01em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1, textAlign: 'center' }}>
-              EVENTS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+            <h2 className="font-sans text-[clamp(32px,10vw,44px)] font-black uppercase leading-none tracking-[-0.01em] text-white">
+              EVENTS AT <span className="text-[#4FAEF3]">ROBOVITICS</span>
             </h2>
-            <div style={{ marginTop: '14px', width: '30%', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)' }} />
+            <div className="mx-auto mt-4 h-px w-3/4 bg-gradient-to-r from-transparent via-white/25 to-transparent" />
           </div>
 
-          <div ref={deckRef} className="absolute" style={{ width: 270, height: 195, top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
-            
-            {/* Events Deck - Always in DOM, bound to GSAP scrub */}
-            {events.map((ev, i) => (
-              <div
-                key={`evt-${ev.id}`}
-                ref={(el) => { eventsCardsRef.current[i] = el; }}
-                className="absolute inset-0 select-none overflow-visible rounded-[4px] group cursor-pointer"
-                style={{ willChange: "transform, box-shadow", color: "#f1f3f5", perspective: "1000px", pointerEvents: mode === "events" ? "auto" : "none" }}
-                onClick={() => setSelectedEvent(ev)}
-              >
-                {renderCardContent(ev, false)}
-              </div>
-            ))}
-
-            {/* Outreach Deck - Always in DOM, toggled via handleToggle */}
-            {outreach.map((ev, i) => (
-              <div
-                key={`out-${ev.id}`}
-                ref={(el) => { outreachCardsRef.current[i] = el; }}
-                className="absolute inset-0 select-none overflow-visible rounded-[4px] group cursor-pointer"
-                style={{ willChange: "transform, box-shadow", color: "#f1f3f5", perspective: "1000px", opacity: 0, pointerEvents: mode === "outreach" ? "auto" : "none" }}
-                onClick={() => setSelectedEvent(ev)}
-              >
-                {renderCardContent(ev, true)}
-              </div>
-            ))}
-
+          <div className="sticky top-[76px] z-30 mx-auto mt-8 flex w-full max-w-xs items-center gap-1 rounded-[4px] border border-white/15 bg-black/70 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("events");
+                setMobileIndex(0);
+                isMobileSlideAnimating.current = false;
+                prevMobileEventId.current = null;
+              }}
+              className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
+              style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
+            >
+              Events
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("outreach");
+                setMobileIndex(0);
+                isMobileSlideAnimating.current = false;
+                prevMobileEventId.current = null;
+              }}
+              className="flex-1 rounded-[3px] px-3 py-2 transition-colors"
+              style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
+            >
+              Outreach
+            </button>
           </div>
 
           <div
-            ref={toggleRef}
-            className="absolute left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[4px] border border-white/15 bg-black/55 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md pointer-events-none"
-            style={{ bottom: "8%", boxShadow: "0 0 24px rgba(79,174,243,0.12)" }}
+            className="mt-7"
+            onTouchStart={handleMobileTouchStart}
+            onTouchEnd={handleMobileTouchEnd}
           >
-            <button
-              type="button"
-              onClick={() => handleToggle("events")}
-              className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
-              style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
-            >
-              EVENTS
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToggle("outreach")}
-              className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
-              style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
-            >
-              OUTREACH
-            </button>
+            <div className="mb-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.16em] text-white/45">
+              <span>{String(mobileIndex + 1).padStart(2, '0')} / {String(activeList.length).padStart(2, '0')}</span>
+              <span>Swipe to browse</span>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                aria-label="Previous event"
+                onClick={() => goMobileCard('prev')}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/65 backdrop-blur-sm transition-colors active:bg-white/10"
+              >
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <div ref={mobileCarouselRef} className="relative h-[345px] min-w-0 flex-1 overflow-hidden">
+                {activeList.map((ev) => (
+                  <div
+                    key={`mobile-slide-${ev.id}`}
+                    data-id={ev.id}
+                    className="ev-mobile-slide-item invisible absolute inset-0"
+                  >
+                    {renderMobileCard(ev, mode === "outreach")}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                type="button"
+                aria-label="Next event"
+                onClick={() => goMobileCard('next')}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/12 bg-black/45 text-white/65 backdrop-blur-sm transition-colors active:bg-white/10"
+              >
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="mt-5 flex items-center justify-center gap-2">
+              {activeList.map((ev, index) => (
+                <button
+                  key={`dot-${ev.id}`}
+                  type="button"
+                  aria-label={`Show ${ev.name}`}
+                  onClick={() => goMobileIndex(index)}
+                  className={`h-1.5 rounded-full transition-all ${index === mobileIndex ? 'w-7 bg-[#4FAEF3]' : 'w-1.5 bg-white/25'
+                    }`}
+                />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section id="events" ref={sectionRef} className="relative hidden h-[400vh] bg-[#0d0d0d] md:block">    <span id="events-desktop" className="pointer-events-none absolute top-[120px] h-px w-px" aria-hidden="true" />
+        <div ref={pinRef} className="sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden">
+          <EventsBackground />
+
+          <div className="absolute z-20 pointer-events-none" style={{ top: '10%', left: '6%' }}>
+            <span ref={labelRef} style={{ fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
+              <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>04.</span>
+              system.logs // Events
+            </span>
+          </div>
+
+          <div style={{ perspective: "1100px", perspectiveOrigin: "50% 50%", position: "relative", width: "100vw", height: "100vh" }}>
+            <div ref={titleRef} className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center" style={{ zIndex: 10, top: '-6%' }}>
+              <span style={{ fontSize: '9px', letterSpacing: '0.35em', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', marginBottom: '12px', display: 'block', textTransform: 'uppercase' }}>
+                ▶ SECTOR_MAP // EVENTS
+              </span>
+              <h2 style={{ margin: 0, fontSize: 'clamp(32px,5.5vw,72px)', fontWeight: '900', color: '#ffffff', letterSpacing: '-0.01em', fontFamily: '"Inter", "Arial Black", sans-serif', textTransform: 'uppercase', lineHeight: 1, textAlign: 'center' }}>
+                EVENTS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
+              </h2>
+              <div style={{ marginTop: '14px', width: '30%', height: '1px', background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)' }} />
+            </div>
+
+            <div ref={deckRef} className="absolute" style={{ width: 270, height: 195, top: "50%", left: "50%", transform: "translate(-50%, -50%)" }}>
+
+              {/* Events Deck - Always in DOM, bound to GSAP scrub */}
+              {events.map((ev, i) => (
+                <div
+                  key={`evt-${ev.id}`}
+                  ref={(el) => { eventsCardsRef.current[i] = el; }}
+                  className="absolute inset-0 select-none overflow-visible rounded-[4px] group cursor-pointer"
+                  style={{ willChange: "transform, box-shadow", color: "#f1f3f5", perspective: "1000px", pointerEvents: mode === "events" ? "auto" : "none" }}
+                  onClick={() => setSelectedEvent(ev)}
+                >
+                  {renderCardContent(ev, false)}
+                </div>
+              ))}
+
+              {/* Outreach Deck - Always in DOM, toggled via handleToggle */}
+              {outreach.map((ev, i) => (
+                <div
+                  key={`out-${ev.id}`}
+                  ref={(el) => { outreachCardsRef.current[i] = el; }}
+                  className="absolute inset-0 select-none overflow-visible rounded-[4px] group cursor-pointer"
+                  style={{ willChange: "transform, box-shadow", color: "#f1f3f5", perspective: "1000px", opacity: 0, pointerEvents: mode === "outreach" ? "auto" : "none" }}
+                  onClick={() => setSelectedEvent(ev)}
+                >
+                  {renderCardContent(ev, true)}
+                </div>
+              ))}
+
+            </div>
+
+            <div
+              ref={toggleRef}
+              className="absolute left-1/2 z-40 flex -translate-x-1/2 items-center gap-1 rounded-[4px] border border-white/15 bg-black/55 p-1 font-mono text-[10px] uppercase tracking-[0.16em] backdrop-blur-md pointer-events-none"
+              style={{ bottom: "8%", boxShadow: "0 0 24px rgba(79,174,243,0.12)" }}
+            >
+              <button
+                type="button"
+                onClick={() => handleToggle("events")}
+                className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
+                style={{ color: mode === "events" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "events" ? "#4FAEF3" : "transparent" }}
+              >
+                EVENTS
+              </button>
+              <button
+                type="button"
+                onClick={() => handleToggle("outreach")}
+                className="cursor-pointer rounded-[3px] px-4 py-2 transition-colors hover:brightness-110"
+                style={{ color: mode === "outreach" ? "#050505" : "rgba(255,255,255,0.5)", background: mode === "outreach" ? "#4FAEF3" : "transparent" }}
+              >
+                OUTREACH
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Pop-up Modal */}
       {selectedEvent && (

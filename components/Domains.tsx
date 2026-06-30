@@ -49,7 +49,7 @@ const DOMAINS = [
     title: 'ELECTRICAL',
     sub: 'Circuits & Power',
     icon: (
-      <img src="/electrical.svg" alt="Electrical" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
+      <img src="/electrical.svg" alt="Electrical" style={{ width: '80%', height: '80%', objectFit: 'contain' }} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -57,7 +57,7 @@ const DOMAINS = [
     title: 'MECHANICAL',
     sub: 'Design & Fabrication',
     icon: (
-      <img src="/mech.svg" alt="Mechanical" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
+      <img src="/mech.svg" alt="Mechanical" style={{ width: '80%', height: '80%', objectFit: 'contain' }} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -65,7 +65,7 @@ const DOMAINS = [
     title: 'ML & AI',
     sub: 'Machine Learning',
     icon: (
-      <img src="/aiml.svg" alt="ML & AI" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
+      <img src="/aiml.svg" alt="ML & AI" style={{ width: '80%', height: '80%', objectFit: 'contain' }} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -73,7 +73,7 @@ const DOMAINS = [
     title: 'CYBERSECURITY',
     sub: 'Systems & Defense',
     icon: (
-      <img src="/cybersec.svg" alt="Cybersecurity" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
+      <img src="/cybersec.svg" alt="Cybersecurity" style={{ width: '80%', height: '80%', objectFit: 'contain' }} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -81,7 +81,7 @@ const DOMAINS = [
     title: 'WEB DEV',
     sub: 'Frontend & Backend',
     icon: (
-      <img src="/webdev.svg" alt="Web Development" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
+      <img src="/webdev.svg" alt="Web Development" style={{ width: '80%', height: '80%', objectFit: 'contain' }} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
   {
@@ -89,7 +89,7 @@ const DOMAINS = [
     title: 'APP DEV',
     sub: 'Mobile & Cross-Platform',
     icon: (
-      <img src="/appdev.svg" alt="App Development" width={36} height={36} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
+      <img src="/appdev.svg" alt="App Development" style={{ width: '80%', height: '80%', objectFit: 'contain' }} className="transition-all duration-500 group-hover:drop-shadow-[0_0_12px_rgba(79,174,243,0.6)]" />
     ),
   },
 ];
@@ -152,7 +152,14 @@ function CardInner({ domain, compact = false }: { domain: (typeof DOMAINS)[0]; c
             boxShadow: 'inset 0 0 22px rgba(255,255,255,0.035), inset 0 0 0 1px rgba(255,255,255,0.04)',
             border: '1px solid rgba(235,238,242,0.18)',
           }} className="transition-all duration-500 group-hover:border-[#4FAEF3]/30 group-hover:bg-[#4FAEF3]/[0.02] group-hover:shadow-[inset_0_0_22px_rgba(79,174,243,0.1)]">
-            <div style={{ transform: compact ? 'scale(1.18)' : undefined }}>
+            <div style={{ 
+              transform: compact ? 'scale(1.18)' : undefined,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
               {icon}
             </div>
           </div>
@@ -441,7 +448,7 @@ export default function Domains() {
             fontFamily: 'monospace', fontSize: '9px', letterSpacing: '0.18em',
             color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
           }}>
-            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+            <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02</span>
             SYSTEM.LOGS // DOMAINS
           </span>
         </div>
@@ -458,7 +465,7 @@ export default function Domains() {
             fontFamily: '"Inter", "Arial Black", sans-serif',
             textTransform: 'uppercase', lineHeight: 1.02,
           }}>
-            DOMAINS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+            DOMAINS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
           </h2>
           <div style={{
             marginTop: '14px', width: '72%', height: '1px',
@@ -489,7 +496,7 @@ export default function Domains() {
               fontFamily: 'monospace', fontSize: '11px', letterSpacing: '0.2em',
               color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase',
             }}>
-              <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02.</span>
+              <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px' }}>02</span>
               SYSTEM.LOGS // DOMAINS
             </span>
           </div>
@@ -513,7 +520,7 @@ export default function Domains() {
               textTransform: 'uppercase', lineHeight: 1, textAlign: 'center',
             }}>
               DOMAINS AT{' '}
-              <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+              <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
             </h2>
             <div style={{
               marginTop: '14px', width: '30%', height: '1px',

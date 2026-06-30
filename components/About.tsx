@@ -8,7 +8,7 @@ const aboutDriveLink = 'https://drive.google.com/file/d/1Ycd76P7kxszbPqTYpeSCTFR
 export default function About() {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
@@ -23,7 +23,7 @@ export default function About() {
       setActiveIndex(1);
     }
   });
-  
+
   const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   return (
@@ -31,11 +31,11 @@ export default function About() {
       {/* MOBILE LAYOUT */}
       <section id="about-mobile" className="relative z-10 block w-full px-4 py-20 text-white md:hidden">
         <div className="mb-10 font-mono text-[10px] uppercase tracking-[0.2em] text-gray-500">
-          <span className="mr-2 font-bold text-white">01.</span> System.Logs // About
+          <span className="mr-2 font-bold text-white">01</span> System.Logs // About
         </div>
 
         <div className="flex flex-col gap-7">
-          
+
           {/* About Us Mobile */}
           <div className="relative overflow-hidden rounded-[4px] border border-white/10 bg-[#0a0a0a] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.35)]">
             <div
@@ -76,7 +76,7 @@ export default function About() {
                 href={aboutDriveLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#A9D9FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/20 hover:text-white"
+                className="mt-5 inline-flex items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/45 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-[#BDE2FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/55 hover:text-white"
               >
                 Want to know more?
               </a>
@@ -137,15 +137,15 @@ export default function About() {
 
       {/* DESKTOP LAYOUT */}
       <section id="about" ref={sectionRef} className="hidden md:block relative z-10 h-[300vh] w-full text-white pointer-events-none">
-        
+
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-12 lg:px-24 max-w-[1600px] mx-auto pointer-events-none">
-          
+
           <div className="absolute top-24 left-12 lg:left-24 font-mono text-gray-500 text-sm tracking-widest uppercase">
-            <span className="font-bold mr-2 text-white">01.</span> System.Logs // About
+            <span className="font-bold mr-2 text-white">01</span> System.Logs // About
           </div>
 
           <div className="relative w-full h-[500px] flex items-center mt-12">
-            
+
             {/* Scroll Progress Bar - FIXED */}
             <div
               className="absolute left-0 top-0 bottom-0 w-[2px] rounded-full"
@@ -153,17 +153,17 @@ export default function About() {
             >
               <motion.div
                 className="w-full rounded-full"
-                style={{ 
+                style={{
                   height: progressHeight,
-                  background: 'rgba(255,255,255,0.85)', 
-                  boxShadow: '0 0 12px rgba(255,255,255,0.6)' 
+                  background: 'rgba(255,255,255,0.85)',
+                  boxShadow: '0 0 12px rgba(255,255,255,0.6)'
                 }}
               />
             </div>
 
             <div className="relative w-full h-full ml-12 lg:ml-20">
               <AnimatePresence mode="wait">
-                
+
                 {activeIndex === 0 && (
                   <motion.div
                     key="robo"
@@ -175,7 +175,7 @@ export default function About() {
                   >
                     <div className="flex-1 flex flex-col justify-center">
                       <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                        About Us <br/> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
+                        About Us <br /> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;Innovation is when Imagination meets Ambition&quot;</span>
                       </h2>
                       <div className="flex flex-col gap-5">
                         <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
@@ -188,7 +188,7 @@ export default function About() {
                           href={aboutDriveLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="pointer-events-auto mt-1 inline-flex w-fit items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-5 py-3 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-[#A9D9FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/20 hover:text-white"
+                          className="pointer-events-auto mt-1 inline-flex w-fit items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/45 px-5 py-3 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-[#BDE2FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/55 hover:text-white"
                         >
                           Want to know more?
                         </a>
@@ -196,9 +196,9 @@ export default function About() {
                     </div>
 
                     <div className="hidden md:flex flex-1 max-w-[450px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
-                      <img 
-                        src="/AboutUs.png.jpeg" 
-                        alt="About Us" 
+                      <img
+                        src="/AboutUs.png.jpeg"
+                        alt="About Us"
                         className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
                       />
                     </div>
@@ -216,7 +216,7 @@ export default function About() {
                   >
                     <div className="flex-1 flex flex-col justify-center">
                       <h2 className="text-6xl lg:text-7xl font-black tracking-tighter mb-6 drop-shadow-lg">
-                        About VIT <br/> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
+                        About VIT <br /> <span className="text-xl lg:text-2xl font-medium tracking-tight mt-4 block" style={{ color: '#4FAEF3' }}>&quot;A place to learn, a chance to grow&quot;</span>
                       </h2>
                       <div className="flex flex-col gap-5">
                         <p className="text-white/90 text-[1.1rem] lg:text-lg xl:text-xl leading-relaxed drop-shadow-md tracking-normal font-light">
@@ -229,15 +229,15 @@ export default function About() {
                     </div>
 
                     <div className="hidden md:flex flex-1 max-w-[450px] lg:max-w-[550px] xl:max-w-[650px] justify-center items-center">
-                      <img 
-                        src="/AboutVit.png.jpeg" 
-                        alt="About VIT" 
+                      <img
+                        src="/AboutVit.png.jpeg"
+                        alt="About VIT"
                         className="w-full h-auto object-contain rounded-2xl shadow-[0_0_60px_rgba(79,174,243,0.15)] ring-1 ring-white/10"
                       />
                     </div>
                   </motion.div>
                 )}
-                
+
               </AnimatePresence>
             </div>
           </div>

@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 // ─── TYPES & IK ─────────────────────────────────────────────────────────────
 interface Point { x: number; y: number; }
-interface Sponsor { id: string; name: string; tier: string; }
+interface Sponsor { id: string; name: string; }
 
 function dist(a: Point, b: Point) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
 function lv(a: number, b: number, t: number) { return a + (b - a) * t; }
@@ -33,17 +33,17 @@ function solveFABRIK(joints: Point[], target: Point, lens: number[]): Point[] {
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const SPONSORS: Sponsor[] = [
-    { id: 'SP_001', name: 'NEXON DYNAMICS', tier: 'LEVEL 1' },
-    { id: 'SP_002', name: 'TITANFORGE LABS', tier: 'LEVEL 1' },
-    { id: 'SP_003', name: 'VOLTARC SYSTEMS', tier: 'LEVEL 2' },
-    { id: 'SP_004', name: 'CYGNUS ROBOTICS', tier: 'LEVEL 1' },
-    { id: 'SP_005', name: 'AXION VENTURES', tier: 'LEVEL 2' },
-    { id: 'SP_006', name: 'HELIX FOUNDRY', tier: 'LEVEL 3' },
-    { id: 'SP_007', name: 'MERIDIAN TECH', tier: 'LEVEL 2' },
-    { id: 'SP_008', name: 'QUASAR DESIGN', tier: 'LEVEL 3' },
-    { id: 'SP_009', name: 'OMNI SYSTEMS', tier: 'LEVEL 2' },
-    { id: 'SP_010', name: 'VANGUARD AI', tier: 'LEVEL 1' },
-    { id: 'SP_011', name: 'YOUR_SPONSOR_NAME', tier: 'LEVEL X' },
+    { id: 'SP_001', name: 'DigitalOcean' },
+    { id: 'SP_002', name: 'Sylo Group' },
+    { id: 'SP_003', name: 'Sag Taurus' },
+    { id: 'SP_004', name: 'LT (Larsen & Toubro)' },
+    { id: 'SP_005', name: 'Siemens' },
+    { id: 'SP_006', name: 'Analog Devices' },
+    { id: 'SP_007', name: 'Schneider Electric' },
+    { id: 'SP_008', name: 'Autodesk' },
+    { id: 'SP_009', name: 'Persistence' },
+    { id: 'SP_010', name: 'Texas Instruments' },
+    { id: 'SP_011', name: 'YOUR_SPONSOR_NAME' },
 ];
 
 function SponsorMarquee() {
@@ -126,13 +126,9 @@ function SponsorCard({ sponsor, isHovered, onHoverChange }: {
                     </div>
 
                     <h3 className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500 group-hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]"
-                        style={{ margin: '0 0 7px', fontSize: 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}>
+                        style={{ margin: '0 0 12px', fontSize: 'clamp(11px, 1vw, 14px)', lineHeight: 1.15 }}>
                         {sponsor.name}
                     </h3>
-                    <p className="text-center font-mono uppercase tracking-[0.1em] transition-all duration-500"
-                        style={{ margin: '0 0 10px', fontSize: 'clamp(7px, 0.55vw, 9px)', color: 'rgba(79,174,243,0.85)' }}>
-                        {sponsor.tier}
-                    </p>
 
                     <div style={{
                         height: '1px', margin: '0 6px 10px', width: 'calc(100% - 12px)',
@@ -164,7 +160,7 @@ function Header() {
                     fontFamily: '"Inter", "Arial Black", sans-serif',
                     textTransform: 'uppercase', lineHeight: 1,
             }}>
-                OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS.</span>
+                OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS</span>
             </motion.h2>
             <motion.div 
                 initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
@@ -546,6 +542,14 @@ export default function Sponsors() {
 
     return (
         <section ref={secRef} id="sponsors" className="relative z-40 w-full overflow-hidden bg-[#0d0d0d] py-20">
+            {/* Top-left section label */}
+            <div className="absolute left-6 sm:left-10 top-6 sm:top-10 z-30 pointer-events-none text-left">
+                <span style={{ fontFamily: 'monospace', fontSize: '10px', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase' }}>
+                    <span style={{ color: '#ffffff', fontWeight: 700, marginRight: 8 }}>07.</span>
+                    system.logs // Sponsors
+                </span>
+            </div>
+            
             <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                 <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg,rgba(255,255,255,0.035) 1px, transparent 1px)', backgroundSize: "40px 40px" }} />
             </div>

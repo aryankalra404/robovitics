@@ -28,7 +28,7 @@ function SectionBackground() {
                     backgroundSize: '40px 40px',
                 }}
             />
-            {([[5,12],[72,8],[18,62],[85,42],[40,85],[92,70]] as [number,number][]).map(([lp,tp],i) => (
+            {([[5, 12], [72, 8], [18, 62], [85, 42], [40, 85], [92, 70]] as [number, number][]).map(([lp, tp], i) => (
                 <div
                     key={i}
                     className="absolute rounded-full"
@@ -41,16 +41,16 @@ function SectionBackground() {
                 />
             ))}
             <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
-                <line x1="5%"  y1="12%" x2="72%" y2="8%"  stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
-                <line x1="72%" y1="8%"  x2="85%" y2="42%" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
-                <line x1="18%" y1="62%" x2="40%" y2="85%" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
+                <line x1="5%" y1="12%" x2="72%" y2="8%" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                <line x1="72%" y1="8%" x2="85%" y2="42%" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+                <line x1="18%" y1="62%" x2="40%" y2="85%" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
             </svg>
         </div>
     );
 }
 
-const CYAN      = 'rgba(79,174,243,0.9)';
-const CYAN_DIM  = 'rgba(79,174,243,0.4)';
+const CYAN = 'rgba(79,174,243,0.9)';
+const CYAN_DIM = 'rgba(79,174,243,0.4)';
 const CYAN_GLOW = 'rgba(79,174,243,0.25)';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ function ProjectCard({
     cardRef,
 }: {
     project: (typeof projectsData)[0];
-    index:   number;
+    index: number;
     cardRef: (el: HTMLDivElement | null) => void;
 }) {
     return (
@@ -127,20 +127,20 @@ function ProjectCard({
             >
                 <Stamp />
 
-                {(['tl','tr','bl','br'] as const).map((pos) => (
+                {(['tl', 'tr', 'bl', 'br'] as const).map((pos) => (
                     <span
                         key={pos}
                         className="absolute pointer-events-none"
                         style={{
-                            top:    pos[0]==='t' ? 6 : undefined,
-                            bottom: pos[0]==='b' ? 6 : undefined,
-                            left:   pos[1]==='l' ? 6 : undefined,
-                            right:  pos[1]==='r' ? 6 : undefined,
+                            top: pos[0] === 't' ? 6 : undefined,
+                            bottom: pos[0] === 'b' ? 6 : undefined,
+                            left: pos[1] === 'l' ? 6 : undefined,
+                            right: pos[1] === 'r' ? 6 : undefined,
                             width: 10, height: 10,
-                            borderTop:    pos[0]==='t' ? `1px solid ${CYAN_DIM}` : undefined,
-                            borderBottom: pos[0]==='b' ? `1px solid ${CYAN_DIM}` : undefined,
-                            borderLeft:   pos[1]==='l' ? `1px solid ${CYAN_DIM}` : undefined,
-                            borderRight:  pos[1]==='r' ? `1px solid ${CYAN_DIM}` : undefined,
+                            borderTop: pos[0] === 't' ? `1px solid ${CYAN_DIM}` : undefined,
+                            borderBottom: pos[0] === 'b' ? `1px solid ${CYAN_DIM}` : undefined,
+                            borderLeft: pos[1] === 'l' ? `1px solid ${CYAN_DIM}` : undefined,
+                            borderRight: pos[1] === 'r' ? `1px solid ${CYAN_DIM}` : undefined,
                         }}
                     />
                 ))}
@@ -149,7 +149,7 @@ function ProjectCard({
                     position: 'absolute', top: -1, left: 20,
                     width: 40, height: 1,
                     background: CYAN_DIM,
-                }}/>
+                }} />
 
                 <div className="relative w-full overflow-hidden" style={{ height: 160 }}>
                     <Image
@@ -196,7 +196,7 @@ function ProjectCard({
                     <div style={{
                         height: 1,
                         background: `linear-gradient(90deg, ${CYAN_DIM}, transparent)`,
-                    }}/>
+                    }} />
 
                     <p
                         className="leading-relaxed"
@@ -213,14 +213,6 @@ function ProjectCard({
                         {project.description}
                     </p>
 
-                    <Link
-                        href={project.readMoreLink}
-                        className="group/link mt-1 inline-flex items-center gap-2 font-mono uppercase"
-                        style={{ fontSize: 8, letterSpacing: '0.2em', color: CYAN }}
-                    >
-                        <span className="group-hover/link:underline">READ MORE</span>
-                        <span className="transition-transform duration-300 group-hover/link:translate-x-1">→</span>
-                    </Link>
                 </div>
             </div>
         </div>
@@ -231,26 +223,26 @@ function ProjectCard({
 // Projects — Assembly Line
 // ─────────────────────────────────────────────────────────────────────────────
 export default function Projects() {
-    const sectionRef  = useRef<HTMLElement>(null);
-    const pinRef      = useRef<HTMLDivElement>(null);
-    const beltRef     = useRef<HTMLDivElement>(null);
-    const titleRef    = useRef<HTMLDivElement>(null);
-    const cardsRef    = useRef<(HTMLDivElement | null)[]>([]);
-    const stRef       = useRef<ScrollTrigger | null>(null);
+    const sectionRef = useRef<HTMLElement>(null);
+    const pinRef = useRef<HTMLDivElement>(null);
+    const beltRef = useRef<HTMLDivElement>(null);
+    const titleRef = useRef<HTMLDivElement>(null);
+    const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
+    const stRef = useRef<ScrollTrigger | null>(null);
 
     const total = projectsData.length;
 
     // ── FRAMER MOTION: Global Mechanics ──────────────────────────────────────
     const { scrollYProgress } = useScroll({
         target: sectionRef,
-        offset: ["start end", "end start"] 
+        offset: ["start end", "end start"]
     });
 
-    const rawGearX = useTransform(scrollYProgress, [0, 0.10], [120, -120]); 
+    const rawGearX = useTransform(scrollYProgress, [0, 0.10], [120, -120]);
     const rawGearRot = useTransform(scrollYProgress, [0, 0.10], [0, -360]);
 
     const springConfig = { stiffness: 32, damping: 38, restDelta: 0.001 };
-    
+
     const smoothGearX = useSpring(rawGearX, springConfig);
     const smoothGearRot = useSpring(rawGearRot, springConfig);
 
@@ -259,27 +251,27 @@ export default function Projects() {
     // ── GSAP: Assembly Line Mechanics ─────────────────────────────────────────
     useEffect(() => {
         const section = sectionRef.current;
-        const pin     = pinRef.current;
-        const belt    = beltRef.current;
+        const pin = pinRef.current;
+        const belt = beltRef.current;
         if (!section || !pin || !belt) return;
 
         const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
         if (cards.length === 0) return;
 
-        const cardW   = cards[0].offsetWidth;
-        const gap     = 32; 
-        const beltW   = pin.offsetWidth;
+        const cardW = cards[0].offsetWidth;
+        const gap = 32;
+        const beltW = pin.offsetWidth;
 
-        const rightPadding = 60; 
-        const startX  = beltW - cardW - rightPadding;
+        const rightPadding = 60;
+        const startX = beltW - cardW - rightPadding;
 
         // ── Initial positions ───────────────────────────────────────────────
         cards.forEach((card) => {
             gsap.set(card, {
                 x: startX,
-                y: -pin.offsetHeight * 1.2, 
+                y: -pin.offsetHeight * 1.2,
                 rotation: 0,
-                opacity: 1, 
+                opacity: 1,
             });
         });
 
@@ -298,14 +290,14 @@ export default function Projects() {
         cards.forEach((card, i) => {
             const stamp = card.querySelector<HTMLElement>('.stamp');
             const landX = startX;
-            const segStart = i * 1.0 + 0.4; 
+            const segStart = i * 1.0 + 0.4;
 
             tl.to(card, {
-                y: pin.offsetHeight * 0.18, 
+                y: pin.offsetHeight * 0.18,
                 x: landX,
-                rotation: gsap.utils.random(-2, 2), 
+                rotation: gsap.utils.random(-2, 2),
                 duration: 0.28,
-                ease: 'power3.in', 
+                ease: 'power3.in',
             }, segStart);
 
             tl.to(card, {
@@ -340,7 +332,7 @@ export default function Projects() {
                         duration: 0.18,
                         ease: 'back.out(2)',
                     },
-                    segStart + 0.38 
+                    segStart + 0.38
                 );
             }
 
@@ -349,7 +341,7 @@ export default function Projects() {
             if (i < total - 1) {
                 for (let j = 0; j <= i; j++) {
                     const prevCard = cards[j];
-                    const targetX  = startX - (i - j + 1) * (cardW + gap);
+                    const targetX = startX - (i - j + 1) * (cardW + gap);
                     tl.to(prevCard, {
                         x: targetX,
                         duration: 0.3,
@@ -368,7 +360,7 @@ export default function Projects() {
         stRef.current = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
-            end: `+=${window.innerHeight * total}`, 
+            end: `+=${window.innerHeight * total}`,
             scrub: 1,
             animation: tl,
         });
@@ -388,9 +380,9 @@ export default function Projects() {
             style={{ height: `${(total + 1) * 100}vh` }}
         >
             <motion.div
-    style={{ x: gearX, rotate: smoothGearRot }}
-    className="hidden md:block fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
->
+                style={{ x: gearX, rotate: smoothGearRot }}
+                className="hidden md:block fixed -bottom-32 z-10 opacity-[0.16] pointer-events-none lg:-bottom-40 lg:opacity-20"
+            >
                 <svg className="h-[460px] w-[460px] lg:h-[600px] lg:w-[600px]" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="0.5" strokeLinecap="round" strokeLinejoin="round">
                     <circle cx="12" cy="12" r="3" stroke="#ffffff"></circle>
                     <path stroke="#ffffff" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -405,8 +397,8 @@ export default function Projects() {
 
                 <div className="absolute left-10 top-8 z-30 pointer-events-none">
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
-                        <span className="font-bold text-white mr-2">04.</span>
-                        SYSTEM.LOGS // PROJECTS
+                        <span className="font-bold text-white mr-2">06.</span>
+                        system.logs // Projects
                     </span>
                 </div>
 
@@ -429,12 +421,12 @@ export default function Projects() {
                         }}
                     >
                         WHAT WE&apos;VE{' '}
-                        <span style={{ color: '#4FAEF3' }}>BUILT.</span>
+                        <span style={{ color: '#4FAEF3' }}>BUILT</span>
                     </h2>
                     <div style={{
                         marginTop: 12, height: 1, width: '100%',
                         background: 'linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent)',
-                    }}/>
+                    }} />
                 </div>
 
                 <div
@@ -454,7 +446,7 @@ export default function Projects() {
 
                 <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
                     <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-                        &gt;  
+                        &gt;
                     </span>
                 </div>
             </div>

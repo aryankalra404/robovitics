@@ -575,7 +575,7 @@ displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      cons
         }
       `}</style>
 
-      <div className="mwt-wrap" ref={wrapRef}>
+      <div className="mwt-wrap" ref={wrapRef} id="memories">
         <div className="mwt-sticky">
           <div className="mwt-scene" ref={sceneRef}>
             <div className="mwt-grid" />
@@ -590,7 +590,7 @@ displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      cons
               <div key={i} className="mwt-bg-dot" style={{ left: `${lp}%`, top: `${tp}%` }} />
             ))}
 
-            <div className="mwt-label"><b>06.</b>SYSTEM.LOGS // MEMORY_BANK</div>
+            <div className="mwt-label"><b>08.</b> system.logs // Memories</div>
 
             <div className="mwt-box" ref={boxRef}>
               <canvas ref={canvasRef} />

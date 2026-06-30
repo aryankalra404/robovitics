@@ -92,10 +92,10 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
         <div className="flex min-w-0 flex-1 flex-col justify-center text-left order-2 lg:order-1">
 
           <div className="mb-3 sm:mb-6 inline-flex items-center gap-3">
-             <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3]" />
-             <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#4FAEF3]/80">
-               ACHIEVEMENT_LOG // 01
-             </span>
+            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3]" />
+            <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.3em] text-[#4FAEF3]/80">
+              ACHIEVEMENT_LOG // 01
+            </span>
           </div>
 
           <h3 className="mb-2 sm:mb-4 font-sans uppercase leading-[1.05] text-white" style={{ fontSize: 'clamp(26px, 7vw, 52px)', fontWeight: 900, letterSpacing: '-0.02em' }}>
@@ -112,10 +112,10 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
           {/* Grouped Description Block with Left Border */}
           <div className="relative border-l-2 border-[#4FAEF3]/20 pl-4 sm:pl-6 space-y-4 sm:space-y-5">
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-300 md:text-[15px] font-light tracking-wide">
-              Awarded for exceptional technical innovation, sustained ecosystem impact, and engineering excellence across the university network.
+              Honoured with the Best Club – Elite Category award for outstanding technical innovation, impactful initiatives, and sustained contributions to the university community.
             </p>
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-400 md:text-[15px] font-light tracking-wide">
-              Anchored by <span className="text-[#4FAEF3] font-medium">Robowars</span>, the premier combat robotics league, solidifying a legacy of dominance.
+              Celebrating a legacy of innovation, teamwork, and technical excellence built through dedication and impact.
             </p>
           </div>
 
@@ -208,130 +208,229 @@ interface IndividualAchievement {
   name: string;
   achievement: string;
   year: string;
+  level: string;
+  description: string;
+  imageSrc?: string;
 }
 
 const INDIVIDUAL_ACHIEVEMENTS: IndividualAchievement[] = [
-  { id: '01', name: 'Member Name 01', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '02', name: 'Member Name 02', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '03', name: 'Member Name 03', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '04', name: 'Member Name 04', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '05', name: 'Member Name 05', achievement: 'Competition Title // Position', year: '2026' },
-  { id: '06', name: 'Member Name 06', achievement: 'Event Title // Position', year: '2025' },
-  { id: '07', name: 'Member Name 07', achievement: 'Event Title // Position', year: '2025' },
-  { id: '08', name: 'Member Name 08', achievement: 'Event Title // Position', year: '2025' },
-  { id: '09', name: 'Member Name 09', achievement: 'Event Title // Position', year: '2024' },
-  { id: '10', name: 'Member Name 10', achievement: 'Event Title // Position', year: '2024' },
+  { id: '01', name: 'Ryan Fernandes', achievement: "Synapse'26 // Second Place", year: '2026', level: 'NATIONAL', description: "Secured Second Place at Synapse'26, Scaler School of Technology, Bengaluru.", imageSrc: '/a1.jpeg' },
+  { id: '02', name: 'Team NeuroVITics', achievement: 'Neurohack Shaastra 2026 // 1st Place', year: '2026', level: 'NATIONAL', description: 'Won 1st Place at Neurohack Shaastra 2026, IIT Madras.', imageSrc: '/a2.jpeg' },
+  { id: '03', name: 'Ujaini DE & Aarushi Jha', achievement: "Vinhack'25 // 2nd Place", year: '2025', level: 'NATIONAL', description: "Secured 2nd Place at Vinhack'25." },
+  { id: '04', name: 'Mahmood', achievement: "Hackelite'25 // 3rd Place", year: '2025', level: 'NATIONAL', description: "Secured 3rd Place at Hackelite'25, SRM Vadapalani." },
+  { id: '05', name: 'Team Sphnix', achievement: "Cosmo Clemch – TechSolctice'26 // 1st Place", year: '2026', level: 'NATIONAL', description: "Won 1st Place in Cosmo Clemch, TechSolctice'26, MIT Bangalore.", imageSrc: '/a5.jpeg' },
+  { id: '06', name: 'Team Sphnix', achievement: "RoboRace – TechSolctice'26 // 1st Runner-Up", year: '2026', level: 'NATIONAL', description: "Secured 1st Runner-Up in RoboRace at TechSolctice'26, MIT Bangalore.", imageSrc: '/a6.jpeg' },
+  { id: '07', name: 'Team CyberVITics', achievement: "Null OWASP CTF – TechSolctice'26 // 2nd Place", year: '2026', level: 'NATIONAL', description: "Secured 2nd Place in Null OWASP CTF at TechSolctice'26, MIT Bangalore.", imageSrc: '/a7.jpeg' },
+  { id: '08', name: 'Member Name 08', achievement: 'Quantum Computing Hack // Finalist', year: '2025', level: 'INTERNATIONAL', description: 'Optimized a quantum circuit for simulating molecular dynamics.' },
+  { id: '09', name: 'Member Name 09', achievement: 'Open Source Contribution Award // Winner', year: '2024', level: 'GLOBAL', description: 'Significant contributions to the Linux kernel regarding memory management.' },
+  { id: '10', name: 'Member Name 10', achievement: 'RoboWars Alpha // Grand Champion', year: '2024', level: 'NATIONAL', description: 'Dominated the heavyweight combat robotics arena with a pneumatic flipper.' },
+  { id: '11', name: 'Member Name 11', achievement: 'NextGen AI Conference // Best Paper', year: '2024', level: 'INTERNATIONAL', description: 'Published groundbreaking research on efficient transformers for mobile devices.' },
 ];
 
-function LogRow({ data }: { data: IndividualAchievement }) {
+const DECK_VISIBLE_DEPTH = 3; // how many cards stack visibly behind the active one
+
+/* Single dossier card within the stack. `pos` = distance from front (0 = active/front). */
+function DossierCard({ log, pos, total, isHovered, onCardClick }: { log: IndividualAchievement; pos: number; total: number; isHovered: boolean; onCardClick: (pos: number) => void }) {
+  const isFront = pos === 0;
+  // wrap distance the "short way" so a card jumping from 0 -> total-1 (sent to back)
+  // and one jumping from total-1 -> 0 (brought to front) both read as a single short hop
+  const wrappedPos = pos > total / 2 ? pos - total : pos;
+  const depth = Math.min(Math.abs(wrappedPos), DECK_VISIBLE_DEPTH);
+  const isBack = wrappedPos < 0;
+
+  // The active card tilts slightly (-1 or 1 degree based on its ID or just a subtle tilt, or 0)
+  // The user asked "The active card should tilt slightly before moving". 
+  // Let's just give the active card a very subtle floating tilt or no tilt when resting, and tilt cards behind it.
+  // Actually, we'll keep the stack tilt. 
+  const stackTilt = depth === 0 ? 0 : (depth % 2 === 0 ? -1 : 1) * (2 + depth * 1.5);
+  const offscreen = Math.abs(wrappedPos) > DECK_VISIBLE_DEPTH;
+
+  // Fan out effect on hover
+  const fanOutY = (isHovered && depth > 0 && !offscreen && !isBack) ? depth * 12 : 0;
+  const fanOutX = (isHovered && depth > 0 && !offscreen && !isBack) ? (depth % 2 === 0 ? 15 : -15) : 0;
+
   return (
-    <div className="group relative flex w-full flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 border-b border-white/[0.04] px-4 py-3 sm:px-6 sm:py-4 transition-all duration-200 hover:bg-white/[0.03]">
-      <span
-        className="absolute left-0 top-0 h-full w-[2px] scale-y-0 bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3] transition-transform duration-200 group-hover:scale-y-100"
-        style={{ transformOrigin: 'center' }}
-      />
+    <motion.div
+      className="absolute inset-0 cursor-pointer"
+      onClick={() => onCardClick(wrappedPos)}
+      style={{ zIndex: isBack ? 1 : total - depth }}
+      animate={{
+        x: fanOutX,
+        y: offscreen ? (isBack ? 110 : -20) : depth * 28 + fanOutY,
+        scale: offscreen ? 0.75 : 1 - depth * 0.08,
+        rotate: offscreen ? (isBack ? 8 : 0) : stackTilt + (isHovered && depth > 0 ? (depth % 2 === 0 ? -2 : 2) : 0),
+        opacity: offscreen ? 0 : 1 - depth * 0.25,
+      }}
+      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div
+        className="relative h-full w-full overflow-hidden rounded-2xl border p-5 sm:p-8 flex flex-col md:flex-row gap-5 md:gap-8 items-center md:items-start justify-between transition-colors duration-500"
+        style={{
+          background: 'linear-gradient(160deg, rgba(24,26,29,0.97) 0%, rgba(11,11,11,0.99) 100%)',
+          backdropFilter: 'blur(20px)',
+          borderColor: isFront ? 'rgba(79,174,243,0.5)' : (isHovered ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)'),
+          boxShadow: isFront
+            ? '0 24px 60px rgba(0,0,0,0.7), 0 0 45px rgba(79,174,243,0.25)'
+            : (isHovered ? '0 15px 35px rgba(0,0,0,0.6)' : '0 10px 26px rgba(0,0,0,0.5)'),
+        }}
+      >
+        {/* Soft top highlight */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent opacity-60" />
 
-      <div className="flex items-center justify-between sm:hidden w-full mb-0.5">
-          <div className="flex items-center gap-3">
-              <span className="w-5 flex-shrink-0 font-mono text-[9px] text-[#4FAEF3]/60">
-                {data.id}
-              </span>
-              <span className="flex-shrink-0 font-mono text-[8px] text-emerald-500/80 group-hover:text-emerald-400">
-                [OK]
-              </span>
+        {/* Holographic scan line — only plays on the active front card */}
+        {isFront && (
+          <motion.div
+            key={`scan-${log.id}`}
+            className="pointer-events-none absolute left-0 right-0 h-12 z-20"
+            style={{
+              background: 'linear-gradient(rgba(79,174,243,0) 0%, rgba(79,174,243,0.25) 50%, rgba(79,174,243,0) 100%)',
+            }}
+            initial={{ top: '-15%', opacity: 0.9 }}
+            animate={{ top: '105%', opacity: 0 }}
+            transition={{ duration: 1.2, ease: 'easeOut' }}
+          />
+        )}
+
+        {/* Decorative HUD corners */}
+        <span className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[#4FAEF3]/50" />
+        <span className="absolute top-3 right-3 w-3 h-3 border-t border-r border-[#4FAEF3]/50" />
+        <span className="absolute bottom-3 left-3 w-3 h-3 border-b border-l border-[#4FAEF3]/50" />
+        <span className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[#4FAEF3]/50" />
+
+        {/* Left: Info */}
+        <div className="relative z-10 flex-1 flex flex-col justify-center h-full w-full min-w-0">
+          <span className="font-mono text-[#4FAEF3] text-[9.5px] sm:text-[11px] tracking-[0.2em] mb-2.5 uppercase">
+            {log.level} {'//'} {log.year}
+          </span>
+          <h3 className="text-white font-sans text-lg sm:text-2xl lg:text-3xl font-bold uppercase tracking-wide mb-4 leading-tight">
+            {log.achievement.split('//')[0]}
+          </h3>
+
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-px w-8 sm:w-12 bg-white/20" />
+            <span className="font-mono text-gray-300 text-[10px] sm:text-[12px] tracking-[0.15em] uppercase">
+              {log.name}
+            </span>
           </div>
-          <span className="flex-shrink-0 font-mono text-[8px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">
-            {data.year}
-          </span>
+
+          <div className="inline-block border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-sm w-fit mb-4 shadow-[0_0_15px_rgba(79,174,243,0.15)]">
+            <span className="font-mono text-[#4FAEF3] text-[9.5px] sm:text-[11px] tracking-[0.1em] uppercase">
+              POSITION: {log.achievement.split('//')[1]?.trim() || 'WINNER'}
+            </span>
+          </div>
+
+          <p className="text-gray-400 text-[11px] sm:text-[13.5px] leading-relaxed max-w-lg font-sans">
+            {log.description}
+          </p>
+        </div>
+
+        {/* Right: Certificate placeholder */}
+        <div className="relative z-10 w-full md:w-[36%] aspect-[4/3] rounded-lg border border-white/10 bg-white/[0.04] flex items-center justify-center overflow-hidden shrink-0">
+          {log.imageSrc ? (
+            <img src={log.imageSrc} alt={log.achievement.split('//')[0].trim()} className="w-full h-full object-cover" />
+          ) : (
+            <div className="flex flex-col items-center gap-3">
+              <svg className="w-8 h-8 sm:w-11 sm:h-11 text-white/20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-white/30">
+                NO ATTACHMENT
+              </span>
+            </div>
+          )}
+          <span className="absolute top-2 left-2 w-2 h-2 border-t border-l border-white/30" />
+          <span className="absolute top-2 right-2 w-2 h-2 border-t border-r border-white/30" />
+          <span className="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-white/30" />
+          <span className="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-white/30" />
+        </div>
       </div>
-
-      <span className="hidden sm:block w-8 flex-shrink-0 font-mono text-[11px] text-[#4FAEF3]/60">
-        {data.id}
-      </span>
-      <span className="hidden sm:block w-12 flex-shrink-0 font-mono text-[10px] text-emerald-500/80 group-hover:text-emerald-400">
-        [OK]
-      </span>
-
-      <div className="flex flex-col sm:flex-row sm:items-center min-w-0 flex-1">
-          <span className="truncate text-[12px] font-medium text-gray-200 tracking-wide sm:w-[150px] md:text-[13.5px]">
-            {data.name}
-          </span>
-          <span className="truncate text-[10px] sm:text-[11.5px] text-gray-400 md:text-[13px] group-hover:text-white transition-colors tracking-wide mt-0.5 sm:mt-0">
-            {data.achievement}
-          </span>
-      </div>
-
-      <span className="hidden sm:block flex-shrink-0 font-mono text-[10px] text-gray-500 group-hover:text-[#4FAEF3]/80 transition-colors">
-        {data.year}
-      </span>
-    </div>
+    </motion.div>
   );
 }
 
 function IndividualLogPanel() {
-  const half = Math.ceil(INDIVIDUAL_ACHIEVEMENTS.length / 2);
-  const colA = INDIVIDUAL_ACHIEVEMENTS.slice(0, half);
-  const colB = INDIVIDUAL_ACHIEVEMENTS.slice(half);
+  const total = INDIVIDUAL_ACHIEVEMENTS.length;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleNext = () => setActiveIndex((prev) => (prev + 1) % total);
+  const handlePrev = () => setActiveIndex((prev) => (prev - 1 + total) % total);
+
+  const handleCardClick = (wrappedPos: number) => {
+    if (wrappedPos === 0) {
+      handleNext();
+    } else if (wrappedPos > 0) {
+      setActiveIndex((prev) => (prev + wrappedPos) % total);
+    }
+  };
 
   return (
-    <div className="relative flex h-auto max-h-[60vh] sm:max-h-[600px] w-full flex-col overflow-hidden rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+    <div className="relative w-full flex flex-col items-center">
 
-      <div className="flex flex-shrink-0 flex-row items-center justify-between border-b border-white/[0.05] bg-black/20 px-4 py-4 sm:px-8 sm:py-5">
-        <div className="flex items-center gap-2 sm:gap-3">
-            <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-sm bg-emerald-500 animate-pulse shadow-[0_0_8px_#10b981]" />
-            <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-300 md:text-[11px]">
-              RECORDS.DAT
+      {/* Header / controls — no enclosing box, floats directly on the page background */}
+      <div className="w-full max-w-[1000px] mx-auto mb-8 sm:mb-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-sm bg-[#4FAEF3] animate-pulse shadow-[0_0_8px_#4FAEF3]" />
+            <span className="font-mono text-[9px] sm:text-[11px] uppercase tracking-[0.2em] text-gray-300 md:text-[12px]">
+              MISSION_ARCHIVE // LOG {INDIVIDUAL_ACHIEVEMENTS[activeIndex].id}
             </span>
-        </div>
-        <span className="font-mono text-[8.5px] sm:text-[10px] tracking-[0.1em] text-[#4FAEF3]/80 md:text-[11px]">
-          10/10 LOADED
-        </span>
-      </div>
-
-      <div className="hidden lg:grid grid-cols-2 divide-x divide-white/[0.05] border-b border-white/[0.05] bg-black/10 font-mono text-[9px] uppercase tracking-[0.2em] text-gray-500">
-          <div className="flex items-center gap-4 px-6 py-3">
-              <span className="w-8">ID</span>
-              <span className="w-12">STATUS</span>
-              <span className="w-[150px]">OPERATIVE</span>
-              <span className="flex-1">DIRECTIVE</span>
-              <span>CYCLE</span>
           </div>
-          <div className="flex items-center gap-4 px-6 py-3">
-              <span className="w-8">ID</span>
-              <span className="w-12">STATUS</span>
-              <span className="w-[150px]">OPERATIVE</span>
-              <span className="flex-1">DIRECTIVE</span>
-              <span>CYCLE</span>
-          </div>
-      </div>
-
-      <div className="grid min-h-[300px] flex-1 grid-cols-1 divide-y divide-white/[0.05] overflow-y-auto lg:grid-cols-2 lg:divide-x lg:divide-y-0">
-        <div className="flex flex-col">
-          <div className="lg:hidden">
-              {INDIVIDUAL_ACHIEVEMENTS.map((item) => <LogRow key={item.id} data={item} />)}
-          </div>
-          <div className="hidden lg:flex flex-col">
-             {colA.map((item) => <LogRow key={item.id} data={item} />)}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handlePrev}
+              className="p-2 sm:p-2.5 transition-colors hover:bg-white/5 rounded-md text-[#4FAEF3] border border-white/10 hover:border-[#4FAEF3]/40"
+              aria-label="Previous achievement"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+            </button>
+            <span className="font-mono text-[11px] sm:text-[13px] text-white/50 tracking-widest w-16 text-center">
+              {String(activeIndex + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
+            </span>
+            <button
+              onClick={handleNext}
+              className="p-2 sm:p-2.5 transition-colors hover:bg-white/5 rounded-md text-[#4FAEF3] border border-white/10 hover:border-[#4FAEF3]/40"
+              aria-label="Next achievement"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+            </button>
           </div>
         </div>
-        <div className="hidden lg:flex flex-col">
-          {colB.map((item) => <LogRow key={item.id} data={item} />)}
+
+        {/* Progress nodes */}
+        <div className="flex items-center gap-2 sm:gap-2.5 w-full">
+          {INDIVIDUAL_ACHIEVEMENTS.map((_, i) => (
+            <div
+              key={i}
+              className={`h-[3px] sm:h-[4px] flex-1 rounded-full transition-all duration-500 ${i === activeIndex
+                  ? 'bg-[#4FAEF3] shadow-[0_0_10px_#4FAEF3]'
+                  : i < activeIndex
+                    ? 'bg-[#4FAEF3]/30'
+                    : 'bg-white/10'
+                }`}
+            />
+          ))}
         </div>
       </div>
 
-      <div className="flex flex-shrink-0 items-center justify-center gap-2 border-t border-white/[0.05] bg-black/20 py-3 sm:py-4">
-        <span className="font-mono text-[8.5px] sm:text-[10px] uppercase tracking-[0.2em] text-gray-500 md:text-[11px]">
-          EOF // END OF FILE
-        </span>
-        <motion.span
-          animate={{ opacity: [1, 0] }}
-          transition={{ repeat: Infinity, duration: 0.9, ease: 'linear' }}
-          className="inline-block h-2 sm:h-3 w-1 sm:w-1.5 bg-[#4FAEF3]/80 align-[-0.15em]"
-        />
+      {/* Stacked dossier deck */}
+      <div 
+        className="relative w-full max-w-[1000px] mx-auto pb-10 sm:pb-16"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <div className="relative w-full h-[370px] sm:h-[340px]">
+          {INDIVIDUAL_ACHIEVEMENTS.map((log, i) => {
+            const pos = (i - activeIndex + total) % total;
+            return <DossierCard key={log.id} log={log} pos={pos} total={total} isHovered={isHovered} onCardClick={handleCardClick} />;
+          })}
+        </div>
       </div>
+
     </div>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 /* Main export
@@ -354,24 +453,24 @@ export default function Achievements({
 
         {/* Header Block */}
         <div className="flex-shrink-0 mb-6 sm:mb-8 md:mb-10">
-            <div className="mb-4 sm:mb-6 flex items-start justify-between gap-4">
-              <div>
-                  <span className="mb-2 sm:mb-3 block font-mono text-[9px] uppercase tracking-[0.25em] text-gray-500 sm:text-[11px]">
-                  <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px sm:mr-[10px]' }}>06.</span>
-                  SYSTEM.LOGS // ACHIEVEMENTS
-                  </span>
-                  <h2
-                  className="font-sans uppercase text-white"
-                  style={{ fontSize: 'clamp(24px, 7vw, 64px)', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.05 }}
-                  >
-                  YEARS OF <span className="text-[#4FAEF3]">RECOGNITION.</span>
-                  </h2>
-              </div>
+          <div className="mb-4 sm:mb-6 flex items-start justify-between gap-4">
+            <div>
+              <span className="mb-2 sm:mb-3 block font-mono text-[9px] uppercase tracking-[0.25em] text-gray-500 sm:text-[11px]">
+                <span style={{ color: '#ffffff', fontWeight: 700, marginRight: '8px sm:mr-[10px]' }}>05.</span>
+                system.logs // Achievements
+              </span>
+              <h2
+                className="font-sans uppercase text-white"
+                style={{ fontSize: 'clamp(24px, 7vw, 64px)', fontWeight: 900, letterSpacing: '-0.02em', lineHeight: 1.05 }}
+              >
+                YEARS OF <span className="text-[#4FAEF3]">RECOGNITION</span>
+              </h2>
             </div>
+          </div>
 
-            <div className="flex w-full sm:w-auto">
-                <ViewToggle view={view} setView={setView} />
-            </div>
+          <div className="flex w-full sm:w-auto">
+            <ViewToggle view={view} setView={setView} />
+          </div>
         </div>
 
         {/* Content Block */}
