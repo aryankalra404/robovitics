@@ -17,6 +17,23 @@ const initialForm = {
   website: '',
 };
 
+function validateForm(form: typeof initialForm) {
+  const name = form.name.trim();
+  const email = form.email.trim();
+  const phone = form.phone.trim();
+  const message = form.message.trim();
+
+  if (!name) return 'Name is required.';
+  if (name.length < 2) return 'Name must be at least 2 characters.';
+  if (!email) return 'Email is required.';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Enter a valid email address.';
+  if (!phone) return 'Phone number is required.';
+  if (phone.length < 7) return 'Enter a valid phone number.';
+  if (!message) return 'Message is required.';
+  if (message.length < 10) return 'Message must be at least 10 characters.';
+  return '';
+}
+
 export default function ContactModal({ open, onClose }: ContactModalProps) {
   const [form, setForm] = useState(initialForm);
   const [submitState, setSubmitState] = useState<SubmitState>('idle');
@@ -53,6 +70,14 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const validationMessage = validateForm(form);
+
+    if (validationMessage) {
+      setSubmitState('error');
+      setStatusMessage(validationMessage);
+      return;
+    }
+
     setSubmitState('sending');
     setStatusMessage('');
 
@@ -104,11 +129,8 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
         <div className="relative z-10 p-5 sm:p-6">
           <div className="mb-5 flex items-start justify-between gap-4 border-b border-white/10 pb-4">
             <div>
-              <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.25em] text-[#4FAEF3]/75">
-                SYSTEM.CONNECT //
-              </p>
               <h2 className="font-mono text-xl font-semibold uppercase tracking-[0.18em] text-white sm:text-2xl">
-                Contact Form
+                Contact Us
               </h2>
             </div>
             <button
@@ -138,10 +160,12 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
             <label className="block">
               <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">Name</span>
               <input
-                required
                 name="name"
                 value={form.name}
-                onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
+                onChange={(event) => {
+                  setStatusMessage('');
+                  setForm((current) => ({ ...current, name: event.target.value }));
+                }}
                 className="w-full border border-white/12 bg-white/[0.035] px-3 py-3 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/20 focus:border-[#4FAEF3]/70 focus:bg-[#4FAEF3]/[0.06]"
                 placeholder="Your name"
               />
@@ -151,11 +175,14 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
               <label className="block">
                 <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">Email</span>
                 <input
-                  required
-                  type="email"
+                  type="text"
+                  inputMode="email"
                   name="email"
                   value={form.email}
-                  onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
+                  onChange={(event) => {
+                    setStatusMessage('');
+                    setForm((current) => ({ ...current, email: event.target.value }));
+                  }}
                   className="w-full border border-white/12 bg-white/[0.035] px-3 py-3 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/20 focus:border-[#4FAEF3]/70 focus:bg-[#4FAEF3]/[0.06]"
                   placeholder="you@example.com"
                 />
@@ -164,11 +191,13 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
               <label className="block">
                 <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">Phone No.</span>
                 <input
-                  required
                   type="tel"
                   name="phone"
                   value={form.phone}
-                  onChange={(event) => setForm((current) => ({ ...current, phone: event.target.value }))}
+                  onChange={(event) => {
+                    setStatusMessage('');
+                    setForm((current) => ({ ...current, phone: event.target.value }));
+                  }}
                   className="w-full border border-white/12 bg-white/[0.035] px-3 py-3 font-mono text-sm text-white outline-none transition-colors placeholder:text-white/20 focus:border-[#4FAEF3]/70 focus:bg-[#4FAEF3]/[0.06]"
                   placeholder="+91 ..."
                 />
@@ -178,11 +207,13 @@ export default function ContactModal({ open, onClose }: ContactModalProps) {
             <label className="block">
               <span className="mb-2 block font-mono text-[9px] uppercase tracking-[0.2em] text-white/35">Message</span>
               <textarea
-                required
                 name="message"
                 rows={5}
                 value={form.message}
-                onChange={(event) => setForm((current) => ({ ...current, message: event.target.value }))}
+                onChange={(event) => {
+                  setStatusMessage('');
+                  setForm((current) => ({ ...current, message: event.target.value }));
+                }}
                 className="min-h-32 w-full resize-none border border-white/12 bg-white/[0.035] px-3 py-3 font-mono text-sm leading-relaxed text-white outline-none transition-colors placeholder:text-white/20 focus:border-[#4FAEF3]/70 focus:bg-[#4FAEF3]/[0.06]"
                 placeholder="Tell us what you want to ask..."
               />

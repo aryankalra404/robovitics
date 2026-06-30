@@ -1,6 +1,6 @@
 'use client';
 
-import type { CSSProperties } from 'react';
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 
@@ -66,16 +66,30 @@ function SponsorMarquee() {
 }
 
 // ─── SPONSOR CARD ───────────────────────────────────────────────────────────
-function SponsorCard({ sponsor, isHovered, onHoverChange }: {
+function SponsorCard({ 
+    sponsor, 
+    isHovered, 
+    onHoverChange, 
+    registerCard,
+    onCardPointerDown
+}: {
     sponsor: Sponsor; isHovered: boolean;
     onHoverChange: (h: boolean, r: DOMRect | null) => void;
+    registerCard?: (id: string, el: HTMLDivElement | null) => void;
+    onCardPointerDown?: (event: ReactPointerEvent<HTMLDivElement>) => void;
 }) {
     const ref = useRef<HTMLDivElement>(null);
+    const setCardRef = useCallback((node: HTMLDivElement | null) => {
+        ref.current = node;
+        registerCard?.(sponsor.id, node);
+    }, [registerCard, sponsor.id]);
+
     return (
-        <motion.div ref={ref} className="cursor-pointer group relative w-full h-full transition-transform duration-500 ease-out"
-            style={{ willChange: 'transform' }}
-            whileHover={{ y: -6 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        <motion.div 
+            ref={setCardRef} 
+            className="cursor-grab group relative w-full h-full active:cursor-grabbing"
+            style={{ touchAction: 'none', willChange: 'transform' }}
+            onPointerDown={onCardPointerDown}
             onMouseEnter={() => onHoverChange(true, ref.current?.getBoundingClientRect() ?? null)}
             onMouseLeave={() => onHoverChange(false, null)}>
             
@@ -187,9 +201,16 @@ export default function Sponsors() {
     const secRef = useRef<HTMLElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     const [hId, setHId] = useState<string | null>(null);
+    const [heldId, setHeldId] = useState<string | null>(null);
+    const hIdRef = useRef<string | null>(null);
+    const heldIdRef = useRef<string | null>(null);
+    const cardEls = useRef<Record<string, HTMLDivElement | null>>({});
+    const cardOrigins = useRef<Record<string, Point>>({});
+    const cardOffsets = useRef<Record<string, Point>>({});
 
     const els = useRef<Record<string, SVGElement | null>>({});
     const ref = useCallback((k: string) => (e: SVGElement | null) => { els.current[k] = e; }, []);
+    const registerCard = useCallback((id: string, el: HTMLDivElement | null) => { cardEls.current[id] = el; }, []);
 
     const st = useRef({
         mouse: { x: 0, y: 0 } as Point,
@@ -197,6 +218,9 @@ export default function Sponsors() {
         joints: Array.from({ length: NJ }, () => ({ x: 0, y: 0 })) as Point[],
         lens: SR.map(() => 0),
         base: { x: 0, y: 0 } as Point,
+        baseHome: { x: 0, y: 0 } as Point,
+        baseOffsetX: 0,
+        baseTargetOffsetX: 0,
         w: 0, h: 0,
         hRect: null as DOMRect | null,
         locked: false,
@@ -215,35 +239,194 @@ export default function Sponsors() {
 
         // Total reach ~ 0.45 of diag
         s.lens = SR.map(ratio => ratio * diag * 0.45);
-        s.base = { x: r.width * 0.12, y: r.height * 0.88 }; // Firmly planted in bottom left
+        s.baseHome = { x: r.width * 0.12, y: r.height * 0.88 }; // Firmly planted in bottom left
+        const minBaseX = 95;
+        const maxBaseX = Math.max(minBaseX, r.width - 95);
+        s.baseOffsetX = Math.max(minBaseX - s.baseHome.x, Math.min(maxBaseX - s.baseHome.x, s.baseOffsetX));
+        s.baseTargetOffsetX = Math.max(minBaseX - s.baseHome.x, Math.min(maxBaseX - s.baseHome.x, s.baseTargetOffsetX));
+        s.base = { x: s.baseHome.x + s.baseOffsetX, y: s.baseHome.y };
         if (!s.ok) {
             // Offset initial joints slightly so FABRIK doesn't divide by zero when perfectly stacked
             s.joints = s.joints.map((_, i) => ({ x: s.base.x, y: s.base.y - i * 10 }));
             s.target = { x: r.width * 0.5, y: r.height * 0.5 };
             s.mouse = { ...s.target }; s.ok = true;
         }
-        s.joints[0] = { ...s.base };
         svgRef.current?.setAttribute('viewBox', `0 0 ${r.width} ${r.height}`);
     }, []);
 
     useEffect(() => {
         const sec = secRef.current; if (!sec) return;
         const mv = (e: MouseEvent) => { const r = sec.getBoundingClientRect(); st.current.mouse = { x: e.clientX - r.left, y: e.clientY - r.top }; };
-        const lv2 = () => { const s = st.current; s.mouse = { x: s.w * 0.5, y: s.h * 0.5 }; };
+        const lv2 = () => { const s = st.current; if (!heldIdRef.current) s.mouse = { x: s.w * 0.5, y: s.h * 0.5 }; };
         sec.addEventListener('mousemove', mv, { passive: true });
         sec.addEventListener('mouseleave', lv2, { passive: true });
         return () => { sec.removeEventListener('mousemove', mv); sec.removeEventListener('mouseleave', lv2); };
     }, []);
 
     const onCard = useCallback((id: string) => (on: boolean, rect: DOMRect | null) => {
+        hIdRef.current = on ? id : null;
         setHId(on ? id : null);
         const s = st.current;
+        if (heldIdRef.current) return;
         if (on && rect && secRef.current) {
             const sr = secRef.current.getBoundingClientRect();
             s.hRect = new DOMRect(rect.left - sr.left, rect.top - sr.top, rect.width, rect.height);
             s.locked = true;
         } else { s.hRect = null; s.locked = false; }
     }, []);
+
+    const getClawPoint = useCallback((): Point | null => {
+        const s = st.current;
+        if (!s.ok) return null;
+        const ee = s.joints[NJ - 1];
+        const wr = s.joints[NJ - 2];
+        if (!ee || !wr) return null;
+        const la = angOf(wr, ee);
+        return {
+            x: ee.x + Math.cos(la) * 42,
+            y: ee.y + Math.sin(la) * 42,
+        };
+    }, []);
+
+    const canClawPickCard = useCallback((id: string) => {
+        const sec = secRef.current;
+        const el = cardEls.current[id];
+        const clawPoint = getClawPoint();
+        if (!sec || !el || !clawPoint) return false;
+
+        const sr = sec.getBoundingClientRect();
+        const rect = el.getBoundingClientRect();
+        const cardRect = {
+            left: rect.left - sr.left,
+            right: rect.right - sr.left,
+            top: rect.top - sr.top,
+            bottom: rect.bottom - sr.top,
+        };
+        const pickupMargin = 10;
+
+        return (
+            clawPoint.x >= cardRect.left - pickupMargin &&
+            clawPoint.x <= cardRect.right + pickupMargin &&
+            clawPoint.y >= cardRect.top - pickupMargin &&
+            clawPoint.y <= cardRect.bottom + pickupMargin
+        );
+    }, [getClawPoint]);
+
+    const releaseCard = useCallback(() => {
+        const current = heldIdRef.current;
+        if (current) {
+            const el = cardEls.current[current];
+            const offset = cardOffsets.current[current] ?? { x: 0, y: 0 };
+            if (el) {
+                el.style.transform = `translate3d(${offset.x.toFixed(1)}px, ${offset.y.toFixed(1)}px, 0)`;
+                el.style.transition = 'transform 160ms ease-out';
+                el.style.zIndex = '45';
+                el.style.pointerEvents = '';
+            }
+            delete cardOrigins.current[current];
+        }
+        heldIdRef.current = null;
+        setHeldId(null);
+        st.current.locked = Boolean(st.current.hRect);
+    }, []);
+
+    const pickCard = useCallback((id: string) => {
+        if (!canClawPickCard(id)) return false;
+
+        releaseCard();
+        heldIdRef.current = id;
+        setHeldId(id);
+        hIdRef.current = id;
+        setHId(id);
+        st.current.locked = true;
+
+        const el = cardEls.current[id];
+        if (el && secRef.current) {
+            const sr = secRef.current.getBoundingClientRect();
+            const rect = el.getBoundingClientRect();
+            const offset = cardOffsets.current[id] ?? { x: 0, y: 0 };
+            cardOrigins.current[id] = {
+                x: rect.left - sr.left + rect.width / 2 - offset.x,
+                y: rect.top - sr.top + rect.height / 2 - offset.y,
+            };
+            el.style.transition = 'none';
+            el.style.zIndex = '60';
+            el.style.pointerEvents = 'auto';
+        }
+        return true;
+    }, [canClawPickCard, releaseCard]);
+
+    const updateMouseFromPointer = useCallback((event: PointerEvent | ReactPointerEvent<HTMLDivElement>) => {
+        const sec = secRef.current;
+        if (!sec) return;
+        const r = sec.getBoundingClientRect();
+        st.current.mouse = { x: event.clientX - r.left, y: event.clientY - r.top };
+    }, []);
+
+    const onCardPointerDown = useCallback((id: string) => (event: ReactPointerEvent<HTMLDivElement>) => {
+        if (!secRef.current || window.innerWidth < 768) return;
+        event.preventDefault();
+        pickCard(id);
+        updateMouseFromPointer(event);
+    }, [pickCard, updateMouseFromPointer]);
+
+    useEffect(() => {
+        const onPointerMove = (event: PointerEvent) => {
+            if (!heldIdRef.current) return;
+            updateMouseFromPointer(event);
+        };
+        const onPointerUp = () => {
+            if (!heldIdRef.current) return;
+            releaseCard();
+        };
+
+        window.addEventListener('pointermove', onPointerMove, { passive: true });
+        window.addEventListener('pointerup', onPointerUp);
+        window.addEventListener('pointercancel', onPointerUp);
+        return () => {
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerup', onPointerUp);
+            window.removeEventListener('pointercancel', onPointerUp);
+        };
+    }, [releaseCard, updateMouseFromPointer]);
+
+    useEffect(() => {
+        const onKeyDown = (event: KeyboardEvent) => {
+            const s = st.current;
+            if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+                if (!secRef.current || window.innerWidth < 768) return;
+                event.preventDefault();
+                const dir = event.key === 'ArrowLeft' ? -1 : 1;
+                const step = event.shiftKey ? 56 : 28;
+                const minBaseX = 95;
+                const maxBaseX = Math.max(minBaseX, s.w - 95);
+                const currentTargetX = s.baseHome.x + s.baseTargetOffsetX;
+                const nextBaseX = Math.max(minBaseX, Math.min(maxBaseX, currentTargetX + dir * step));
+                s.baseTargetOffsetX = nextBaseX - s.baseHome.x;
+            }
+
+            if (event.key === ' ' || event.key === 'Enter') {
+                if (!secRef.current || window.innerWidth < 768) return;
+                if (heldIdRef.current) return;
+                const targetId = hIdRef.current;
+                if (!targetId) return;
+                event.preventDefault();
+                pickCard(targetId);
+            }
+        };
+
+        window.addEventListener('keydown', onKeyDown);
+        const onKeyUp = (event: KeyboardEvent) => {
+            if ((event.key === ' ' || event.key === 'Enter') && heldIdRef.current) {
+                releaseCard();
+            }
+        };
+        window.addEventListener('keyup', onKeyUp);
+        return () => {
+            window.removeEventListener('keydown', onKeyDown);
+            window.removeEventListener('keyup', onKeyUp);
+        };
+    }, [pickCard, releaseCard]);
 
     // ── 60 fps loop ──
     useEffect(() => {
@@ -253,20 +436,27 @@ export default function Sponsors() {
 
         const tick = () => {
             const s = st.current, e = els.current;
+            const holding = Boolean(heldIdRef.current);
 
             // Target
-            const want: Point = s.locked && s.hRect
+            const want: Point = !holding && s.locked && s.hRect
                 ? { x: s.hRect.x + s.hRect.width / 2, y: s.hRect.y + s.hRect.height / 2 }
                 : { ...s.mouse };
-            s.target = lerpPt(s.target, want, s.locked ? 0.14 : 0.06);
+            s.target = lerpPt(s.target, want, holding || s.locked ? 0.14 : 0.06);
 
             // IK
+            s.baseOffsetX = lv(s.baseOffsetX, s.baseTargetOffsetX, 0.16);
+            if (Math.abs(s.baseTargetOffsetX - s.baseOffsetX) < 0.05) {
+                s.baseOffsetX = s.baseTargetOffsetX;
+            }
+            s.base = { x: s.baseHome.x + s.baseOffsetX, y: s.baseHome.y };
             s.joints[0] = { ...s.base };
             s.joints = solveFABRIK(s.joints, s.target, s.lens);
 
             // Intensity
-            s.I = lv(s.I, s.locked ? 1 : 0, 0.09);
-            s.grip = lv(s.grip, s.locked ? 0.8 : 0.2, 0.1);
+            const activeGrip = holding || s.locked;
+            s.I = lv(s.I, activeGrip ? 1 : 0, 0.09);
+            s.grip = lv(s.grip, activeGrip ? 0.8 : 0.2, 0.1);
             const t = s.I;
 
             // ─── Colors (Highly Visible & Contrast Heavy) ──
@@ -453,6 +643,25 @@ export default function Sponsors() {
             const la = angOf(wr, ee), ld = la * D;
             const xfE = `translate(${ee.x.toFixed(1)},${ee.y.toFixed(1)}) rotate(${ld.toFixed(1)})`;
 
+            const held = heldIdRef.current;
+            const heldEl = held ? cardEls.current[held] : null;
+            const origin = held ? cardOrigins.current[held] : null;
+            if (heldEl && origin) {
+                const clawPoint = {
+                    x: ee.x + Math.cos(la) * 42,
+                    y: ee.y + Math.sin(la) * 42,
+                };
+                heldEl.style.transition = 'none';
+                heldEl.style.zIndex = '60';
+                heldEl.style.pointerEvents = 'auto';
+                const offset = {
+                    x: clawPoint.x - origin.x,
+                    y: clawPoint.y - origin.y,
+                };
+                cardOffsets.current[held] = offset;
+                heldEl.style.transform = `translate3d(${offset.x.toFixed(1)}px, ${offset.y.toFixed(1)}px, 0) scale(0.98)`;
+            }
+
             const wb = e['wB'] as SVGPolygonElement;
             if (wb) {
                 wb.setAttribute('points', '-10,-18 10,-12 10,12 -10,18');
@@ -559,7 +768,13 @@ export default function Sponsors() {
         {SPONSORS.slice(0, 3).map((sp, i) => (
             <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
-                <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
+                <SponsorCard
+                    sponsor={sp}
+                    isHovered={hId === sp.id || heldId === sp.id}
+                    onHoverChange={onCard(sp.id)}
+                    onCardPointerDown={onCardPointerDown(sp.id)}
+                    registerCard={registerCard}
+                />
             </motion.div>
         ))}
     </div>
@@ -569,7 +784,13 @@ export default function Sponsors() {
         {SPONSORS.slice(3, 8).map((sp, i) => (
             <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: (i + 3) * 0.06 }}>
-                <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
+                <SponsorCard
+                    sponsor={sp}
+                    isHovered={hId === sp.id || heldId === sp.id}
+                    onHoverChange={onCard(sp.id)}
+                    onCardPointerDown={onCardPointerDown(sp.id)}
+                    registerCard={registerCard}
+                />
             </motion.div>
         ))}
     </div>
@@ -579,7 +800,13 @@ export default function Sponsors() {
         {SPONSORS.slice(8, 11).map((sp, i) => (
             <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }} transition={{ delay: (i + 8) * 0.06 }}>
-                <SponsorCard sponsor={sp} isHovered={hId === sp.id} onHoverChange={onCard(sp.id)} />
+                <SponsorCard
+                    sponsor={sp}
+                    isHovered={hId === sp.id || heldId === sp.id}
+                    onHoverChange={onCard(sp.id)}
+                    onCardPointerDown={onCardPointerDown(sp.id)}
+                    registerCard={registerCard}
+                />
             </motion.div>
         ))}
     </div>
