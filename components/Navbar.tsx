@@ -112,8 +112,11 @@ export default function Navbar() {
         const rootRect = targetRoot.getBoundingClientRect();
         const targetTop = rootRect.top + window.scrollY;
         const targetBottom = targetTop + rootRect.height;
+        const activeBottom = item === 'Projects'
+          ? targetBottom - window.innerHeight * 0.62
+          : targetBottom;
 
-        if (targetTop <= scrollPoint && targetBottom > scrollPoint) {
+        if (targetTop <= scrollPoint && activeBottom > scrollPoint) {
           currentSection = item;
         }
       });
