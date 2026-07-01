@@ -314,7 +314,7 @@ export default function Footer() {
 
         {/* Logo + tagline — shared across all breakpoints */}
         <motion.div
-          className="relative z-20 mt-4 flex flex-col items-center justify-center sm:mt-14 md:mt-16 lg:mt-28"
+          className="relative z-20 mt-8 flex translate-y-10 flex-col items-center justify-center sm:mt-16 sm:translate-y-14 md:mt-20 md:translate-y-16 lg:mt-32 lg:translate-y-24"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
@@ -340,13 +340,13 @@ export default function Footer() {
       </div>
 
       {/* Full Bleed Image Foundation */}
-      <div className="pointer-events-none relative z-0 -mt-20 flex w-full justify-center leading-none sm:-mt-44 sm:-mb-20 md:-mt-52 md:-mb-28 lg:-mt-[26rem] lg:-mb-52">
+      <div className="pointer-events-none relative z-0 mt-0 flex h-[clamp(300px,43vw,650px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(360px,43vw,680px)] lg:h-[clamp(500px,42vw,760px)]">
         <Image
-          src="/footer.png"
+          src="/footer.jpg"
           alt="RoboVITics Technical Landscape Foundation"
-          width={1920}
-          height={500}
-          className="h-auto w-full object-cover object-[center_25%] opacity-80"
+          width={1913}
+          height={822}
+          className="h-full w-full object-cover object-bottom opacity-90"
         />
       </div>
 
