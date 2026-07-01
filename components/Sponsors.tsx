@@ -212,7 +212,7 @@ function Header({
                         '--rv-section-title-mobile': 'clamp(28px, 7.8vw, 36px)',
                         '--rv-section-title-desktop': 'clamp(28px, 4.2vw, 56px)',
                 } as CSSProperties}>
-                    OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS.</span>
+                    OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS</span>
                 </motion.h2>
                 <motion.div 
                     className="rv-section-rule"

@@ -419,7 +419,7 @@ stRef.current = ScrollTrigger.create({
                         } as React.CSSProperties}
                     >
                         WHAT WE&apos;VE<br />
-                        <span style={{ color: '#4FAEF3' }}>BUILT.</span>
+                        <span style={{ color: '#4FAEF3' }}>BUILT</span>
                     </h2>
                     <div className="rv-section-rule" />
                 </div>

@@ -635,7 +635,7 @@ const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "r
             className="rv-section-title"
             style={{ '--rv-section-title-mobile': 'clamp(34px, 9.6vw, 42px)' } as CSSProperties}
           >
-            EVENTS AT <span className="text-[#4FAEF3]">ROBOVITICS.</span>
+            EVENTS AT <span className="text-[#4FAEF3]">ROBOVITICS</span>
           </h2>
           <div className="rv-section-rule" />
         </div>
@@ -753,7 +753,7 @@ const revealCards = useCallback((cards: HTMLDivElement[], direction: "left" | "r
               ▶ SECTOR_MAP // EVENTS
             </span>
             <h2 className="rv-section-title" style={{ '--rv-section-title-desktop': 'clamp(32px, 5.5vw, 72px)' } as CSSProperties}>
-              EVENTS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+              EVENTS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
             </h2>
             <div className="rv-section-rule" />
           </div>

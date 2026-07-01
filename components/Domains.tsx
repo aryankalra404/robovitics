@@ -435,7 +435,7 @@ export default function Domains() {
             className="rv-section-title"
             style={{ '--rv-section-title-mobile': 'clamp(34px, 9.6vw, 42px)' } as React.CSSProperties}
           >
-            DOMAINS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+            DOMAINS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
           </h2>
           <div className="rv-section-rule" />
         </div>
@@ -480,7 +480,7 @@ export default function Domains() {
             </span>
             <h2 className="rv-section-title text-center" style={{ '--rv-section-title-desktop': 'clamp(32px, 4.5vw, 72px)' } as React.CSSProperties}>
               DOMAINS AT{' '}
-              <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+              <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
             </h2>
             <div style={{
               marginTop: '14px', width: '30%', height: '1px',

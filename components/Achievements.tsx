@@ -185,17 +185,17 @@ interface IndividualAchievement {
 }
 
 const INDIVIDUAL_ACHIEVEMENTS: IndividualAchievement[] = [
-  { id: '01', name: 'Ryan Fernandes', achievement: "Synapse'26 // Second Place", year: '2026', level: 'NATIONAL', description: "Secured Second Place at Synapse'26, Scaler School of Technology, Bengaluru." },
-  { id: '02', name: 'Team NeuroVITics', achievement: 'Neurohack Shaastra 2026 // 1st Place', year: '2026', level: 'NATIONAL', description: 'Won 1st Place at Neurohack Shaastra 2026, IIT Madras.' },
+  { id: '01', name: 'Ryan Fernandes', achievement: "Synapse'26 // Second Place", year: '2026', level: 'NATIONAL', description: "Secured Second Place at Synapse'26, Scaler School of Technology, Bengaluru.", imageSrc: '/a1.jpeg' },
+  { id: '02', name: 'Team NeuroVITics', achievement: 'Neurohack Shaastra 2026 // 1st Place', year: '2026', level: 'NATIONAL', description: 'Won 1st Place at Neurohack Shaastra 2026, IIT Madras.', imageSrc: '/a2.jpeg' },
   { id: '03', name: 'Ujaini DE & Aarushi Jha', achievement: "Vinhack'25 // 2nd Place", year: '2025', level: 'NATIONAL', description: "Secured 2nd Place at Vinhack'25." },
   { id: '04', name: 'Mahmood', achievement: "Hackelite'25 // 3rd Place", year: '2025', level: 'NATIONAL', description: "Secured 3rd Place at Hackelite'25, SRM Vadapalani." },
-  { id: '05', name: 'Team Sphnix', achievement: "Cosmo Clemch - TechSolctice'26 // 1st Place", year: '2026', level: 'NATIONAL', description: "Won 1st Place in Cosmo Clemch, TechSolctice'26, MIT Bangalore." },
-  { id: '06', name: 'Team Sphnix', achievement: "RoboRace - TechSolctice'26 // 1st Runner-Up", year: '2026', level: 'NATIONAL', description: "Secured 1st Runner-Up in RoboRace at TechSolctice'26, MIT Bangalore." },
-  { id: '07', name: 'Team CyberVITics', achievement: "Null OWASP CTF - TechSolctice'26 // 2nd Place", year: '2026', level: 'NATIONAL', description: "Secured 2nd Place in Null OWASP CTF at TechSolctice'26, MIT Bangalore." },
+  { id: '05', name: 'Team Sphnix', achievement: "Cosmo Clemch - TechSolctice'26 // 1st Place", year: '2026', level: 'NATIONAL', description: "Won 1st Place in Cosmo Clemch, TechSolctice'26, MIT Bangalore.", imageSrc: '/a5.jpeg' },
+  { id: '06', name: 'Team Sphnix', achievement: "RoboRace - TechSolctice'26 // 1st Runner-Up", year: '2026', level: 'NATIONAL', description: "Secured 1st Runner-Up in RoboRace at TechSolctice'26, MIT Bangalore.", imageSrc: '/a6.jpeg' },
+  { id: '07', name: 'Team CyberVITics', achievement: "Null OWASP CTF - TechSolctice'26 // 2nd Place", year: '2026', level: 'NATIONAL', description: "Secured 2nd Place in Null OWASP CTF at TechSolctice'26, MIT Bangalore.", imageSrc: '/a7.jpeg' },
   { id: '08', name: 'Member Name 08', achievement: 'Quantum Computing Hack // Finalist', year: '2025', level: 'INTERNATIONAL', description: 'Optimized a quantum circuit for simulating molecular dynamics.' },
-  { id: '09', name: 'Member Name 09', achievement: 'Open Source Contribution Award // Winner', year: '2024', level: 'GLOBAL', description: 'Recognized for significant open-source engineering contributions.' },
-  { id: '10', name: 'Member Name 10', achievement: 'RoboWars Alpha // Grand Champion', year: '2024', level: 'NATIONAL', description: 'Dominated the heavyweight combat robotics arena.' },
-  { id: '11', name: 'Member Name 11', achievement: 'NextGen AI Conference // Best Paper', year: '2024', level: 'INTERNATIONAL', description: 'Published research on efficient transformers for mobile devices.' },
+  { id: '09', name: 'Member Name 09', achievement: 'Open Source Contribution Award // Winner', year: '2024', level: 'GLOBAL', description: 'Significant contributions to the Linux kernel regarding memory management.' },
+  { id: '10', name: 'Member Name 10', achievement: 'RoboWars Alpha // Grand Champion', year: '2024', level: 'NATIONAL', description: 'Dominated the heavyweight combat robotics arena with a pneumatic flipper.' },
+  { id: '11', name: 'Member Name 11', achievement: 'NextGen AI Conference // Best Paper', year: '2024', level: 'INTERNATIONAL', description: 'Published groundbreaking research on efficient transformers for mobile devices.' },
 ];
 
 const DECK_VISIBLE_DEPTH = 3;
@@ -430,7 +430,7 @@ export default function Achievements({
                   '--rv-section-title-desktop': 'clamp(24px, 7vw, 64px)',
                 } as React.CSSProperties}
               >
-                YEARS OF <span className="text-[#4FAEF3]">RECOGNITION.</span>
+                YEARS OF <span className="text-[#4FAEF3]">RECOGNITION</span>
               </h2>
               <div className="rv-section-rule" />
             </div>

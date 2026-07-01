@@ -104,6 +104,14 @@ function TeamSlide({
     team: (typeof teamsData)[0]; isActive: boolean;
 }) {
     const accent = team.accentColor;
+    const profileUrl =
+        team.id.toUpperCase() === 'ORCUS' ? 'https://www.instagram.com/team_orcus/' :
+            team.id.toUpperCase() === 'ARTEMIS' ? 'https://www.instagram.com/team_artemis_vit/' :
+                team.id.toUpperCase() === 'AVATAR' ? 'https://www.instagram.com/team_avatar_vit?igsh=MjlmcWQ5dXNjbG42' : '#';
+    const watermarkSrc =
+        team.id.toUpperCase() === 'ORCUS' ? '/OrcusLogo.svg' :
+            team.id.toUpperCase() === 'ARTEMIS' ? '/ArtemisLogo.svg' :
+                team.id.toUpperCase() === 'AVATAR' ? '/AvatarLogo.svg' : team.teamLogoPath;
 
     return (
         <div
@@ -115,13 +123,50 @@ function TeamSlide({
                 zIndex: isActive ? 2 : 1,
             }}
         >
-            <div className="rv-card-surface rv-card-surface--lifted relative w-full h-auto sm:min-h-[460px] flex flex-col md:flex-row transition-all duration-500 hover:shadow-[0_18px_45px_rgba(0,0,0,0.45)]">
+            <div
+                className="relative w-full h-full sm:h-auto sm:min-h-[460px] overflow-hidden rounded-[4px] flex flex-col md:flex-row transition-all duration-500 shadow-[0_0_25px_rgba(0,0,0,0.5)] hover:shadow-[0_0_35px_rgba(0,0,0,0.8)]"
+                style={{
+                    background: '#0a0a0a',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                }}
+            >
+                {['ARTEMIS', 'AVATAR', 'ORCUS'].includes(team.id.toUpperCase()) && watermarkSrc && (
+                    <div className="absolute inset-0 pointer-events-none flex flex-col md:flex-row z-0">
+                        <div className="h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0" />
+                        <div className="relative flex-1 flex items-center justify-center overflow-hidden">
+                            <div
+                                className={`relative w-[70%] max-w-[320px] aspect-square ${team.id.toUpperCase() === 'AVATAR' ? 'scale-[1.35] opacity-100' : 'opacity-100'}`}
+                                style={{ filter: `drop-shadow(0 0 24px ${accent.replace('0.9', '0.5')}) brightness(1.15)` }}
+                            >
+                                <Image
+                                    src={watermarkSrc}
+                                    alt={`${team.teamName} Watermark`}
+                                    fill
+                                    className="object-contain"
+                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div
+                    className="absolute inset-0 pointer-events-none z-0"
+                    style={{
+                        background: `
+                            linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                            linear-gradient(165deg, rgba(255,255,255,0.09), rgba(255,255,255,0.01) 40%, rgba(0,0,0,0.4))
+                        `,
+                        backgroundSize: '18px 18px, 18px 18px, auto',
+                    }}
+                />
 
                 {/* Corner brackets */}
                 {['tl', 'tr', 'bl', 'br'].map((pos) => (
                     <span
                         key={pos}
-                        className="absolute z-10 pointer-events-none hidden md:block"
+                        className="absolute z-10 pointer-events-none"
                         style={{
                             top: pos.startsWith('t') ? 8 : undefined, bottom: pos.startsWith('b') ? 8 : undefined,
                             left: pos.endsWith('l') ? 8 : undefined, right: pos.endsWith('r') ? 8 : undefined,
@@ -144,43 +189,43 @@ function TeamSlide({
                 {/* Photo pane (3D Flip Card) */}
                 <div
                     className="group relative h-48 sm:h-64 md:h-auto md:w-[45%] flex-shrink-0 cursor-pointer border-b md:border-b-0 md:border-r border-white/10"
-                    style={{ perspective: '1200px', background: 'rgba(0,0,0,0.24)' }}
+                    style={{ perspective: '1200px', background: 'rgba(5,5,5,0.5)' }}
                 >
                     <div
                         className="absolute inset-4 transition-transform duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:[transform:rotateY(180deg)]"
                         style={{ transformStyle: 'preserve-3d' }}
                     >
                         {/* Front face (Logo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0b0c0d]" style={{ backfaceVisibility: 'hidden' }}>
+                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden' }}>
                             <Image
                                 src={team.teamLogoPath || team.teamPhotoPath}
                                 alt={`${team.teamName} logo`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 50vw"
-                                className="object-cover opacity-[0.84] mix-blend-screen"
+                                className="object-cover opacity-80 mix-blend-screen"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            <div className="absolute inset-0 pointer-events-none hidden md:block bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
-                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 18px rgba(0,0,0,0.38), inset 0 0 0 1px ${accent.replace('0.9', '0.14')}` }} />
+                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
+                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.8), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
                         </div>
 
                         {/* Back face (Photo) */}
-                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/10 bg-[#0b0c0d]" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                        <div className="absolute inset-0 w-full h-full overflow-hidden rounded-[4px] border border-white/5 bg-black" style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
                             <Image
                                 src={team.teamPhotoPath}
                                 alt={`${team.teamName} photo`}
                                 fill
                                 sizes="(max-width: 768px) 100vw, 50vw"
-                                className="object-cover opacity-[0.78] sepia-[0.1] hue-rotate-[-5deg]"
+                                className="object-cover opacity-70 sepia-[0.2] hue-rotate-[-10deg]"
                                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                             />
-                            <div className="absolute inset-0 pointer-events-none hidden md:block bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
-                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 18px rgba(0,0,0,0.4), inset 0 0 0 1px ${accent.replace('0.9', '0.14')}` }} />
+                            <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_51%)] bg-[length:100%_4px] opacity-20" />
+                            <div className="absolute inset-0 pointer-events-none" style={{ boxShadow: `inset 0 0 40px rgba(0,0,0,0.9), inset 0 0 0 1px ${accent.replace('0.9', '0.2')}` }} />
                         </div>
                     </div>
 
                     {/* HUD Corner Accents for Image Box */}
-                    <svg className="absolute inset-4 pointer-events-none opacity-50 z-20 hidden md:block" style={{ width: 'calc(100% - 32px)', height: 'calc(100% - 32px)' }}>
+                    <svg className="absolute inset-4 pointer-events-none opacity-50 z-20" style={{ width: 'calc(100% - 32px)', height: 'calc(100% - 32px)' }}>
                         <path d="M0,10 L0,0 L10,0" fill="none" stroke={accent} strokeWidth="1.5" />
                         <path d="M100%,10 L100%,0 Lcalc(100% - 10px),0" fill="none" stroke={accent} strokeWidth="1.5" />
                         <path d="M0,calc(100% - 10px) L0,100% L10,100%" fill="none" stroke={accent} strokeWidth="1.5" />
@@ -189,10 +234,10 @@ function TeamSlide({
                 </div>
 
                 {/* Text pane */}
-                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 md:bg-gradient-to-br md:from-transparent md:to-black/40">
+                <div className="flex flex-col justify-center px-6 py-8 sm:px-8 sm:py-10 md:px-12 md:py-14 md:w-[55%] z-20 bg-gradient-to-br from-black/45 to-black/90 backdrop-blur-[3px]">
                     <span
                         className="font-mono uppercase tracking-[0.3em] mb-2 sm:mb-3"
-                        style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 8px ${accent.replace('0.9', '0.4')}` }}
+                        style={{ fontSize: 'clamp(9px, 1vw, 11px)', color: accent, textShadow: `0 0 12px ${accent.replace('0.9', '0.8')}` }}
                     >
                         {team.id}
                     </span>
@@ -203,6 +248,7 @@ function TeamSlide({
                             fontFamily: '"Inter", "Arial Black", sans-serif',
                             fontSize: 'clamp(22px, 3vw, 36px)',
                             letterSpacing: '-0.01em',
+                            textShadow: '0 4px 12px rgba(0,0,0,0.9)',
                         }}
                     >
                         {team.teamName}
@@ -210,7 +256,7 @@ function TeamSlide({
 
                     <p
                         className="font-mono uppercase tracking-[0.15em] mb-5 sm:mb-6"
-                        style={{ fontSize: 'clamp(8.5px, 0.7vw, 11px)', color: 'rgba(255,255,255,0.4)' }}
+                        style={{ fontSize: 'clamp(8.5px, 0.7vw, 11px)', color: 'rgba(255,255,255,0.6)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}
                     >
                         {team.tagline}
                     </p>
@@ -227,14 +273,31 @@ function TeamSlide({
                         className="leading-relaxed font-light tracking-wide"
                         style={{
                             fontSize: 'clamp(13px, 1vw, 15px)',
-                            color: 'rgba(255,255,255,0.65)',
+                            color: 'rgba(255,255,255,0.75)',
                             maxWidth: '46ch',
+                            textShadow: '0 2px 8px rgba(0,0,0,0.9)',
                         }}
                     >
                         {team.description}
                     </p>
 
-                    
+                    <div className="mt-6 sm:mt-7 flex items-center">
+                        <a
+                            href={profileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="group relative inline-flex items-center font-mono text-[10px] tracking-[0.2em] text-[#4FAEF3] transition-all duration-300 ease-out sm:text-[11px]"
+                            style={{ textShadow: '0 0 6px rgba(79,174,243,0.24)' }}
+                        >
+                            <span className="transition-all duration-300 group-hover:brightness-125 group-hover:[text-shadow:0_0_12px_rgba(79,174,243,0.72)]">
+                                OPEN PROFILE
+                            </span>
+                            <span className="ml-2 transition-all duration-300 group-hover:-translate-y-[2px] group-hover:translate-x-[2px]">
+                                ↗
+                            </span>
+                            <span className="absolute -bottom-1 left-0 h-px w-0 bg-[#4FAEF3] transition-all duration-300 group-hover:w-full group-hover:shadow-[0_0_8px_#4FAEF3]" />
+                        </a>
+                    </div>
                 </div>
 
             </div>
@@ -270,7 +333,10 @@ export default function TechnicalTeams() {
     const handleTouchEnd = (e: React.TouchEvent) => {
         if (touchStartX.current === null) return;
         const delta = e.changedTouches[0].clientX - touchStartX.current;
-        if (Math.abs(delta) > 50) delta < 0 ? goNext() : goPrev();
+        if (Math.abs(delta) > 50) {
+            if (delta < 0) goNext();
+            else goPrev();
+        }
         touchStartX.current = null;
     };
 
@@ -344,7 +410,7 @@ export default function TechnicalTeams() {
                                 '--rv-section-title-desktop': 'clamp(30px, 6vw, 64px)',
                             } as React.CSSProperties}
                         >
-                            TEAMS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS.</span>
+                            TEAMS AT <span style={{ color: '#4FAEF3', fontWeight: 900 }}>ROBOVITICS</span>
                         </h2>
                         <div className="rv-section-rule" />
                     </div>
