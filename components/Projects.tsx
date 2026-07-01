@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
@@ -214,14 +213,6 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
                         {project.description}
                     </p>
 
-                    <Link
-                        href={project.readMoreLink}
-                        className="group/link mt-1 inline-flex items-center gap-2 font-mono uppercase"
-                        style={{ fontSize: 10, letterSpacing: '0.2em', color: CYAN }}
-                    >
-                        <span className="group-hover/link:underline">READ MORE</span>
-                        <span className="transition-transform duration-300 group-hover/link:translate-x-1">→</span>
-                    </Link>
                 </div>
             </div>
         </div>

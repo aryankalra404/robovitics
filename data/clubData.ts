@@ -24,7 +24,7 @@ export const projectsData: Project[] = [
         title: 'Secure Communication Between IoT Devices',
         tagline: 'End-to-end encrypted IoT mesh',
         description:
-            'A framework for establishing cryptographically secure communication channels between heterogeneous IoT endpoints. Implements lightweight TLS variants and mutual authentication to defend against man-in-the-middle attacks in resource-constrained environments.',
+            'A secure communication framework for IoT endpoints. Uses lightweight TLS and mutual authentication to prevent MITM attacks in resource-constrained networks.',
         imagePath: '/project1.png',
         readMoreLink: '#',
         domain: 'CYBERSECURITY',
@@ -35,7 +35,7 @@ export const projectsData: Project[] = [
         title: 'Gesture Controlled Bot',
         tagline: 'Hand gestures → real-time motion',
         description:
-            'A rover platform controlled entirely through hand gestures captured via a wrist-mounted IMU and processed by a custom ML classifier. Translates six-axis motion data into directional commands with sub-100 ms latency over a wireless link.',
+            'A rover controlled by hand gestures via a wrist-mounted IMU and custom ML classifier, translating motion into directional commands with sub-100ms latency.',
         imagePath: '/project2.png',
         readMoreLink: '#',
         domain: 'ML & AI',
@@ -46,7 +46,7 @@ export const projectsData: Project[] = [
         title: 'DNS Tunneling Detection',
         tagline: 'Covert channel identification',
         description:
-            'A network-analysis tool that applies statistical entropy and frequency-domain features to live DNS traffic, exposing covert data-exfiltration tunnels with a trained random-forest classifier. Achieves >96% detection accuracy on benchmark datasets.',
+            'A network analysis tool that exposes covert data-exfiltration tunnels in live DNS traffic. Uses a trained random-forest classifier to achieve >96% accuracy.',
         imagePath: '/project 3.png',
         readMoreLink: '#',
         domain: 'CYBERSECURITY',
@@ -57,7 +57,7 @@ export const projectsData: Project[] = [
         title: 'KeyDrive',
         tagline: 'PyBullet Rover Simulation',
         description:
-            'A physics-accurate rover simulation built in PyBullet with a full URDF model including suspension, motor dynamics, and terrain interaction. Features keyboard-driven teleoperation and a data-logging pipeline for control algorithm research.',
+            'A physics-accurate rover simulation built in PyBullet with a full URDF model. Features teleoperation and data logging for advanced control algorithm research.',
         imagePath: '/project4.png',
         readMoreLink: '#',
         domain: 'MECHANICAL',
@@ -68,7 +68,7 @@ export const projectsData: Project[] = [
         title: 'Robotic Gripper',
         tagline: 'Adaptive under-actuated grasping',
         description:
-            'A 3D-printed, servo-actuated gripper employing a tendon-driven under-actuated design that passively conforms to object geometry. Paired with force-feedback sensors and a PID controller for reliable pick-and-place across varied payloads.',
+            'A tendon-driven, under-actuated robotic gripper that passively conforms to object geometry. Uses force-feedback and PID control for versatile pick-and-place.',
         imagePath: '/project5.png',
         readMoreLink: '#',
         domain: 'MECHANICAL',
@@ -79,7 +79,7 @@ export const projectsData: Project[] = [
         title: 'FLF Bot',
         tagline: 'Fast Line Follower',
         description:
-            'A high-speed line-follower using an 8-sensor array, PID closed-loop control, and a custom PCB running at 150 mm/s on 30 mm track widths. Competed at multiple inter-college robotics competitions, placing in the top three.',
+            'A high-speed line-following robot using an 8-sensor array, custom PCB, and PID control to hit 150 mm/s. Secured top-three placements in multiple competitions.',
         imagePath: '/project6.png',
         readMoreLink: '#',
         domain: 'ELECTRICAL',
