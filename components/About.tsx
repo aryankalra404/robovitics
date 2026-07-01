@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useSpring, useTransform } from 'framer-motion';
 
 const aboutDriveLink = 'https://drive.google.com/file/d/1Ycd76P7kxszbPqTYpeSCTFRmOsU1qTWY/view?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAb21jcASgblJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZA81NjcwNjczNDMzNTI0MjcAAaeFsaDj9ZViLc2mc_5dTS9zWV0UHu9Qv8fXSJ2_wBnC-oeSCMO7g5y2VzUt1A_aem_OMmhAV5KvpCJEWMEwO_jRg';
 const ABOUT_PANEL_HEIGHT = 620;
@@ -14,12 +14,18 @@ export default function About() {
     target: sectionRef,
     offset: ["start start", "end end"]
   });
+
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 90,
+    damping: 28,
+    mass: 0.35,
+  });
   
-  const progressHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const progressHeight = useTransform(smoothScrollProgress, [0, 1], ["0%", "100%"]);
   const aboutRailY = useTransform(
-    scrollYProgress,
-    [0, 0.24, 0.78, 1],
-    ["0px", "0px", `-${ABOUT_PANEL_HEIGHT + ABOUT_PANEL_GAP}px`, `-${ABOUT_PANEL_HEIGHT + ABOUT_PANEL_GAP}px`]
+    smoothScrollProgress,
+    [0.02, 0.98],
+    ["0px", `-${ABOUT_PANEL_HEIGHT + ABOUT_PANEL_GAP}px`]
   );
 
   return (
@@ -110,7 +116,7 @@ export default function About() {
       </section>
 
       {/* DESKTOP LAYOUT */}
-      <section id="about" ref={sectionRef} className="hidden md:block relative z-10 h-[205vh] w-full text-white pointer-events-none">
+      <section id="about" ref={sectionRef} className="hidden md:block relative z-10 h-[175vh] w-full text-white pointer-events-none">
         
         <div className="sticky top-0 h-screen w-full flex flex-col justify-center overflow-hidden px-8 lg:px-24 max-w-[1600px] mx-auto pointer-events-none">
           
@@ -138,8 +144,8 @@ export default function About() {
             <div
               className="relative w-full h-full ml-12 overflow-hidden lg:ml-20"
               style={{
-                maskImage: 'linear-gradient(to bottom, black 0%, black 94%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 94%, transparent 100%)',
+                maskImage: 'linear-gradient(to bottom, transparent 0%, black 4%, black 98%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 4%, black 98%, transparent 100%)',
               }}
             >
               <motion.div
@@ -168,7 +174,7 @@ export default function About() {
                           href={aboutDriveLink}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="pointer-events-auto mt-1 inline-flex w-fit items-center justify-center border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-5 py-3 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-[#A9D9FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/20 hover:text-white"
+                          className="pointer-events-auto mt-3 inline-flex min-h-12 w-fit items-center justify-center overflow-visible border border-[#4FAEF3]/55 bg-[#4FAEF3]/10 px-6 py-3 font-mono text-xs font-semibold uppercase leading-none tracking-[0.18em] text-[#A9D9FF] transition hover:border-[#4FAEF3] hover:bg-[#4FAEF3]/20 hover:text-white hover:shadow-[0_0_22px_rgba(79,174,243,0.18)]"
                         >
                           Want to know more?
                         </a>
