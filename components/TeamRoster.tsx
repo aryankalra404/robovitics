@@ -486,6 +486,11 @@ export default function TeamRoster({ id = 'command-structure' }: { id?: string }
           max-width: min(100%, 640px);
           margin-left: auto;
           margin-right: auto;
+          justify-items: center;
+        }
+        :global(.team-grid-faculty > *) {
+          width: 100%;
+          max-width: 340px;
         }
         :global(.team-grid-balanced > *) {
           flex: 0 0 clamp(142px, 42vw, 164px);

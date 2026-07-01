@@ -64,7 +64,7 @@ function ViewToggle({ view, setView }: { view: View; setView: (v: View) => void 
 function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: string }) {
   return (
     <div
-      className="group relative h-auto min-h-[300px] w-full overflow-hidden transition-all duration-500 hover:shadow-[0_16px_48px_rgba(79,174,243,0.1)]"
+      className="group relative h-auto min-h-[300px] w-full overflow-hidden rounded-[4px] transition-all duration-500 hover:shadow-[0_16px_42px_rgba(0,0,0,0.42),0_0_26px_rgba(79,174,243,0.08)]"
       style={{
         background: '#0a0a0a',
         border: '1px solid rgba(255,255,255,0.1)',
@@ -77,11 +77,16 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
           background: `
             linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
             linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-            linear-gradient(165deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015) 38%, rgba(0,0,0,0.35))
+            linear-gradient(165deg, rgba(255,255,255,0.075), rgba(255,255,255,0.012) 40%, rgba(0,0,0,0.36))
           `,
           backgroundSize: '18px 18px, 18px 18px, auto',
         }}
       />
+      <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent opacity-70" />
+      <span className="absolute left-3 top-3 z-10 h-3 w-3 border-l border-t border-[#4FAEF3]/50" />
+      <span className="absolute right-3 top-3 z-10 h-3 w-3 border-r border-t border-[#4FAEF3]/50" />
+      <span className="absolute bottom-3 left-3 z-10 h-3 w-3 border-b border-l border-[#4FAEF3]/50" />
+      <span className="absolute bottom-3 right-3 z-10 h-3 w-3 border-b border-r border-[#4FAEF3]/50" />
 
       {/* Content — restored flex wrapper */}
       <div className="relative z-20 flex h-full flex-col gap-6 p-5 sm:p-10 md:p-12 lg:flex-row lg:items-center lg:gap-16">
@@ -238,19 +243,29 @@ function DossierCard({
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
     >
       <div
-        className="relative flex h-full w-full flex-col items-center justify-between gap-5 overflow-hidden rounded-2xl border p-5 transition-colors duration-500 sm:p-8 md:flex-row md:items-start md:gap-8"
+        className="relative flex h-full w-full flex-col items-center justify-between gap-5 overflow-hidden rounded-[4px] border p-5 transition-colors duration-500 sm:p-8 md:flex-row md:items-start md:gap-8"
         style={{
-          background: 'linear-gradient(160deg, rgba(24,26,29,0.97) 0%, rgba(11,11,11,0.99) 100%)',
-          backdropFilter: 'blur(20px)',
-          borderColor: isFront ? 'rgba(79,174,243,0.5)' : isHovered ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)',
+          background: '#0a0a0a',
+          borderColor: isFront ? 'rgba(79,174,243,0.42)' : isHovered ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.1)',
           boxShadow: isFront
-            ? '0 24px 60px rgba(0,0,0,0.7), 0 0 45px rgba(79,174,243,0.25)'
+            ? '0 18px 46px rgba(0,0,0,0.58), 0 0 28px rgba(79,174,243,0.12)'
             : isHovered
-              ? '0 15px 35px rgba(0,0,0,0.6)'
-              : '0 10px 26px rgba(0,0,0,0.5)',
+              ? '0 14px 32px rgba(0,0,0,0.5)'
+              : '0 10px 26px rgba(0,0,0,0.42)',
         }}
       >
-        <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent opacity-60" />
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `
+              linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+              linear-gradient(165deg, rgba(255,255,255,0.075), rgba(255,255,255,0.012) 40%, rgba(0,0,0,0.36))
+            `,
+            backgroundSize: '18px 18px, 18px 18px, auto',
+          }}
+        />
+        <div className="absolute left-0 right-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4FAEF3]/40 to-transparent opacity-70" />
 
         <span className="absolute left-3 top-3 h-3 w-3 border-l border-t border-[#4FAEF3]/50" />
         <span className="absolute right-3 top-3 h-3 w-3 border-r border-t border-[#4FAEF3]/50" />
@@ -272,7 +287,7 @@ function DossierCard({
             </span>
           </div>
 
-          <div className="mb-4 w-fit rounded-sm border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 px-3 py-1.5 shadow-[0_0_15px_rgba(79,174,243,0.15)] sm:px-4 sm:py-2">
+          <div className="mb-4 w-fit rounded-[3px] border border-[#4FAEF3]/30 bg-[#4FAEF3]/10 px-3 py-1.5 sm:px-4 sm:py-2">
             <span className="font-mono text-[9.5px] uppercase tracking-[0.1em] text-[#4FAEF3] sm:text-[11px]">
               POSITION: {position}
             </span>
@@ -283,7 +298,7 @@ function DossierCard({
           </p>
         </div>
 
-        <div className="relative z-10 flex aspect-[4/3] w-full shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] md:w-[36%]">
+        <div className="relative z-10 flex aspect-[4/3] w-full shrink-0 items-center justify-center overflow-hidden rounded-[4px] border border-white/10 bg-black/35 md:w-[36%]">
           {log.imageSrc ? (
             <Image src={log.imageSrc} alt={title} fill sizes="(min-width: 768px) 360px, 100vw" className="object-cover" />
           ) : (
@@ -327,9 +342,9 @@ function IndividualLogPanel() {
     <div className="relative flex w-full flex-col items-center">
       <div className="mx-auto mb-8 w-full max-w-[1000px] sm:mb-10">
         <div className="mb-4 flex items-center justify-between gap-4">
-          <div className="flex min-w-0 items-center gap-2 sm:gap-4">
-            <div className="h-1.5 w-1.5 rounded-sm bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3] animate-pulse sm:h-2 sm:w-2" />
-            <span className="truncate font-mono text-[9px] uppercase tracking-[0.2em] text-gray-300 sm:text-[11px] md:text-[12px]">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#4FAEF3] shadow-[0_0_8px_#4FAEF3]" />
+            <span className="truncate font-mono text-[9px] uppercase tracking-[0.3em] text-[#4FAEF3]/80 sm:text-[10px]">
               MISSION_ARCHIVE // LOG {activeLog.id}
             </span>
           </div>
