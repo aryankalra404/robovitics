@@ -180,13 +180,13 @@ function Header({
     }, [registerDraggable]);
 
     return (
-        <div className="rv-section-header z-20 mb-12 sm:mb-16 relative">
+        <div className="rv-section-header relative z-[70] mb-12 sm:mb-16">
             <span className="rv-section-kicker">
                 ▶ PARTNERSHIPS // SPONSORS
             </span>
             <div
                 ref={setHeaderRef}
-                className="pointer-events-auto mx-auto cursor-grab active:cursor-grabbing"
+                className="pointer-events-auto relative z-[70] mx-auto cursor-grab active:cursor-grabbing"
                 style={{
                     filter: isHovered ? 'drop-shadow(0 0 14px rgba(255,255,255,0.24))' : 'none',
                     touchAction: 'none',
@@ -864,7 +864,7 @@ export default function Sponsors() {
                 </div>
             )}
             
-            <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
+            <div className="relative z-40 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
                 <Header
                     isHovered={pickableId === SPONSORS_TITLE_ID || heldId === SPONSORS_TITLE_ID}
                     onHoverChange={onCard()}
@@ -932,7 +932,7 @@ export default function Sponsors() {
             </div>
 
             {/* Arm SVG remains behind or above as you prefer */}
-            <svg ref={svgRef} className="absolute inset-0 w-full h-full z-[30] pointer-events-none hidden md:block" viewBox="0 0 1400 900" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
+            <svg ref={svgRef} className="absolute inset-0 w-full h-full z-[90] pointer-events-none hidden md:block" viewBox="0 0 1400 900" preserveAspectRatio="none" style={{ overflow: 'visible' }}>
 
                 <defs>
 
