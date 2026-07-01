@@ -71,8 +71,7 @@ function ContactChip({
     <Bracketed>
       <a
         href={href}
-                className="group flex min-h-10 items-center gap-3 border border-white/8 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-[#4FAEF3]/40 hover:bg-white/[0.045] hover:shadow-[0_0_15px_rgba(79,174,243,0.15)] sm:min-h-14 sm:px-4"
-
+        className="group flex min-h-10 items-center gap-3 border border-white/8 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-[#4FAEF3]/40 hover:bg-white/[0.045] hover:shadow-[0_0_15px_rgba(79,174,243,0.15)] sm:min-h-14 sm:px-4"
       >
         <span className="flex h-8 w-8 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-colors group-hover:border-[#4FAEF3]/50 group-hover:text-[#4FAEF3] sm:h-9 sm:w-9">
           {icon}
@@ -117,7 +116,7 @@ export default function Footer() {
       />
 
       {/* Main Content Wrapper */}
-      <div className="relative mx-auto w-full max-w-7xl px-5 pb-2 sm:px-8 sm:pb-8 md:px-12 lg:px-16">
+      <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16">
 
         {/* System label */}
         <div className="mb-5 flex items-center gap-3 sm:mb-6">
@@ -207,8 +206,7 @@ export default function Footer() {
           </div>
 
           {/* Copyright */}
-                   <div className="flex flex-col gap-2 border-b border-white/8 pb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-white/35">
-
+          <div className="flex flex-col gap-2 border-b border-white/8 pb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-white/35">
             <div className="flex items-center gap-3">
               <span className="text-white/20">05. EOF</span>
               <span className="h-px w-5 bg-white/15" />
@@ -218,7 +216,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* ── DESKTOP LAYOUT (lg+) ── unchanged from original */}
+        {/* ── DESKTOP LAYOUT (lg+) ── */}
         <div className="hidden lg:block">
 
           {/* Top row */}
@@ -312,9 +310,12 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Logo + tagline — shared across all breakpoints */}
+      </div>
+
+      {/* Logo overlay + Full Bleed Image Foundation */}
+      <div className="relative w-full">
         <motion.div
-          className="relative z-20 mt-8 flex translate-y-10 flex-col items-center justify-center sm:mt-16 sm:translate-y-14 md:mt-20 md:translate-y-16 lg:mt-32 lg:translate-y-24"
+          className="absolute inset-x-0 top-0 z-20 flex flex-col items-center px-4 pt-6 sm:pt-8 md:pt-10 lg:pt-14"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, ease: 'easeOut' }}
@@ -327,7 +328,7 @@ export default function Footer() {
             height={200}
             className="h-auto w-full max-w-[240px] object-contain sm:max-w-[26rem] md:max-w-[31rem] lg:max-w-[46rem]"
           />
-          <div className="mt-3 flex flex-col items-center gap-2 px-4 sm:mt-2 lg:mt-3">
+          <div className="mt-3 flex flex-col items-center gap-2 sm:mt-2 lg:mt-3">
             <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[9px] sm:tracking-[0.26em] lg:text-[10px] lg:tracking-[0.3em]">
               Official Robotics Club of VIT Vellore
             </p>
@@ -337,17 +338,15 @@ export default function Footer() {
           </div>
         </motion.div>
 
-      </div>
-
-      {/* Full Bleed Image Foundation */}
-      <div className="pointer-events-none relative z-0 mt-0 flex h-[clamp(300px,43vw,650px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(360px,43vw,680px)] lg:h-[clamp(500px,42vw,760px)]">
-        <Image
-          src="/footer.jpg"
-          alt="RoboVITics Technical Landscape Foundation"
-          width={1913}
-          height={822}
-          className="h-full w-full object-cover object-bottom opacity-90"
-        />
+        <div className="pointer-events-none relative z-0 flex h-[clamp(300px,43vw,650px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(360px,43vw,680px)] lg:h-[clamp(500px,42vw,760px)]">
+          <Image
+            src="/footer.jpg"
+            alt="RoboVITics Technical Landscape Foundation"
+            width={1913}
+            height={822}
+            className="h-full w-full object-cover object-bottom opacity-90"
+          />
+        </div>
       </div>
 
     </footer>
