@@ -42,6 +42,18 @@ const socialLinks = [
       </svg>
     ),
   },
+  {
+    label: 'X',
+    href: 'https://x.com/RoboVITics_HQ',
+    icon: (
+      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+        <path
+          fill="currentColor"
+          d="M13.9 10.4 21.2 2h-1.7l-6.3 7.2L8.1 2H2.3l7.7 10.9L2.3 22h1.7l6.8-7.8 5.4 7.8H22l-8.1-11.6Zm-2.4 2.8-.8-1.1L4.5 3.3h2.8l5 7.1.8 1.1 6.5 9.2h-2.8l-5.3-7.5Z"
+        />
+      </svg>
+    ),
+  },
 ];
 
 function Bracketed({ children, className = '' }: { children: ReactNode; className?: string }) {
