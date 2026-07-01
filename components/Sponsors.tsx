@@ -833,7 +833,7 @@ export default function Sponsors() {
                 </span>
             </div>
             {showSponsorHelp && (
-                <div className="absolute bottom-6 left-0 right-0 z-20 hidden justify-center md:flex">
+                <div className="absolute bottom-6 left-0 right-0 z-[80] hidden justify-center md:flex">
                     <div
                         ref={(node) => registerCard(SPONSORS_HELP_ID, node)}
                         className="flex cursor-grab items-center gap-3 rounded-[4px] border border-white/6 bg-black/25 px-3 py-2 font-mono text-[10px] tracking-[0.08em] text-white/38 backdrop-blur-[2px] active:cursor-grabbing"

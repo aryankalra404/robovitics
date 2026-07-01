@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import ContactModal from './ContactModal';
 
 const navItems = ['About', 'Domains', 'Teams', 'Events', 'More'];
-const moreNavItems = ['Projects', 'Achievements', 'Sponsors', 'Memories', 'Board'];
+const moreNavItems = ['Achievements', 'Projects', 'Sponsors', 'Memories', 'Board'];
 const mobileNavItems = navItems;
 const pageNavItems = ['About', 'Domains', 'Teams', 'Events', ...moreNavItems];
 
