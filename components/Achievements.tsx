@@ -116,10 +116,10 @@ function ClubAchievementPlaque({ certificateImageSrc }: { certificateImageSrc?: 
 
           <div className="relative border-l-2 border-[#4FAEF3]/20 pl-4 sm:pl-6 space-y-4 sm:space-y-5">
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-300 md:text-[15px] font-light tracking-wide">
-              Awarded for exceptional technical innovation, sustained ecosystem impact, and engineering excellence across the university network.
+              Honoured with the Best Club - Elite Category award for outstanding technical innovation, impactful initiatives, and sustained contributions to the university community.
             </p>
             <p className="max-w-xl text-[12px] leading-[1.6] sm:leading-[1.8] text-gray-400 md:text-[15px] font-light tracking-wide">
-              Anchored by <span className="text-[#4FAEF3] font-medium">Robowars</span>, the premier combat robotics league, solidifying a legacy of dominance.
+              Celebrating a legacy of innovation, teamwork, and technical excellence built through dedication and impact.
             </p>
           </div>
         </div>
