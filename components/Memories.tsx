@@ -24,6 +24,8 @@ const MEMORIES: Memory[] = [
 
 const DEBRIS_COUNT = 16;
 const FAR_Z = -35;
+const DESKTOP_SCROLL_UNITS = 4.45;
+const MOBILE_SCROLL_UNITS = 5.0;
 
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -158,7 +160,7 @@ export default function MemoryWarpTunnel() {
     let VW = window.innerWidth;
     let VH = window.innerHeight;
 const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activeDebrisCount = isMobile ? 8 : DEBRIS_COUNT;
-    const scrollUnits = isMobile ? 5.0 : 5.35;
+    const scrollUnits = isMobile ? MOBILE_SCROLL_UNITS : DESKTOP_SCROLL_UNITS;
 
 
 
@@ -345,7 +347,7 @@ zoomProgress += (targetZoom - zoomProgress) * (dt * 0.004);
         targetT = seqP * (MEMORIES.length + 5.8);
       }
 displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      
-const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
+const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
 
 
 
@@ -498,7 +500,7 @@ const targetPortalProgress = clamp((p - 0.70) / 0.08, 0, 1);
       <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
 
       <style jsx>{`
-        .mwt-wrap { position: relative; z-index: 30; height: calc(5.35 * 100vh + 100vh); background: #000; }
+        .mwt-wrap { position: relative; z-index: 30; height: calc(${DESKTOP_SCROLL_UNITS} * 100vh + 100vh); background: #000; }
         .mwt-sticky {
           position: sticky; top: 0; height: 100vh; width: 100%; overflow: hidden; background: #0d0d0d;
           perspective: 1300px;
