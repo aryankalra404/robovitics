@@ -7,7 +7,7 @@ import ContactModal from './ContactModal';
 
 const navItems = ['About', 'Domains', 'Teams', 'Events', 'More'];
 const moreNavItems = ['Achievements', 'Projects', 'Sponsors', 'Memories', 'Board'];
-const mobileNavItems = navItems;
+const mobileNavItems = ['About', 'Domains', 'Teams', 'Events', ...moreNavItems];
 const pageNavItems = ['About', 'Domains', 'Teams', 'Events', ...moreNavItems];
 
 const desktopNavTargets: Record<string, string> = {
@@ -66,7 +66,6 @@ const sectionOffsets: Record<string, number> = {
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
-  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
   const [activeSection, setActiveSection] = useState('');
@@ -434,49 +433,7 @@ export default function Navbar() {
 
           <nav className="mt-7 flex flex-col font-mono uppercase tracking-[0.16em]">
             {mobileNavItems.map((item, index) => {
-              const isActive = item !== 'More' && activeSection === item;
-
-              if (item === 'More') {
-                return (
-                  <div key={item} className="group relative border-b border-white/10">
-                    <button
-                      type="button"
-                      onClick={() => setMobileMoreOpen((open) => !open)}
-                      className={`flex w-full items-center justify-between px-1 py-4 transition-colors ${
-                        isActive ? 'text-white' : 'text-white/62 hover:text-white'
-                      }`}
-                      aria-expanded={mobileMoreOpen}
-                      aria-haspopup="true"
-                    >
-                      <span className="flex items-center gap-3">
-                        <span className={`text-[10px] ${isActive ? 'text-[#4FAEF3]/85' : 'text-white/28'}`}>0{index + 1}</span>
-                        <span className="text-[12px]">{item}</span>
-                      </span>
-                      <svg className={`h-4 w-4 transition-transform duration-300 ${mobileMoreOpen ? 'rotate-180 text-[#4FAEF3]' : 'text-white/50'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </button>
-
-                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${mobileMoreOpen ? 'max-h-80 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
-                      <div className="flex flex-col gap-1 pl-[38px]">
-                        {moreNavItems.map((dropItem) => (
-                          <Link
-                            key={dropItem}
-                            href={`#${mobileNavTargets[dropItem] ?? dropItem.toLowerCase()}`}
-                            onClick={(event) => {
-                              scrollToSection(event, mobileNavTargets[dropItem] ?? dropItem.toLowerCase(), dropItem);
-                              setMobileMoreOpen(false);
-                            }}
-                            className="block py-2.5 text-[10.5px] tracking-[0.18em] text-white/50 transition-colors hover:text-[#4FAEF3]"
-                          >
-                            {dropItem}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
+              const isActive = activeSection === item;
 
               return (
                 <Link
