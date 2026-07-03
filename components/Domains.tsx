@@ -216,7 +216,7 @@ function DomainCardMobile({ domain }: { domain: (typeof DOMAINS)[0] }) {
 }
 
 const BRIDGE_TEXT = "WE DON'T JUST STUDY THESE DOMAINS. WE SOLDER THE CIRCUITS, WRITE THE ALGORITHMS, AND MACHINE THE PARTS. AWAITING EVENT DEPLOYMENT...";
-const DESKTOP_SCROLL_DISTANCE = 3300;
+const DESKTOP_SCROLL_DISTANCE = 2400;
 
 function HUDTextBridge() {
   const words = BRIDGE_TEXT.split(' ');

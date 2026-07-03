@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -53,46 +53,6 @@ const CYAN_DIM  = 'rgba(79,174,243,0.4)';
 const CYAN_GLOW = 'rgba(79,174,243,0.25)';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Stamp SVG
-// ─────────────────────────────────────────────────────────────────────────────
-function Stamp() {
-    return (
-        <div
-            className="stamp absolute z-40 pointer-events-none"
-            style={{
-                top: 12, right: 12,
-                width: 44, height: 44,
-                opacity: 0,
-                rotate: '12deg',
-            }}
-        >
-            <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="26" cy="26" r="24" stroke={CYAN} strokeWidth="1.5" strokeDasharray="4 3" />
-                <circle cx="26" cy="26" r="18" stroke={CYAN} strokeWidth="1" opacity="0.5" />
-                <path
-                    d="M17 26.5L23 32.5L35 20"
-                    stroke={CYAN}
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <text
-                    x="26" y="47"
-                    textAnchor="middle"
-                    fill={CYAN}
-                    fontSize="5"
-                    fontFamily="monospace"
-                    letterSpacing="2"
-                    opacity="0.8"
-                >
-                    VERIFIED
-                </text>
-            </svg>
-        </div>
-    );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // Single Project Card
 // ─────────────────────────────────────────────────────────────────────────────
 function ProjectCard({
@@ -109,10 +69,9 @@ function ProjectCard({
             ref={cardRef}
             className="project-card flex-shrink-0"
             style={{
-                // On mobile: fill viewport width minus 48px (24px each side) so
-                // text never clips, while hinting at the next card.
+                // On mobile: keep a deliberate side peek so the filmstrip reads as scrollable.
                 // On desktop: clamp between 340–440px as before.
-width: 'clamp(230px, calc(100vw - 80px), 440px)',
+                width: 'clamp(230px, 82vw, 440px)',
                 willChange: 'transform',
             }}
         >
@@ -120,8 +79,6 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
                 className="rv-card-surface rv-card-surface--lifted"
                 style={{ boxShadow: `0 18px 45px rgba(0,0,0,0.36), 0 0 30px rgba(79,174,243,0.055), 0 0 0 0px ${CYAN_GLOW}` }}
             >
-                <Stamp />
-
                 {(['tl','tr','bl','br'] as const).map((pos) => (
                     <span
                         key={pos}
@@ -145,6 +102,14 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
                     width: 40, height: 1,
                     background: CYAN_DIM,
                 }}/>
+                <span
+                    className="absolute inset-x-0 bottom-0 pointer-events-none"
+                    style={{
+                        height: '58%',
+                        background:
+                            'linear-gradient(180deg, rgba(7,10,13,0) 0%, rgba(7,10,13,0.72) 24%, rgba(6,8,10,0.94) 100%)',
+                    }}
+                />
 
                 {/* Image — shorter on mobile so body text fits in viewport */}
                 <div
@@ -167,10 +132,20 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
                 </div>
 
                 {/* Card body — tighter padding on mobile */}
-                <div className="relative z-10 px-5 pt-4 pb-5 flex flex-col gap-2.5 sm:px-7 sm:pt-6 sm:pb-7 sm:gap-3.5">
+                <div
+                    className="relative z-10 flex flex-col gap-2.5 px-5 pb-5 pt-4 sm:gap-3.5 sm:px-7 sm:pb-7 sm:pt-6"
+                    style={{
+                        background:
+                            'linear-gradient(165deg, rgba(79,174,243,0.045), rgba(5,7,9,0.18) 34%, rgba(4,5,6,0.3) 100%)',
+                    }}
+                >
+                    <span
+                        className="pointer-events-none absolute left-5 top-0 h-px w-[42%] sm:left-7"
+                        style={{ background: 'linear-gradient(90deg, rgba(79,174,243,0.34), transparent)' }}
+                    />
                     <span
                         className="font-mono uppercase"
-                        style={{ fontSize: 9, letterSpacing: '0.28em', color: CYAN_DIM }}
+                        style={{ fontSize: 9, letterSpacing: '0.28em', color: 'rgba(79,174,243,0.62)' }}
                     >
                         {project.id}{' // '}BUILD_LOG
                     </span>
@@ -202,7 +177,7 @@ width: 'clamp(230px, calc(100vw - 80px), 440px)',
                         className="leading-relaxed"
                         style={{
                             fontSize: 12,
-                            color: 'rgba(255,255,255,0.48)',
+                            color: 'rgba(255,255,255,0.62)',
                             display: '-webkit-box',
                             WebkitLineClamp: 3,
                             WebkitBoxOrient: 'vertical',
@@ -229,9 +204,20 @@ export default function Projects() {
     const titleRef    = useRef<HTMLDivElement>(null);
     const cardsRef    = useRef<(HTMLDivElement | null)[]>([]);
     const stRef       = useRef<ScrollTrigger | null>(null);
-    const cardSTsRef  = useRef<ScrollTrigger[]>([]);
+    const projectProgressRef = useRef<number[]>([]);
+    const [activeProjectIndex, setActiveProjectIndex] = useState(0);
 
     const total = projectsData.length;
+
+    const jumpToProject = (index: number) => {
+        const trigger = stRef.current;
+        if (!trigger || total <= 1) return;
+
+        const progress = index / (total - 1);
+        const targetProgress = projectProgressRef.current[index] ?? progress;
+        const scrollTop = trigger.start + (trigger.end - trigger.start) * targetProgress;
+        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+    };
 
     // ── FRAMER MOTION: Global Mechanics ──────────────────────────────────────
     const { scrollYProgress } = useScroll({
@@ -256,14 +242,6 @@ export default function Projects() {
 
         // ── Initial state ───────────────────────────────────────────────────
         gsap.set(titleRef.current, { y: 40, opacity: 0 });
-
-        cards.forEach((card) => {
-            const stamp    = card.querySelector<HTMLElement>('.stamp');
-            const innerBox = card.querySelector<HTMLElement>(':scope > div');
-            gsap.set(stamp,    { opacity: 0, scale: 2.2, rotation: 25 });
-            gsap.set(innerBox, { boxShadow: '0 0 0 0px rgba(79,174,243,0)' });
-        });
-
         gsap.set(track, { x: () => pin.offsetWidth });
 
        // ── Master timeline ─────────────────────────────────────────────────
@@ -296,6 +274,33 @@ tl.fromTo(
     0.05
 );
 
+const getStopX = () => {
+    const lastCard = cards[cards.length - 1];
+    const cardW    = lastCard?.offsetWidth ?? 400;
+    const viewW    = pin.offsetWidth;
+    const isMobile = viewW < 768;
+
+    return isMobile
+        ? -(track.scrollWidth - viewW / 2 - cardW / 2)
+        : -(track.scrollWidth - viewW - 40);
+};
+
+const updateProjectProgressStops = () => {
+    const startX = pin.offsetWidth;
+    const stopX = getStopX();
+    const travel = startX - stopX;
+    const trackTweenStart = 0.05;
+    const trackTweenDuration = 1;
+    const timelineDuration = tl.duration() || 1;
+
+    projectProgressRef.current = cards.map((card) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const centeredX = pin.offsetWidth / 2 - cardCenter;
+        const tweenProgress = gsap.utils.clamp(0, 1, (startX - centeredX) / travel);
+        return gsap.utils.clamp(0, 1, (trackTweenStart + tweenProgress * trackTweenDuration) / timelineDuration);
+    });
+};
+
 // ── Pinned scroll driver ────────────────────────────────────────────
 const getScrollDistance = () => {
     const lastCard = cards[cards.length - 1];
@@ -313,6 +318,7 @@ const scrollDist = getScrollDistance();
 if (sectionRef.current) {
     sectionRef.current.style.height = `${scrollDist + window.innerHeight}px`;
 }
+updateProjectProgressStops();
 
 stRef.current = ScrollTrigger.create({
     trigger: section,
@@ -321,46 +327,36 @@ stRef.current = ScrollTrigger.create({
     scrub: 0.65,
     animation: tl,
     invalidateOnRefresh: true,
+    onUpdate: () => {
+        const trackX = Number(gsap.getProperty(track, 'x'));
+        const viewportCenter = pin.offsetWidth / 2;
+        let closestIndex = 0;
+        let closestDistance = Number.POSITIVE_INFINITY;
+
+        cards.forEach((card, index) => {
+            const cardCenter = trackX + card.offsetLeft + card.offsetWidth / 2;
+            const distance = Math.abs(cardCenter - viewportCenter);
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestIndex = index;
+            }
+        });
+
+        setActiveProjectIndex(closestIndex);
+    },
     onRefresh: () => {
         const dist = getScrollDistance();
         if (sectionRef.current) {
             sectionRef.current.style.height = `${dist + window.innerHeight}px`;
         }
+        updateProjectProgressStops();
     },
 });
-
-        // ── Per-card stamp + glow ───────────────────────────────────────────
-        cardSTsRef.current = cards.map((card) => {
-            const stamp    = card.querySelector<HTMLElement>('.stamp');
-            const innerBox = card.querySelector<HTMLElement>(':scope > div');
-
-            return ScrollTrigger.create({
-                trigger: card,
-                containerAnimation: tl,
-                start: 'left 65%',
-                end:   'left 35%',
-                onEnter: () => {
-                    gsap.to(stamp, { opacity: 1, scale: 1, rotation: 12, duration: 0.3, ease: 'back.out(2)' });
-                    gsap.fromTo(
-                        innerBox,
-                        { boxShadow: `0 0 0 1px ${CYAN}, 0 0 24px ${CYAN_GLOW}` },
-                        { boxShadow: '0 0 0 0px rgba(79,174,243,0)', duration: 0.5, ease: 'power2.out' }
-                    );
-                },
-                onEnterBack: () => {
-                    gsap.to(stamp, { opacity: 1, scale: 1, rotation: 12, duration: 0.2, ease: 'power2.out' });
-                },
-                onLeaveBack: () => {
-                    gsap.to(stamp, { opacity: 0, scale: 2.2, rotation: 25, duration: 0.2, ease: 'power2.in' });
-                },
-            });
-        });
 
         return () => {
             stRef.current?.kill();
             stRef.current = null;
-            cardSTsRef.current.forEach((st) => st.kill());
-            cardSTsRef.current = [];
             tl.kill();
         };
     }, [total]);
@@ -418,12 +414,11 @@ stRef.current = ScrollTrigger.create({
                 {/* ── Card belt ── */}
                 <div
                     ref={beltRef}
-                    className="absolute left-0 flex items-center top-[34%] sm:top-[32%]"
+                    className="absolute left-0 flex items-center top-[36%] sm:top-[32%]"
                     style={{
-                        // ↑ gap floor bumped 12→20px for mobile breathing room
-                        gap:          'clamp(28px, 2vw, 32px)',
-paddingLeft:  'clamp(20px, 2.5vw, 40px)',
-paddingRight: 'clamp(60px, 5vw, 80px)',
+                        gap: 'clamp(18px, 2vw, 32px)',
+                        paddingLeft: 'clamp(16px, 5vw, 40px)',
+                        paddingRight: 'clamp(80px, 10vw, 120px)',
                     }}
                 >
                     {/* Gear — now visible on mobile, scaled down */}
@@ -459,10 +454,33 @@ paddingRight: 'clamp(60px, 5vw, 80px)',
                 </div>
 
                 {/* Bottom hint */}
-                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/20">
-                        &gt;
-                    </span>
+                <div className="absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2 md:hidden">
+                    <div className="flex items-center gap-2">
+                        <span className="h-px w-8 bg-gradient-to-r from-transparent to-[#4FAEF3]/45" />
+                        {projectsData.map((project, index) => {
+                            const isActive = index === activeProjectIndex;
+
+                            return (
+                                <button
+                                    key={`project-progress-${project.id}`}
+                                    type="button"
+                                    aria-label={`Go to project ${index + 1}`}
+                                    aria-current={isActive ? 'step' : undefined}
+                                    onClick={() => jumpToProject(index)}
+                                    className="h-5 w-5 rounded-full p-0 transition-transform duration-200 hover:scale-110 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#4FAEF3]/80"
+                                >
+                                    <span
+                                        className={`mx-auto block rounded-full transition-all duration-300 ${
+                                            isActive
+                                                ? 'h-2 w-2 bg-[#4FAEF3] shadow-[0_0_12px_rgba(79,174,243,0.7)]'
+                                                : 'h-1.5 w-1.5 bg-white/20'
+                                        }`}
+                                    />
+                                </button>
+                            );
+                        })}
+                        <span className="h-px w-8 bg-gradient-to-l from-transparent to-[#4FAEF3]/45" />
+                    </div>
                 </div>
             </div>
         </section>
