@@ -12,14 +12,17 @@ interface Memory {
 }
 
 const MEMORIES: Memory[] = [
-  { year: '2010', title: 'The Beginning', desc: 'RoboVITics boots up as the official robotics chapter on campus.', img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&auto=format&fit=crop' },
-  { year: '2012', title: 'First Build', desc: 'The first competition bot rolls off the bench after weeks of late nights.', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop' },
-  { year: '2014', title: 'Nationals', desc: 'A small team travels cross-country to compete on the national stage.', img: 'https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?q=80&w=600&auto=format&fit=crop' },
-  { year: '2016', title: 'Breakthrough', desc: 'New domains open up — software, drones, and AI join the workshop floor.', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop' },
-  { year: '2018', title: '500 Members', desc: 'Membership crosses 500, the club outgrows its first home in the lab.', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop' },
-  { year: '2020', title: 'Online Era', desc: 'Workshops move online; circuits get soldered over video calls instead.', img: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=600&auto=format&fit=crop' },
-  { year: '2022', title: '6 Domains', desc: 'Six active domains now run in parallel, from robotics to research.', img: 'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?q=80&w=600&auto=format&fit=crop' },
-  { year: '2024', title: 'New Heights', desc: 'Record turnout at flagship events, and a new arena for combat robotics.', img: 'https://images.unsplash.com/photo-1563207153-f403bf289096?q=80&w=600&auto=format&fit=crop' },
+  { year: '2010', title: 'The Beginning', desc: 'RoboVITics was founded as <b>VIT Vellore\'s first technical club</b>, creating a multidisciplinary community driven by robotics, innovation, and hands-on learning.', img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&auto=format&fit=crop' },
+  { year: '2012', title: 'First Milestones', desc: 'The club launched its first workshops and competitions, including <b>AutoBOT, RoboCV, and IP Soccer</b>, marking its debut at graVITas.', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop' },
+  { year: '2015', title: 'Hands-On Robotics (HOR)', desc: '<b>HOR</b> became RoboVITics\' signature workshop series, equipping freshers with practical skills in embedded systems, electronics, and robotics.', img: 'https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?q=80&w=600&auto=format&fit=crop' },
+  { year: '2016', title: 'Team Orcus', desc: '<b>Team Orcus</b> was established as the club\'s combat robotics division, designing and building battle robots for national-level competitions.', img: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop' },
+  { year: '2017', title: 'RoboWars', desc: '<b>RoboWars</b> became RoboVITics\' flagship spectacle, bringing together powerful combat robots and top teams from across the country.', img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=600&auto=format&fit=crop' },
+  { year: '2018', title: 'Equinox', desc: '<b>Equinox</b> was launched as the club\'s flagship hackathon, empowering students to solve real-world challenges through engineering and innovation.', img: 'https://images.unsplash.com/photo-1555255707-c07966088b7b?q=80&w=600&auto=format&fit=crop' },
+  { year: '2019', title: 'Vortex 360', desc: '<b>Vortex 360</b> introduced a platform for CAD and hardware design, encouraging participants to transform concepts into practical engineering solutions.', img: 'https://images.unsplash.com/photo-1615811361523-6bd03d7748e7?q=80&w=600&auto=format&fit=crop' },
+  { year: '2019', title: 'Machine Design', desc: 'Originally launched as <b>Cosmos 360</b>, the event evolved into <b>Machine Design</b>, continuing annually to help students master Fusion 360, CAD modeling, simulations, and practical engineering design.', img: 'https://images.unsplash.com/photo-1563207153-f403bf289096?q=80&w=600&auto=format&fit=crop' },
+  { year: '2024', title: 'Avatar & Artemis', desc: 'RoboVITics expanded into next generation robotics with <b>Team Avatar</b> for humanoid systems and <b>Team Artemis</b> to advance legged robotics through intelligent quadrupeds, autonomous navigation, AI, and ROS 2 technologies.', img: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?q=80&w=600&auto=format&fit=crop' },
+  { year: '2024', title: 'Elite Club Recognition', desc: 'RoboVITics was honored with VIT\'s prestigious <b>Elite Club Award</b>, earning the recognition for <b>two consecutive years</b> through excellence in innovation, technical achievements, and student impact.', img: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=600&auto=format&fit=crop' },
+  { year: '2026', title: 'RoboVITics Today', desc: 'Today, RoboVITics continues to lead innovation through cutting-edge robotics, flagship events, and student driven research, inspiring the next generation of engineers.', img: 'https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?q=80&w=600&auto=format&fit=crop' },
 ];
 
 const DEBRIS_COUNT = 16;
@@ -117,49 +120,49 @@ const globalStyles = `
     filter: grayscale(100%) contrast(1.25) brightness(0.78);
   }
   .mwt-card-date {
-    font-family: monospace; font-size: 11px; letter-spacing: 0.18em;
-    color: #4FAEF3; text-transform: uppercase; margin: 0 0 10px;
+    font-family: monospace; font-size: 13px; font-weight: 600; letter-spacing: 0.18em;
+    color: #8ACDFF; text-transform: uppercase; margin: 0 0 10px;
   }
   .mwt-card-title {
     font-family: "Inter", "Arial Black", sans-serif; font-weight: 900; font-size: 23px; color: #fff;
     text-transform: uppercase; letter-spacing: 0.02em; margin: 0 0 12px; line-height: 1.1;
   }
   .mwt-card-desc {
-    font-family: monospace; font-size: 12px; line-height: 1.6;
-    color: rgba(255,255,255,0.5); margin: 0;
+    font-family: monospace; font-size: 13.5px; line-height: 1.6;
+    color: rgba(255,255,255,0.95); margin: 0;
   }
 `;
 
 export default function MemoryWarpTunnel() {
-  const wrapRef      = useRef<HTMLDivElement>(null);
-  const sceneRef     = useRef<HTMLDivElement>(null);
-  const boxRef       = useRef<HTMLDivElement>(null);
-  const canvasRef    = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const cardLayerRef = useRef<HTMLDivElement>(null);
-  const rtextRef     = useRef<HTMLDivElement>(null);
-  const hintRef      = useRef<HTMLDivElement>(null);
-  const portalRef    = useRef<HTMLDivElement>(null);
+  const rtextRef = useRef<HTMLDivElement>(null);
+  const hintRef = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const wrap      = wrapRef.current;
+    const wrap = wrapRef.current;
     const sceneWrap = sceneRef.current;
-    const box       = boxRef.current;
-    const canvas    = canvasRef.current;
+    const box = boxRef.current;
+    const canvas = canvasRef.current;
     const cardLayer = cardLayerRef.current;
-    const rtext     = rtextRef.current;
-    const hint      = hintRef.current;
-    const portal    = portalRef.current;
+    const rtext = rtextRef.current;
+    const hint = hintRef.current;
+    const portal = portalRef.current;
     if (!wrap || !sceneWrap || !box || !canvas || !cardLayer || !rtext || !hint || !portal) return;
-    const wrapEl   = wrap;
-    const sceneEl  = sceneWrap;
-    const boxEl    = box;
-    const rtextEl  = rtext;
-    const hintEl   = hint;
+    const wrapEl = wrap;
+    const sceneEl = sceneWrap;
+    const boxEl = box;
+    const rtextEl = rtext;
+    const hintEl = hint;
     const portalEl = portal;
 
     let VW = window.innerWidth;
     let VH = window.innerHeight;
-const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activeDebrisCount = isMobile ? 8 : DEBRIS_COUNT;
+    const isMobile = window.matchMedia('(max-width: 768px)').matches; const activeDebrisCount = isMobile ? 8 : DEBRIS_COUNT;
     const scrollUnits = isMobile ? MOBILE_SCROLL_UNITS : DESKTOP_SCROLL_UNITS;
 
 
@@ -172,15 +175,15 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
     renderer.autoClearColor = false;
 
-    const scene  = new THREE.Scene();
+    const scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
     const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 200);
     camera.position.set(0, 0, 8);
 
     const fadeScene = new THREE.Scene();
-    const fadeCam   = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const fadeMat   = new THREE.MeshBasicMaterial({
+    const fadeCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const fadeMat = new THREE.MeshBasicMaterial({
       color: 0x000000, transparent: true, opacity: 0.35,
       depthTest: false, depthWrite: false,
     });
@@ -193,7 +196,7 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
       for (let i = 0; i < count; i++) {
         const r = Math.pow(Math.random(), 2) * spread;
         const theta = Math.random() * Math.PI * 2;
-        pos[i * 3]     = Math.cos(theta) * r;
+        pos[i * 3] = Math.cos(theta) * r;
         pos[i * 3 + 1] = Math.sin(theta) * r;
         pos[i * 3 + 2] = -Math.random() * Math.abs(FAR_Z * 4);
       }
@@ -209,23 +212,23 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
 
     const starLayers = [
       createStarLayer(isMobile ? 1400 : 8000, isMobile ? 0.012 : 0.015, 0.3, 120),
-      createStarLayer(isMobile ? 700 : 3000, isMobile ? 0.024 : 0.03,  0.6, 70),
-      createStarLayer(isMobile ? 260 : 1000, isMobile ? 0.04 : 0.05,  0.9, 30),
+      createStarLayer(isMobile ? 700 : 3000, isMobile ? 0.024 : 0.03, 0.6, 70),
+      createStarLayer(isMobile ? 260 : 1000, isMobile ? 0.04 : 0.05, 0.9, 30),
     ];
     starLayers.forEach(layer => scene.add(layer));
 
     // ── Geometries ────────────────────────────────────────────
-    const boltGeo   = new THREE.CylinderGeometry(1.1, 1.1, 0.45, 6);
+    const boltGeo = new THREE.CylinderGeometry(1.1, 1.1, 0.45, 6);
     const washerGeo = new THREE.TorusGeometry(1.0, 0.32, 8, 20);
-    const gearGeo   = (() => {
+    const gearGeo = (() => {
       const g = new THREE.ExtrudeGeometry(buildGearShape(1.35, 0.88, 6), { depth: 0.44, bevelEnabled: false });
       g.translate(0, 0, -0.22);
       return g;
     })();
     const chipGeo = new THREE.BoxGeometry(1.45, 1.45, 0.32);
-    const nutGeo  = new THREE.CylinderGeometry(0.95, 0.95, 0.54, 6);
+    const nutGeo = new THREE.CylinderGeometry(0.95, 0.95, 0.54, 6);
 
-    const GEO_TYPES  = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
+    const GEO_TYPES = [boltGeo, washerGeo, gearGeo, chipGeo, nutGeo];
     const SLOT_COUNT = Math.ceil(DEBRIS_COUNT / GEO_TYPES.length);
 
     const wireMat = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true, transparent: true, opacity: 0.9 });
@@ -246,37 +249,37 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
     });
 
     // ── Per-debris state ──────────────────────────────────────
-    const debrisX     = new Float32Array(DEBRIS_COUNT);
-    const debrisY     = new Float32Array(DEBRIS_COUNT);
-    const debrisZ     = new Float32Array(DEBRIS_COUNT);
+    const debrisX = new Float32Array(DEBRIS_COUNT);
+    const debrisY = new Float32Array(DEBRIS_COUNT);
+    const debrisZ = new Float32Array(DEBRIS_COUNT);
     const debrisSpeed = new Float32Array(DEBRIS_COUNT);
-    const debrisType  = new Uint8Array(DEBRIS_COUNT);
+    const debrisType = new Uint8Array(DEBRIS_COUNT);
     const debrisAxisX = new Float32Array(DEBRIS_COUNT);
     const debrisAxisY = new Float32Array(DEBRIS_COUNT);
     const debrisAxisZ = new Float32Array(DEBRIS_COUNT);
-    const debrisAngV  = new Float32Array(DEBRIS_COUNT);
+    const debrisAngV = new Float32Array(DEBRIS_COUNT);
     const debrisAngle = new Float32Array(DEBRIS_COUNT);
-    const debrisSlot  = new Uint8Array(DEBRIS_COUNT);
+    const debrisSlot = new Uint8Array(DEBRIS_COUNT);
     const slotCounter = new Uint8Array(GEO_TYPES.length);
 
     const _dummy = new THREE.Object3D();
-    const _axis  = new THREE.Vector3();
-    const _quat  = new THREE.Quaternion();
+    const _axis = new THREE.Vector3();
+    const _quat = new THREE.Quaternion();
 
     function seedDebris(i: number) {
-      const angle    = Math.random() * Math.PI * 2;
-      const r        = 3.5 + Math.random() * 5;
-      debrisX[i]     = Math.cos(angle) * r;
-      debrisY[i]     = Math.sin(angle) * r * 0.55;
-      debrisZ[i]     = FAR_Z + (Math.random() * 5);
+      const angle = Math.random() * Math.PI * 2;
+      const r = 3.5 + Math.random() * 5;
+      debrisX[i] = Math.cos(angle) * r;
+      debrisY[i] = Math.sin(angle) * r * 0.55;
+      debrisZ[i] = FAR_Z + (Math.random() * 5);
       debrisSpeed[i] = 0.3 + Math.random() * 0.5;
-      debrisType[i]  = Math.floor(Math.random() * GEO_TYPES.length);
-      debrisSlot[i]  = slotCounter[debrisType[i]] % SLOT_COUNT;
+      debrisType[i] = Math.floor(Math.random() * GEO_TYPES.length);
+      debrisSlot[i] = slotCounter[debrisType[i]] % SLOT_COUNT;
       slotCounter[debrisType[i]]++;
       const ax = Math.random() * 2 - 1, ay = Math.random() * 2 - 1, az = Math.random() * 2 - 1;
       const len = Math.sqrt(ax * ax + ay * ay + az * az) || 1;
       debrisAxisX[i] = ax / len; debrisAxisY[i] = ay / len; debrisAxisZ[i] = az / len;
-      debrisAngV[i]  = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
+      debrisAngV[i] = (0.03 + Math.random() * 0.12) * (Math.PI * 2) * (Math.random() < 0.5 ? 1 : -1);
       debrisAngle[i] = Math.random() * Math.PI * 2;
     }
 
@@ -333,21 +336,21 @@ const isMobile = window.matchMedia('(max-width: 768px)').matches;    const activ
     function loop(time: number) {
       rafId = requestAnimationFrame(loop);
       const now = time || performance.now();
-      const dt  = Math.min(now - lastTime, 50);
-      lastTime  = now;
+      const dt = Math.min(now - lastTime, 50);
+      lastTime = now;
 
       const p = getProgress();
 
       const targetZoom = clamp(p / 0.26, 0, 1);
-zoomProgress += (targetZoom - zoomProgress) * (dt * 0.004);
+      zoomProgress += (targetZoom - zoomProgress) * (dt * 0.004);
 
       let targetT = 0;
       if (p > 0.14) {
-  const seqP = clamp((p - 0.14) / 0.54, 0, 1);
+        const seqP = clamp((p - 0.14) / 0.54, 0, 1);
         targetT = seqP * (MEMORIES.length + 5.8);
       }
-displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));      
-const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
+      displayT += (targetT - displayT) * (dt * (isMobile ? 0.0012 : 0.004));
+      const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
 
 
 
@@ -358,8 +361,8 @@ const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
       const portalT = easeBox(portalProgress);
 
       const ep1 = easeBox(zoomProgress);
-      const r   = getBoxRect();
-      const fillScale  = Math.max(VW / r.w, VH / r.h);
+      const r = getBoxRect();
+      const fillScale = Math.max(VW / r.w, VH / r.h);
       const boxCenterX = r.l + r.w / 2;
       const boxCenterY = r.t + r.h / 2;
       const fillX = VW / 2 - boxCenterX * fillScale;
@@ -367,33 +370,33 @@ const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
       const portalW = Math.min(VW * 0.78, 1080);
       const portalH = Math.min(VH * (isMobile ? 0.42 : 0.58), 620);
       const portalScale = Math.min(portalW / r.w, portalH / r.h);
-      
+
       const portalX = VW / 2 - boxCenterX * portalScale;
       const portalY = VH * 0.5 - boxCenterY * portalScale;
-      
+
       const sceneScale = lerp(lerp(1, fillScale, ep1), portalScale, portalT);
       const sceneX = lerp(lerp(0, fillX, ep1), portalX, portalT);
       const sceneY = lerp(lerp(0, fillY, ep1), portalY, portalT);
-      const tilt   = Math.sin(ep1 * Math.PI);
-      
-      const tiltX  = lerp(lerp(0, 2.5, tilt), 0, portalT);
-      const tiltY  = lerp(lerp(0, -7, tilt), 0, portalT);
-      const tiltZ  = lerp(lerp(0, -2.5, tilt), 0, portalT);
+      const tilt = Math.sin(ep1 * Math.PI);
+
+      const tiltX = lerp(lerp(0, 2.5, tilt), 0, portalT);
+      const tiltY = lerp(lerp(0, -7, tilt), 0, portalT);
+      const tiltZ = lerp(lerp(0, -2.5, tilt), 0, portalT);
 
       sceneEl.style.transform = `perspective(1400px) translate3d(${sceneX}px,${sceneY}px,0) rotateX(${tiltX}deg) rotateY(${tiltY}deg) rotateZ(${tiltZ}deg) scale(${sceneScale})`;
-      boxEl.style.width        = `${r.w}px`;
-      boxEl.style.height       = `${r.h}px`;
-      boxEl.style.left         = `${r.l}px`;
-      boxEl.style.top          = `${r.t}px`;
+      boxEl.style.width = `${r.w}px`;
+      boxEl.style.height = `${r.h}px`;
+      boxEl.style.left = `${r.l}px`;
+      boxEl.style.top = `${r.t}px`;
       boxEl.style.borderRadius = `${lerp(r.r, 22, portalT)}px`;
-      boxEl.style.transform    = 'translateZ(0)';
-      boxEl.style.boxShadow    = `0 0 ${lerp(50, 95, portalT)}px rgba(79,174,243,${lerp(0.2, 0.42, portalT)})`;
-      boxEl.style.borderColor  = `rgba(79,174,243,${lerp(0.2, 0.78, portalT)})`;
-      
-      rtextEl.style.opacity    = `${Math.max(0, 1 - portalT * 1.8)}`;
-      hintEl.style.opacity     = `${Math.max(0, 1 - p * 7)}`;
-      hintEl.style.visibility  = p > 0.2 ? 'hidden' : 'visible';
-      portalEl.style.opacity   = `${clamp((portalProgress - 0.12) / 0.42, 0, 1)}`;
+      boxEl.style.transform = 'translateZ(0)';
+      boxEl.style.boxShadow = `0 0 ${lerp(50, 95, portalT)}px rgba(79,174,243,${lerp(0.2, 0.42, portalT)})`;
+      boxEl.style.borderColor = `rgba(79,174,243,${lerp(0.2, 0.78, portalT)})`;
+
+      rtextEl.style.opacity = `${Math.max(0, 1 - portalT * 1.8)}`;
+      hintEl.style.opacity = `${Math.max(0, 1 - p * 7)}`;
+      hintEl.style.visibility = p > 0.2 ? 'hidden' : 'visible';
+      portalEl.style.opacity = `${clamp((portalProgress - 0.12) / 0.42, 0, 1)}`;
       portalEl.style.transform = `translate3d(-50%, -50%, 0) scale(${lerp(0.9, 1, portalT)})`;
 
       const CW = Math.round(r.w), CH = Math.round(r.h);
@@ -438,13 +441,13 @@ const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
       for (const mesh of instancedCores) mesh.instanceMatrix.needsUpdate = true;
 
       nodes.forEach((n, i) => {
-        const diff  = displayT - (i + 2.5);
+        const diff = displayT - (i + 2.5);
         const depth = clamp(Math.abs(diff), 0, 2.4);
-        const x     = isMobile ? 0 : -diff * 5.2;
-        const y     = isMobile ? diff * 5.2 : Math.sin(i * 1.7) * 0.6;
+        const x = isMobile ? 0 : -diff * 5.2;
+        const y = isMobile ? diff * 5.2 : Math.sin(i * 1.7) * 0.6;
         const worldZ = 2 - depth * 1.25;
-        const rotY  = isMobile ? 0 : clamp(diff * -18, -38, 38);
-        const rotX  = isMobile ? 0 : clamp(-y * 8, -7, 7);
+        const rotY = isMobile ? 0 : clamp(diff * -18, -38, 38);
+        const rotX = isMobile ? 0 : clamp(-y * 8, -7, 7);
         const drift = Math.sin((time * 0.001) + i) * 10;
 
         const absDiff = Math.abs(diff);
@@ -458,12 +461,12 @@ const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
         v.project(camera);
         if (v.z < -1 || v.z > 1) { n.el.style.opacity = '0'; return; }
 
-        const sx    = (v.x * 0.5 + 0.5) * CW;
-        const sy    = (1 - (v.y * 0.5 + 0.5)) * CH;
+        const sx = (v.x * 0.5 + 0.5) * CW;
+        const sy = (1 - (v.y * 0.5 + 0.5)) * CH;
         const scale = (clamp(8 / (camera.position.z - worldZ), 0.05, 3.0) / sceneScale) * lerp(isMobile ? 0.58 : 0.9, isMobile ? 0.76 : 1.08, opacity) * lerp(1, isMobile ? 0.72 : 0.55, portalT);
 
         n.el.style.transform = `translate(${sx + (isMobile ? 0 : drift)}px,${sy}px) translate(-50%,-50%) perspective(1000px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(${scale})`;
-        n.el.style.opacity   = `${opacity * (1 - portalT)}`;
+        n.el.style.opacity = `${opacity * (1 - portalT)}`;
         n.el.style.setProperty('--mwt-card-glow', `${0.12 + opacity * 0.28}`);
       });
 
@@ -581,9 +584,9 @@ const targetPortalProgress = clamp((p - 0.72) / 0.2, 0, 1);
           .mwt-card { width: min(270px, 74vw); }
           .mwt-card-inner { padding: 12px 12px 13px; }
           .mwt-img-wrap { height: 96px; margin-bottom: 12px; }
-          .mwt-card-date { font-size: 9px; margin-bottom: 7px; }
+          .mwt-card-date { font-size: 11px; margin-bottom: 7px; }
           .mwt-card-title { font-size: 16px; margin-bottom: 7px; }
-          .mwt-card-desc { font-size: 9.5px; line-height: 1.5; }
+          .mwt-card-desc { font-size: 11.5px; line-height: 1.5; }
           .mwt-hint { bottom: 24px; width: 100%; text-align: center; font-size: 7px; }
         }
       `}</style>
