@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
+import { ReactNode, useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 
 const contactEmail = 'robovitics@vit.ac.in';
 const contactPhone = '+91 98765 43210';
@@ -98,6 +98,137 @@ const skyStars = [
   { left: '92%', top: '28%', size: 2.5, opacity: 0.6, blur: 0, flare: 0.8 },
 ];
 
+function AnimatedDrones() {
+  const prefersReducedMotion = useReducedMotion();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Drone 1 Path (Left anchor, sweeping right then left)
+  const xPath1 = ["0vw", "15vw", "30vw", "15vw", "0vw", "-15vw", "-30vw", "-15vw", "0vw"];
+  const yPath1 = ["0vh", "-3vh", "0vh", "3vh", "0vh", "3vh", "0vh", "-3vh", "0vh"];
+  const rotatePath1 = [0, 3, 0, -3, 0, -3, 0, 3, 0];
+
+  // Drone 2 Path (Right anchor, sweeping left then right)
+  const xPath2 = ["0vw", "-15vw", "-30vw", "-15vw", "0vw", "15vw", "30vw", "15vw", "0vw"];
+  const yPath2 = ["0vh", "4vh", "0vh", "-4vh", "0vh", "-4vh", "0vh", "4vh", "0vh"];
+  const rotatePath2 = [0, -3, 0, 3, 0, 3, 0, -3, 0];
+
+  const opacityPath = [0.85, 1, 0.85, 1, 0.85, 1, 0.85, 1, 0.85];
+
+  if (isMounted && prefersReducedMotion) {
+    return (
+      <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+        <img src="/drone.webp" alt="" className="absolute left-[30%] bottom-[65%] w-[176px] opacity-80" width={176} height={176} />
+        <img src="/drone.webp" alt="" className="absolute right-[30%] bottom-[75%] w-[176px] opacity-80" width={176} height={176} />
+      </div>
+    );
+  }
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+      {/* Drone 1 */}
+      <motion.div
+        className="absolute left-[30%] bottom-[65%]"
+        initial={{ x: "0vw", y: "0vh", opacity: 0.85 }}
+        whileInView={{
+          x: xPath1,
+          y: yPath1,
+          rotate: rotatePath1,
+          opacity: opacityPath,
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          times: [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1]
+        }}
+        viewport={{ once: false, amount: 0 }}
+      >
+        <img src="/drone.webp" alt="" className="w-[176px]" width={176} height={176} />
+      </motion.div>
+
+      {/* Drone 2 */}
+      <motion.div
+        className="absolute right-[30%] bottom-[75%]"
+        initial={{ x: "0vw", y: "0vh", opacity: 0.85 }}
+        whileInView={{
+          x: xPath2,
+          y: yPath2,
+          rotate: rotatePath2,
+          opacity: opacityPath,
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: 'easeInOut',
+          delay: 4,
+          times: [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1]
+        }}
+        viewport={{ once: false, amount: 0 }}
+      >
+        <img src="/drone.webp" alt="" className="w-[176px]" width={176} height={176} />
+      </motion.div>
+    </div>
+  );
+}
+
+function AnimatedPlane() {
+  const prefersReducedMotion = useReducedMotion();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Smooth climbing arc, right to left — shallow at first, steeper toward the
+  // end, so it reads as a curved flight path rather than a straight diagonal.
+  const xPath = ["5vw", "-45vw", "-90vw", "-135vw"];
+  const yPath = ["2vh", "-15vh", "-35vh", "-65vh"];
+  const opacityPath = [0, 1, 1, 0];
+  // Times spaced proportional to distance covered per segment (not evenly),
+  // so the plane moves at constant speed throughout rather than speeding
+  // up/slowing down between keyframes.
+  const times = [0, 0.36, 0.68, 1];
+
+  if (isMounted && prefersReducedMotion) {
+    return null;
+  }
+
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+      <motion.div
+        className="absolute right-0 top-[20%] flex items-center"
+        initial={{ x: "5vw", y: "2vh", opacity: 0 }}
+        animate={{
+          x: xPath,
+          y: yPath,
+          opacity: opacityPath,
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          repeatDelay: 6, // duration + repeatDelay = 15s cycle — plane comes back sooner
+          ease: "linear",
+          times: times,
+        }}
+      >
+        {/* Plane Asset */}
+        <img
+          src="/flight.webp"
+          alt=""
+          className="relative z-10 w-[130px]"
+          width={130}
+          height={130}
+          style={{ transform: "scaleY(1) rotate(30deg)" }}
+        />
+      </motion.div>
+    </div>
+  );
+}
+
 function StarLayer({
   stars,
   className = '',
@@ -181,7 +312,7 @@ function ContactChip({
   return (
     <a
       href={href}
-      className="group relative flex min-h-10 items-center gap-3 border border-white/10 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:shadow-[0_0_20px_rgba(56,98,189,0.15)] hover:-translate-y-[2px] sm:min-h-14 sm:px-4"
+      className="group relative flex min-h-[44px] items-center gap-3 border border-white/10 bg-white/[0.02] px-3 text-left transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:shadow-[0_0_20px_rgba(56,98,189,0.15)] hover:-translate-y-[2px] sm:min-h-[62px] sm:px-4"
     >
       <CornerBrackets />
       <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center border border-white/15 bg-white/[0.04] text-white/50 transition-all duration-300 group-hover:border-[#3862BD]/50 group-hover:text-[#3862BD] group-hover:drop-shadow-[0_0_8px_rgba(56,98,189,0.8)] sm:h-9 sm:w-9">
@@ -227,13 +358,13 @@ export default function Footer() {
       <StarLayer stars={footerStars} className="inset-0 z-0 [mask-image:linear-gradient(to_bottom,transparent,black_14%,black_84%,transparent)]" />
 
       {/* Main Content Wrapper - Awwwards Style */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-5 sm:px-8 md:px-12 lg:px-16">
+      <div className="relative z-10 w-full px-5 sm:px-8 md:px-12 lg:px-16 xl:px-24 2xl:px-32">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
 
           {/* Left Column */}
           <div className="flex flex-col justify-between pt-2 lg:pt-8">
             <div>
-              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl whitespace-nowrap flex gap-2">
+              <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl xl:text-7xl whitespace-nowrap flex gap-2 sm:gap-3">
                 <span className="text-white/90">Innovate.</span>
                 <span className="text-white/80">Build.</span>
                 <span className="text-[#3862BD]">Inspire</span>
@@ -241,13 +372,13 @@ export default function Footer() {
               <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/50 sm:text-base">
                 The official Robotics Club of VIT, Vellore.
               </p>
-              <div className="mt-6 h-px w-full bg-gradient-to-r from-white/30 to-transparent" />
+              <div className="mt-12 h-px w-full bg-gradient-to-r from-white/20 to-transparent" />
             </div>
 
             <div className="flex flex-col gap-8 mt-6 lg:mt-8">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-                <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.25em] text-white/40">Connect</span>
-                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-8">
+                <span className="font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-white/40 sm:text-xs">Connect</span>
+                <div className="flex flex-wrap items-center gap-3 sm:gap-5">
                   {socialLinks.map((link, idx) => (
                     <motion.a
                       key={link.label}
@@ -260,7 +391,7 @@ export default function Footer() {
                       whileInView={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.4, delay: idx * 0.05, ease: 'easeOut' }}
                       viewport={{ once: true }}
-                      className="group flex h-11 w-11 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-110 hover:border-[#3862BD]/60 hover:bg-[#3862BD]/10 hover:text-[#3862BD] hover:shadow-[0_0_15px_rgba(56,98,189,0.3)]"
+                      className="group flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center border border-white/10 bg-white/[0.02] text-white/50 transition-all duration-300 hover:scale-110 hover:border-[#3862BD]/60 hover:bg-[#3862BD]/10 hover:text-[#3862BD] hover:shadow-[0_0_15px_rgba(56,98,189,0.3)] [&>svg]:h-6 [&>svg]:w-6"
                     >
                       {link.icon}
                     </motion.a>
@@ -278,47 +409,49 @@ export default function Footer() {
 
             {/* Row 1 - Contact Cards */}
             <div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <ContactChip
-                  label="EMAIL"
-                  value={contactEmail}
-                  href={`mailto:${contactEmail}`}
-                  icon={
-                    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
-                      <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
-                      <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
-                    </svg>
-                  }
-                />
-                <ContactChip
-                  label="PHONE"
-                  value={contactPhone}
-                  href={`tel:${contactPhone.replaceAll(' ', '')}`}
-                  icon={
-                    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
-                      <path
-                        d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  }
-                />
+              <div className="lg:ml-8 xl:ml-12">
+                <div className="grid gap-4 sm:grid-cols-2 w-full lg:w-[70%]">
+                  <ContactChip
+                    label="EMAIL"
+                    value={contactEmail}
+                    href={`mailto:${contactEmail}`}
+                    icon={
+                      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                        <path d="M4 6.5h16v11H4v-11Z" fill="none" stroke="currentColor" strokeWidth="2" />
+                        <path d="m5 7.5 7 5 7-5" fill="none" stroke="currentColor" strokeWidth="2" />
+                      </svg>
+                    }
+                  />
+                  <ContactChip
+                    label="PHONE"
+                    value={contactPhone}
+                    href={`tel:${contactPhone.replaceAll(' ', '')}`}
+                    icon={
+                      <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5">
+                        <path
+                          d="M7.2 4.8 9.3 9c.2.5.1 1-.3 1.3l-1.1.9a10.5 10.5 0 0 0 4.9 4.9l.9-1.1c.3-.4.9-.5 1.3-.3l4.2 2.1c.5.2.7.7.6 1.2l-.5 2.1c-.1.5-.6.9-1.1.9C9.8 21 3 14.2 3 5.8c0-.5.4-1 .9-1.1L6 4.2c.5-.1 1 .1 1.2.6Z"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                        />
+                      </svg>
+                    }
+                  />
+                </div>
+                <div className="mt-12 h-px w-full lg:w-[70%] bg-gradient-to-r from-white/20 to-transparent" />
               </div>
-              <div className="mt-6 h-px w-full bg-gradient-to-r from-white/30 to-transparent" />
             </div>
 
             {/* Row 2 - Footer Utility */}
-            <div className="flex flex-col gap-8 mt-6 lg:mt-8 sm:items-end">
+            <div className="flex flex-col gap-8 mt-6 lg:mt-8 sm:items-end mr-2 sm:mr-6 lg:mr-10 xl:mr-12">
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="group relative flex h-11 items-center gap-3 border border-white/10 bg-transparent px-5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-white hover:shadow-[0_0_20px_rgba(56,98,189,0.15)] hover:-translate-y-[2px]"
+                className="group relative flex h-[60px] items-center gap-4 border border-white/10 bg-transparent px-8 font-mono text-[12px] sm:text-[13px] font-semibold uppercase tracking-[0.18em] text-white/70 transition-all duration-300 hover:border-white/20 hover:bg-white/[0.04] hover:text-white hover:shadow-[0_0_20px_rgba(56,98,189,0.15)] hover:-translate-y-[2px]"
               >
                 <CornerBrackets />
                 <span className="relative z-10">BACK TO TOP</span>
-                <svg viewBox="0 0 24 24" aria-hidden="true" className="relative z-10 h-4 w-4 transition-all duration-300 group-hover:-translate-y-[2px] group-hover:text-[#3862BD] group-hover:drop-shadow-[0_0_8px_rgba(56,98,189,0.8)]">
+                <svg viewBox="0 0 24 24" aria-hidden="true" className="relative z-10 h-5 w-5 transition-all duration-300 group-hover:-translate-y-[2px] group-hover:text-[#3862BD] group-hover:drop-shadow-[0_0_8px_rgba(56,98,189,0.8)]">
                   <path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
                 </svg>
               </button>
@@ -330,8 +463,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="mb-0 mt-8 h-px w-full bg-gradient-to-r from-white/30 to-transparent lg:mt-10" />
+        {/* Subtle Horizontal Divider */}
+        <div className="mt-12 h-px w-full bg-white/10 lg:mt-16" />
       </div>
 
       {/* Logo overlay + Full Bleed Image Foundation */}
@@ -340,6 +473,8 @@ export default function Footer() {
           stars={skyStars}
           className="inset-x-0 top-0 z-10 h-[42%] [mask-image:radial-gradient(ellipse_at_center,transparent_0%,transparent_22%,black_42%),linear-gradient(to_bottom,black_0%,black_76%,transparent_100%)]"
         />
+        <AnimatedDrones />
+        <AnimatedPlane />
         <motion.div
           className="absolute inset-x-0 top-0 z-20 flex flex-col items-center px-4 pt-8 sm:pt-12 md:pt-14 lg:pt-16"
           initial={{ opacity: 0, y: 30 }}
@@ -355,23 +490,29 @@ export default function Footer() {
             className="h-auto w-full max-w-[280px] object-contain opacity-85 mix-blend-screen sm:max-w-[34rem] md:max-w-[42rem] lg:max-w-[56rem]"
           />
           <div className="mt-3 flex flex-col items-center gap-2 sm:mt-2 lg:mt-3">
-            <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/50 sm:text-[9px] sm:tracking-[0.26em] lg:text-[10px] lg:tracking-[0.3em]">
+            <p className="font-mono text-[9px] uppercase tracking-[0.25em] text-white/80 sm:text-[9px] sm:tracking-[0.26em] lg:text-[10px] lg:tracking-[0.3em]">
               OFFICIAL ROBOTICS CLUB OF VIT VELLORE
             </p>
-            <p className="hidden max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/35 sm:block sm:max-w-[46rem] sm:text-[9px] lg:max-w-none lg:text-[10px]">
+            <p className="hidden max-w-[260px] text-center font-mono text-[9px] leading-relaxed text-white/60 sm:block sm:max-w-[46rem] sm:text-[9px] lg:max-w-none lg:text-[10px]">
               Student-led robotics, workshops, competitions, and engineering projects since 2010.
             </p>
 
           </div>
         </motion.div>
 
-        <div className="pointer-events-none relative z-0 flex h-[clamp(270px,39vw,585px)] w-full justify-center overflow-hidden leading-none sm:h-[clamp(320px,39vw,610px)] lg:h-[clamp(450px,38vw,680px)]">
+        <div className="pointer-events-none relative z-0 flex w-full justify-center overflow-hidden leading-none">
+          {/* Antenna integrated behind the footer image on the left-side building */}
+          <img
+            src="/antenna.webp"
+            alt=""
+            className="absolute left-[2.7%] top-[38.8%] z-0 w-[18%] object-contain"
+          />
           <Image
-            src="/footer.png"
+            src="/footer.webp"
             alt="RoboVITics Technical Landscape Foundation"
-            width={1913}
-            height={822}
-            className="h-full w-full object-cover object-bottom opacity-90"
+            width={3072}
+            height={2035}
+            className="relative z-10 h-auto w-full opacity-90"
           />
         </div>
       </div>
