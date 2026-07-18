@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 // ─── TYPES & IK ─────────────────────────────────────────────────────────────
 interface Point { x: number; y: number; }
-interface Sponsor { id: string; name: string; }
+interface Sponsor { id: string; name: string; logoUrl?: string; }
 
 function dist(a: Point, b: Point) { return Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2); }
 function lv(a: number, b: number, t: number) { return a + (b - a) * t; }
@@ -34,14 +34,14 @@ function solveFABRIK(joints: Point[], target: Point, lens: number[]): Point[] {
 
 // ─── DATA ───────────────────────────────────────────────────────────────────
 const SPONSORS: Sponsor[] = [
-    { id: 'SP_001', name: 'DigitalOcean' },
+    { id: 'SP_001', name: 'DigitalOcean', logoUrl: '/sponsor logoos/DigitalOcean_Logo.png' },
     { id: 'SP_002', name: 'Sylo Group' },
     { id: 'SP_003', name: 'Sag Taurus' },
-    { id: 'SP_004', name: 'LT (Larsen & Toubro)' },
-    { id: 'SP_005', name: 'Siemens' },
-    { id: 'SP_006', name: 'Analog Devices' },
+    { id: 'SP_004', name: 'LT (Larsen & Toubro)', logoUrl: '/sponsor logoos/L&T.png' },
+    { id: 'SP_005', name: 'Siemens', logoUrl: '/sponsor logoos/siemens_logo.png' },
+    { id: 'SP_006', name: 'Analog Devices', logoUrl: '/sponsor logoos/ADI-Logo.png' },
     { id: 'SP_007', name: 'Schneider Electric' },
-    { id: 'SP_008', name: 'Autodesk' },
+    { id: 'SP_008', name: 'Autodesk', logoUrl: '/sponsor logoos/Autodesk_Logo.png' },
     { id: 'SP_009', name: 'Persistence' },
     { id: 'SP_010', name: 'Texas Instruments' },
     { id: 'SP_011', name: 'YOUR_SPONSOR_NAME' },
@@ -57,7 +57,7 @@ function SponsorMarquee() {
             >
                 {[...SPONSORS, ...SPONSORS].map((sp, i) => (
                     <div key={`${sp.id}-${i}`} className="h-40 w-[230px] flex-shrink-0">
-                        <SponsorCard sponsor={sp} isHovered={false} onHoverChange={() => {}} />
+                        <SponsorCard sponsor={sp} isHovered={false} onHoverChange={() => { }} />
                     </div>
                 ))}
             </motion.div>
@@ -66,10 +66,10 @@ function SponsorMarquee() {
 }
 
 // ─── SPONSOR CARD ───────────────────────────────────────────────────────────
-function SponsorCard({ 
-    sponsor, 
-    isHovered, 
-    onHoverChange, 
+function SponsorCard({
+    sponsor,
+    isHovered,
+    onHoverChange,
     registerCard,
     onCardPointerDown
 }: {
@@ -85,25 +85,26 @@ function SponsorCard({
     }, [registerCard, sponsor.id]);
 
     return (
-        <motion.div 
-            ref={setCardRef} 
+        <motion.div
+            ref={setCardRef}
             className="cursor-grab relative w-full h-full active:cursor-grabbing"
             style={{ touchAction: 'none', willChange: 'transform' }}
             onPointerDown={onCardPointerDown}
             onMouseEnter={() => onHoverChange(true, ref.current?.getBoundingClientRect() ?? null)}
             onMouseLeave={() => onHoverChange(false, null)}>
-            
+
             <div className="relative h-full overflow-hidden rounded-[4px] transition-all duration-500"
                 style={{
+                    aspectRatio: '230/160',
                     padding: 'clamp(14px, 1.4vw, 18px) clamp(12px, 1.3vw, 16px) clamp(13px, 1.3vw, 17px)',
                     // 1. FROSTED GLASS BASE LAYER
-                    background: 'rgba(12, 15, 20, 0.25)', 
+                    background: 'rgba(12, 15, 20, 0.25)',
                     backdropFilter: 'blur(10px)',
                     WebkitBackdropFilter: 'blur(10px)',
                     border: '1px solid rgba(255,255,255,0.08)',
                     boxShadow: isHovered ? '0 0 25px rgba(79,174,243,0.18)' : 'none',
                 }}>
-                
+
                 {/* 2. THE GRID PATTERN OVERLAY */}
                 <div className="absolute pointer-events-none transition-all duration-500"
                     style={{
@@ -118,43 +119,31 @@ function SponsorCard({
                         border: isHovered ? '1px solid rgba(79,174,243,0.4)' : '1px solid rgba(235,238,242,0.28)',
                     }} />
 
-             
+
                 {/* Cyan top/bottom highlight lines */}
                 <div className="absolute inset-0 pointer-events-none z-10">
                     <span style={{ position: 'absolute', top: '-1px', left: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.6)' }} />
                     <span style={{ position: 'absolute', bottom: '-1px', right: '20px', width: '40px', height: '1px', background: 'rgba(79,174,243,0.35)' }} />
                 </div>
 
-                <div className="relative z-30 flex h-full flex-col items-center justify-center">
-                    {/* Glowing Logo Placeholder Box */}
-                    <div style={{
-                        margin: '6px auto 14px',
-                        width: 'clamp(46px, 5.4vw, 68px)',
-                        height: 'clamp(46px, 5.4vw, 68px)',
-                        borderRadius: '4px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: isHovered ? 'rgba(79,174,243,0.15)' : 'linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01))',
-                        boxShadow: isHovered ? 'inset 0 0 22px rgba(79,174,243,0.25), inset 0 0 0 1px rgba(79,174,243,0.4)' : 'inset 0 0 22px rgba(255,255,255,0.05), inset 0 0 0 1px rgba(255,255,255,0.08)',
-                        border: '1px solid rgba(235,238,242,0.18)',
-                        transition: 'all 0.4s ease'
-                    }}>
-                        <span className="font-mono text-[10px] text-[rgba(255,255,255,0.4)]">LOGO</span>
-                    </div>
+                {sponsor.logoUrl && (
+                    <div className="absolute inset-0 bg-white" style={{ borderRadius: '3px', zIndex: 20 }} />
+                )}
 
-                    <h3 className="text-center font-sans font-black uppercase tracking-[0.06em] text-white transition-all duration-500"
-                        style={{
-                            margin: '0 0 7px',
-                            fontSize: 'clamp(11px, 1vw, 14px)',
-                            lineHeight: 1.15,
-                            filter: isHovered ? 'drop-shadow(0 0 10px rgba(255,255,255,0.6))' : 'none',
-                        }}>
-                        {sponsor.name}
-                    </h3>
-                    <div style={{
-                        height: '1px', margin: '0 6px 10px', width: 'calc(100% - 12px)',
-                        background: 'linear-gradient(90deg, transparent, rgba(79,174,243,0.4) 30%, rgba(79,174,243,0.4) 70%, transparent)',
-                        boxShadow: '0 0 10px rgba(79,174,243,0.2)',
-                    }} />
+                <div className="relative z-30 flex h-full items-center justify-center pointer-events-none p-4">
+                    {sponsor.logoUrl && (
+                        <img 
+                            src={sponsor.logoUrl} 
+                            alt={sponsor.name} 
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'contain',
+                                filter: isHovered ? 'drop-shadow(0 0 10px rgba(0,0,0,0.15))' : 'drop-shadow(0 0 4px rgba(0,0,0,0.05))',
+                                transition: 'all 0.4s ease'
+                            }}
+                        />
+                    )}
                 </div>
             </div>
         </motion.div>
@@ -199,17 +188,17 @@ function Header({
                 onMouseEnter={() => onHoverChange(true, ref.current?.getBoundingClientRect() ?? null)}
                 onMouseLeave={() => onHoverChange(false, null)}
             >
-                <motion.h2 
+                <motion.h2
                     className="rv-section-title rv-section-title--single-line"
                     initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.6 }}
                     style={{
                         '--rv-section-title-mobile': 'clamp(28px, 7.8vw, 36px)',
                         '--rv-section-title-desktop': 'clamp(28px, 4.2vw, 56px)',
-                } as CSSProperties}>
+                    } as CSSProperties}>
                     OUR <span style={{ color: '#4FAEF3', fontWeight: 900 }}>SPONSORS</span>
                 </motion.h2>
-                <motion.div 
+                <motion.div
                     className="rv-section-rule"
                     initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }}
                     viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -727,6 +716,8 @@ export default function Sponsors() {
                 }
             }
 
+
+
             // ══════════ ADVANCED PINCER CLAW (GRIPPER) ══════════
             const ee = s.joints[NJ - 1], wr = s.joints[NJ - 2];
             const la = angOf(wr, ee), ld = la * D;
@@ -802,6 +793,29 @@ export default function Sponsors() {
                 if (bb) { bb.setAttribute('cx', (s.base.x + (i - 2.5) * 22).toFixed(1)); bb.setAttribute('cy', (s.base.y + 6).toFixed(1)); bb.setAttribute('fill', cBL); }
             }
 
+            // ══════════ BASE MOVEMENT INDICATOR ══════════
+            const bmi = e['baseMoveIndicator'] as SVGGElement;
+            if (bmi) {
+                const by = s.base.y + 60; // Pushed further down
+                const bx = s.base.x;
+                bmi.setAttribute('transform', `translate(${bx.toFixed(1)}, ${by.toFixed(1)})`);
+                
+                const osc = Math.sin(Date.now() / 400) * 4;
+                const spread = 50 + osc;
+                
+                const bLine = e['bmiLine'] as SVGLineElement;
+                if (bLine) {
+                    bLine.setAttribute('x1', (-spread + 5).toFixed(1));
+                    bLine.setAttribute('x2', (spread - 5).toFixed(1));
+                    bLine.setAttribute('y1', '0');
+                    bLine.setAttribute('y2', '0');
+                }
+                const bArrL = e['bmiArrowL'] as SVGPolylineElement;
+                if (bArrL) bArrL.setAttribute('transform', `translate(${(-spread).toFixed(1)}, 0)`);
+                const bArrR = e['bmiArrowR'] as SVGPolylineElement;
+                if (bArrR) bArrR.setAttribute('transform', `translate(${spread.toFixed(1)}, 0)`);
+            }
+
             // ══════════ PULSE ══════════
             const pl = e['pl'] as SVGCircleElement;
             if (pl) {
@@ -863,7 +877,7 @@ export default function Sponsors() {
                     </div>
                 </div>
             )}
-            
+
             <div className="relative z-40 w-full max-w-[1400px] mx-auto px-6 sm:px-12">
                 <Header
                     isHovered={pickableId === SPONSORS_TITLE_ID || heldId === SPONSORS_TITLE_ID}
@@ -873,57 +887,57 @@ export default function Sponsors() {
                 />
 
                 {/* Desktop Grid — 3 / 5 / 3 symmetric layout */}
-<div className="hidden md:flex md:flex-col gap-5">
+                <div className="hidden md:flex md:flex-col gap-5">
 
-    {/* Row 1 — 3 cards, centered */}
-    <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
-        {SPONSORS.slice(0, 3).map((sp, i) => (
-            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
-                <SponsorCard
-                    sponsor={sp}
-                    isHovered={pickableId === sp.id || heldId === sp.id}
-                    onHoverChange={onCard()}
-                    onCardPointerDown={onCardPointerDown(sp.id)}
-                    registerCard={registerCard}
-                />
-            </motion.div>
-        ))}
-    </div>
+                    {/* Row 1 — 3 cards, centered */}
+                    <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
+                        {SPONSORS.slice(0, 3).map((sp, i) => (
+                            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
+                                <SponsorCard
+                                    sponsor={sp}
+                                    isHovered={pickableId === sp.id || heldId === sp.id}
+                                    onHoverChange={onCard()}
+                                    onCardPointerDown={onCardPointerDown(sp.id)}
+                                    registerCard={registerCard}
+                                />
+                            </motion.div>
+                        ))}
+                    </div>
 
-    {/* Row 2 — 5 cards, full width */}
-    <div className="grid grid-cols-5 gap-5">
-        {SPONSORS.slice(3, 8).map((sp, i) => (
-            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: (i + 3) * 0.06 }}>
-                <SponsorCard
-                    sponsor={sp}
-                    isHovered={pickableId === sp.id || heldId === sp.id}
-                    onHoverChange={onCard()}
-                    onCardPointerDown={onCardPointerDown(sp.id)}
-                    registerCard={registerCard}
-                />
-            </motion.div>
-        ))}
-    </div>
+                    {/* Row 2 — 5 cards, full width */}
+                    <div className="grid grid-cols-5 gap-5">
+                        {SPONSORS.slice(3, 8).map((sp, i) => (
+                            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }} transition={{ delay: (i + 3) * 0.06 }}>
+                                <SponsorCard
+                                    sponsor={sp}
+                                    isHovered={pickableId === sp.id || heldId === sp.id}
+                                    onHoverChange={onCard()}
+                                    onCardPointerDown={onCardPointerDown(sp.id)}
+                                    registerCard={registerCard}
+                                />
+                            </motion.div>
+                        ))}
+                    </div>
 
-    {/* Row 3 — 3 cards, centered */}
-    <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
-        {SPONSORS.slice(8, 11).map((sp, i) => (
-            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }} transition={{ delay: (i + 8) * 0.06 }}>
-                <SponsorCard
-                    sponsor={sp}
-                    isHovered={pickableId === sp.id || heldId === sp.id}
-                    onHoverChange={onCard()}
-                    onCardPointerDown={onCardPointerDown(sp.id)}
-                    registerCard={registerCard}
-                />
-            </motion.div>
-        ))}
-    </div>
+                    {/* Row 3 — 3 cards, centered */}
+                    <div className="grid grid-cols-3 gap-5 mx-auto w-[60%]">
+                        {SPONSORS.slice(8, 11).map((sp, i) => (
+                            <motion.div key={sp.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }} transition={{ delay: (i + 8) * 0.06 }}>
+                                <SponsorCard
+                                    sponsor={sp}
+                                    isHovered={pickableId === sp.id || heldId === sp.id}
+                                    onHoverChange={onCard()}
+                                    onCardPointerDown={onCardPointerDown(sp.id)}
+                                    registerCard={registerCard}
+                                />
+                            </motion.div>
+                        ))}
+                    </div>
 
-</div>
+                </div>
 
                 {/* Mobile Auto-Scroll */}
                 <div className="md:hidden">
@@ -1040,7 +1054,12 @@ export default function Sponsors() {
 
                 {[0, 1, 2, 3, 4, 5].map(i => <circle key={`bB${i}`} ref={ref(`bB${i}`)} r={4} />)}
 
-
+                {/* Base Movement Indicator */}
+                <g ref={ref('baseMoveIndicator')}>
+                    <line ref={ref('bmiLine')} stroke="#4FAEF3" strokeWidth="2.5" opacity="0.8" style={{ filter: 'drop-shadow(0 0 6px rgba(79,174,243,0.6))' }} />
+                    <polyline ref={ref('bmiArrowL')} points="0,0 7,-5 7,5" fill="#4FAEF3" opacity="0.9" />
+                    <polyline ref={ref('bmiArrowR')} points="0,0 -7,-5 -7,5" fill="#4FAEF3" opacity="0.9" />
+                </g>
 
                 {/* Structural beams (Tapered Polygons) with depth + wireframe + bevel */}
 

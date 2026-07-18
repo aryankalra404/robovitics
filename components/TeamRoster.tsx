@@ -65,11 +65,11 @@ const BOARD = [
   { name: 'Tharun', role: 'Events Head' },
   { name: 'Kashikaa', role: 'PR Head' },
   { name: 'Arushi', role: 'Tech Lead' },
-  { name: 'Kesava Prasath', role: 'R&D Head' },
+  { name: 'Kesava Prasaath', role: 'R&D Head' },
   { name: 'Azad', role: 'Design Head' },
   { name: 'Mahmood', role: 'AI/ML Lead & Project Lead' },
   { name: 'Kriday', role: 'Cyber Security Lead' },
-  { name: 'Harshitha', role: 'Web Development Lead' },
+  { name: 'K.Harshitha', role: 'Web Development Lead' },
   { name: 'Jacinth', role: 'App Development Lead & RoboWars Head' },
   { name: 'Kiruba', role: 'Managing Director (MD)' },
   { name: 'Shravan', role: 'Hands-on Robotics (HoR)' },
@@ -82,6 +82,8 @@ const BOARD = [
   role: person.role,
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: person.name === 'Shuktika' ? '/shukthika.png' :
+            person.name === 'Aarushi' ? '/aarushi.png' :
+            person.name === 'Kashikaa' ? '/kashikaa.png' :
             person.name === 'Arushi' ? '/arushi.png' :
             person.name === 'Azad' ? '/azad.png' :
             person.name === 'Suyash' ? '/suyash.png' :
@@ -108,6 +110,7 @@ const SENIOR_BOARD = [
   role: '',
   // Replace photoUrl with real member photo. Robot shown on hover.
   photoUrl: name === 'Naman Chauhan' ? '/naman.png' :
+            name === 'Ankith' ? '/ankith.png' :
             `https://api.dicebear.com/7.x/personas/svg?seed=senior-board${i}&backgroundColor=b6e3f4`,
   robotUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=senior-board${i}&backgroundColor=transparent`,
 }));

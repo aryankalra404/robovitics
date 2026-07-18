@@ -89,7 +89,7 @@ export default function Page() {
             <p>Evolving ever since.</p>
           </div>
           <div className="hidden md:block md:text-right">
-            <p>We&apos;re not just another <span className="text-gray-300">tech chapter</span>.</p>
+            <p>We&apos;re not just another <span className="text-gray-300">tech club</span>.</p>
             <p>We&apos;re the <span className="text-gray-300">engineers</span> that actually build.</p>
           </div>
         </footer>
